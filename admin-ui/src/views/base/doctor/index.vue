@@ -124,7 +124,7 @@
           v-hasPermi="['base:doctor:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="warning"
           icon="el-icon-download"
@@ -132,24 +132,24 @@
           @click="handleExport"
           v-hasPermi="['base:doctor:export']"
         >导出</el-button>
-      </el-col>
+      </el-col> -->
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="doctorList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="所属医院" align="center" prop="hospitalId" />
+      <el-table-column label="所属医院" align="center" prop="hospitalName" />
       <el-table-column label="医生姓名" align="center" prop="doctorName" />
-      <el-table-column label="医生性别" align="center" prop="sex" />
+      <el-table-column label="医生性别" align="center" prop="sexStr" />
       <el-table-column label="年龄" align="center" prop="age" />
       <el-table-column label="医生身份证号" align="center" prop="idNumber" />
-      <el-table-column label="科室类别-字典表" align="center" prop="deptType" />
+      <el-table-column label="科室类别" align="center" prop="deptType" />
       <el-table-column label="职务" align="center" prop="position" />
       <el-table-column label="职称" align="center" prop="jobTitle" />
       <el-table-column label="联系方式" align="center" prop="phone" />
-      <el-table-column label="业务员ID" align="center" prop="salesmanId" />
+      <el-table-column label="业务员" align="center" prop="salesmanName" />
       <el-table-column label="医生简介" align="center" prop="summary" />
-      <el-table-column label="角色状态" align="center" prop="status" />
+      <el-table-column label="状态" align="center" prop="status" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
