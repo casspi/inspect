@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
+    <el-row >
       <!--部门数据-->
-      <el-col :span="4" :xs="24">
+      <!-- <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
             v-model="deptName"
@@ -24,7 +24,7 @@
             @node-click="handleNodeClick"
           />
         </div>
-      </el-col>
+      </el-col> -->
       <!--用户数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
@@ -112,7 +112,7 @@
               v-hasPermi="['system:user:remove']"
             >删除</el-button>
           </el-col>
-          <el-col :span="1.5">
+          <!-- <el-col :span="1.5">
             <el-button
               type="info"
               icon="el-icon-upload2"
@@ -129,7 +129,7 @@
               @click="handleExport"
               v-hasPermi="['system:user:export']"
             >导出</el-button>
-          </el-col>
+          </el-col> -->
           <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
 
@@ -137,8 +137,12 @@
           <el-table-column type="selection" width="50" align="center" />
           <!-- <el-table-column label="用户编号" align="center" prop="id" /> -->
           <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
-          <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
-          <el-table-column label="部门" align="center" prop="dept.deptName" :show-overflow-tooltip="true" />
+          <!-- <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" /> -->
+          <el-table-column label="身份证号" align="center" prop="idNumber" :show-overflow-tooltip="true"  />
+          <el-table-column label="年龄" align="center" prop="age" :show-overflow-tooltip="true" />
+          <el-table-column label="性别" align="center" prop="sex" :show-overflow-tooltip="true"  :formatter="sexFormat"/>
+          <el-table-column label="用户类型" align="center" prop="userTypeStr" :show-overflow-tooltip="true" />
+          <!-- <el-table-column label="部门" align="center" prop="dept.deptName" :show-overflow-tooltip="true" /> -->
           <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
@@ -162,13 +166,13 @@
             class-name="small-padding fixed-width"
           >
             <template slot-scope="scope">
-              <el-button
+              <!-- <el-button v-if="scope.row.userType==0"
                 size="mini"
                 type="text"
                 icon="el-icon-edit"
                 @click="handleUpdate(scope.row)"
                 v-hasPermi="['system:user:edit']"
-              >修改</el-button>
+              >修改</el-button> -->
               <el-button
                 v-if="scope.row.id !== 1"
                 size="mini"
@@ -208,23 +212,24 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
             <el-form-item label="手机号码" prop="phonenumber">
               <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
+            <el-form-item label="归属部门" prop="deptId">
+              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+            </el-form-item>
+          </el-col> -->
+        </el-row>
+        <!-- <el-row> -->
+          
+          <!-- <el-col :span="12">
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
             </el-form-item>
-          </el-col>
-        </el-row>
+          </el-col> -->
+        <!-- </el-row> -->
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="form.id == undefined" label="用户名称" prop="userName">
@@ -263,7 +268,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="岗位">
               <el-select v-model="form.postIds" multiple placeholder="请选择">
                 <el-option
@@ -275,7 +280,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="12">
             <el-form-item label="角色">
               <el-select v-model="form.roleIds" multiple placeholder="请选择">
@@ -488,6 +493,10 @@ export default {
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
+    },
+       // 性别
+    sexFormat(row, column) {
+      return this.selectDictLabel(this.sexOptions, row.sex);
     },
     // 节点单击事件
     handleNodeClick(data) {
