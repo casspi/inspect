@@ -63,13 +63,13 @@
           placeholder="选择支付时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="支付状态(1待支付，6已支付，9支付失败，10未支付)" prop="payStatus">
-        <el-select v-model="queryParams.payStatus" placeholder="请选择支付状态(1待支付，6已支付，9支付失败，10未支付)" clearable size="small">
+      <el-form-item label="支付状态" prop="payStatus">
+        <el-select v-model="queryParams.payStatus" placeholder="请选择支付状态" clearable size="small">
           <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
-      <el-form-item label="检验状态(1检验中，2检验完成)" prop="inspectionStatus">
-        <el-select v-model="queryParams.inspectionStatus" placeholder="请选择检验状态(1检验中，2检验完成)" clearable size="small">
+      <el-form-item label="检验状态" prop="inspectionStatus">
+        <el-select v-model="queryParams.inspectionStatus" placeholder="请选择检验状态" clearable size="small">
           <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
@@ -146,7 +146,11 @@
 
     <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="订单编号" align="center" prop="number" />
+      <el-table-column label="订单编号" align="center" prop="number">
+        <template slot-scope="scope">
+           <el-link type="primary" @click="openDetailHandle(scope.row)">{{scope.row.number}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column label="患者id" align="center" prop="userId" />
       <el-table-column label="总金额" align="center" prop="amount" />
       <el-table-column label="实付金额" align="center" prop="actualAmount" />
@@ -157,8 +161,8 @@
           <span>{{ parseTime(scope.row.payTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="支付状态(1待支付，6已支付，9支付失败，10未支付)" align="center" prop="payStatus" />
-      <el-table-column label="检验状态(1检验中，2检验完成)" align="center" prop="inspectionStatus" />
+      <el-table-column label="支付状态" align="center" prop="payStatus" />
+      <el-table-column label="检验状态" align="center" prop="inspectionStatus" />
       <el-table-column label="紧急联系人" align="center" prop="urgentUserName" />
       <el-table-column label="紧急联系人电话" align="center" prop="urgentUserPhone" />
       <el-table-column label="角色状态" align="center" prop="status" />
@@ -191,6 +195,58 @@
       @pagination="getList"
     />
 
+    <!-- 订单详情弹框-->
+    <el-dialog title="订单详情" :visible.sync="openDetail" width="500px" append-to-body>
+      <el-form ref="detailForm" :model="orderDetail" label-width="80px">
+        <el-form-item label="订单编号" prop="number">
+          {{orderDetail.number}}
+        </el-form-item>
+        <el-form-item label="患者id" prop="userId">
+          {{orderDetail.userId}}
+        </el-form-item>
+        <el-form-item label="总金额" prop="amount">
+          {{orderDetail.amount}}
+        </el-form-item>
+        <el-form-item label="实付金额" prop="actualAmount">
+          {{orderDetail.actualAmount}}
+        </el-form-item>
+        <el-form-item label="开单医院" prop="hospitalId">
+          {{orderDetail.hospitalId}}
+        </el-form-item>
+        <el-form-item label="开单医生" prop="doctorId">
+          {{orderDetail.doctorId}}
+        </el-form-item>
+        <el-form-item label="支付时间" prop="payTime">
+         {{orderDetail.payTime}}
+        </el-form-item>
+        <!-- (1待支付，6已支付，9支付失败，10未支付) -->
+        <el-form-item label="支付状态">
+          {{orderDetail.payStatus}}
+        </el-form-item>
+        <!-- (1检验中，2检验完成) -->
+        <el-form-item label="检验状态">
+          {{orderDetail.inspectionStatus}}
+        </el-form-item>
+        <el-form-item label="紧急联系人" prop="urgentUserName">
+          {{orderDetail.urgentUserName}}
+        </el-form-item>
+        <el-form-item label="紧急联系人电话" prop="urgentUserPhone">
+          {{orderDetail.urgentUserPhone}}
+        </el-form-item>
+        <el-form-item label="角色状态">
+         {{orderDetail.status}}
+        </el-form-item>
+        <el-form-item label="删除标志" prop="delFlag">
+          {{orderDetail.delFlag}}
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          {{orderDetail.remark}}
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer text-center">
+        <el-button type="primary" @click="detailCom">确 定</el-button>
+      </div>
+    </el-dialog>
     <!-- 添加或修改订单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -277,6 +333,9 @@ export default {
       total: 0,
       // 订单表格数据
       orderList: [],
+      //是否显示订单详情
+      openDetail:false,
+      orderDetail:{},
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -367,6 +426,18 @@ export default {
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
+    /** 查看订单详情 */
+    openDetailHandle(row) {
+      const id = row.id || this.ids
+      getOrder(id).then(response => {
+        this.orderDetail = response.data;
+        this.openDetail = true;
+      });
+    },
+    /* 订单详情确认按钮 */
+    detailCom(){
+        this.openDetail = false;
+    }, 
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
