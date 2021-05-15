@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="所属医院" prop="hospitalName">
         <el-input
           v-model="queryParams.hospitalName"
@@ -89,7 +89,6 @@
               placeholder="状态"
               clearable
               size="small"
-              style="width: 240px"
             >
               <el-option
                 v-for="dict in statusOptions"
