@@ -276,12 +276,12 @@
             placeholder="选择支付时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="支付状态(1待支付，6已支付，9支付失败，10未支付)">
+        <el-form-item label="支付状态">
           <el-radio-group v-model="form.payStatus">
             <el-radio label="1">请选择字典生成</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="检验状态(1检验中，2检验完成)">
+        <el-form-item label="检验状态">
           <el-radio-group v-model="form.inspectionStatus">
             <el-radio label="1">请选择字典生成</el-radio>
           </el-radio-group>
