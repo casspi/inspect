@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row >
+    <el-row :gutter="20">
       <!--部门数据-->
       <!-- <el-col :span="4" :xs="24">
         <div class="head-container">
@@ -166,13 +166,13 @@
             class-name="small-padding fixed-width"
           >
             <template slot-scope="scope">
-              <!-- <el-button v-if="scope.row.userType==0"
+              <el-button v-if="scope.row.userType==0"
                 size="mini"
                 type="text"
                 icon="el-icon-edit"
                 @click="handleUpdate(scope.row)"
                 v-hasPermi="['system:user:edit']"
-              >修改</el-button> -->
+              >修改</el-button>
               <el-button
                 v-if="scope.row.id !== 1"
                 size="mini"
