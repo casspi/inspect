@@ -200,7 +200,7 @@
     />
 
     <!-- 订单详情弹框-->
-    <el-dialog title="订单详情" :visible.sync="openDetail" width="500px" append-to-body>
+    <el-dialog title="订单详情" :visible.sync="openDetail" width="680px" append-to-body>
       <el-form ref="detailForm" :model="orderDetail" label-width="80px">
         <el-form-item label="订单编号">
           {{orderDetail.number}}
@@ -212,7 +212,22 @@
           {{orderDetail.patientName}}
         </el-form-item>
         <el-form-item label="检验项目">
-          <el-tag size="small" v-for="(item,index) in orderDetail.itemList" :key="index">{{item.inspectName}}<span>{{item.inspectionStatus | parseInspectionStatus}}</span></el-tag>
+          <el-table :data="orderDetail.itemList" border style="line-height:0">
+            <el-table-column label="项目名称" align="center" prop="inspectName" >
+              <template slot-scope="scope">
+                <el-tag size="small" >{{scope.row.inspectName}}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态" align="center" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.inspectionStatus | parseInspectionStatus }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="结果" align="center" >
+
+             </el-table-column>
+          </el-table>
+          <!-- <el-tag size="small" v-for="(item,index) in orderDetail.itemList" :key="index">{{item.inspectName}}<span>{{item.inspectionStatus | parseInspectionStatus}}</span></el-tag> -->
         </el-form-item>
         <el-form-item label="总金额">
           {{orderDetail.amount}}
@@ -382,10 +397,10 @@ export default {
       let text = ''
       switch(val)
       {
-        case '1':
+        case 1:
           text = '(检验中)'
             break;
-        case '2':
+        case 2:
           text = '(检验完成)'
             break;
         default:
