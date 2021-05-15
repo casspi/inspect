@@ -24,7 +24,7 @@
           <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
-      <el-form-item label="单位" prop="itemUnit">
+      <!-- <el-form-item label="单位" prop="itemUnit">
         <el-input
           v-model="queryParams.itemUnit"
           placeholder="请输入单位"
@@ -41,8 +41,8 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="折扣百分比" prop="discountPercent">
+      </el-form-item> -->
+      <!-- <el-form-item label="折扣百分比" prop="discountPercent">
         <el-input
           v-model="queryParams.discountPercent"
           placeholder="请输入折扣百分比"
@@ -59,8 +59,8 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="检验所主键" prop="inspectionOfficeId">
+      </el-form-item> -->
+      <!-- <el-form-item label="检验所主键" prop="inspectionOfficeId">
         <el-input
           v-model="queryParams.inspectionOfficeId"
           placeholder="请输入检验所主键"
@@ -82,7 +82,7 @@
         <el-select v-model="queryParams.status" placeholder="请选择角色状态" clearable size="small">
           <el-option label="请选择字典生成" value="" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>

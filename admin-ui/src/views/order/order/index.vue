@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="患者id" prop="userId">
+      <!-- <el-form-item label="患者id" prop="userId">
         <el-input
           v-model="queryParams.userId"
           placeholder="请输入患者id"
@@ -18,8 +18,8 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="总金额" prop="amount">
+      </el-form-item> -->
+      <!-- <el-form-item label="总金额" prop="amount">
         <el-input
           v-model="queryParams.amount"
           placeholder="请输入总金额"
@@ -36,8 +36,8 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="开单医院" prop="hospitalId">
+      </el-form-item> -->
+      <!-- <el-form-item label="开单医院" prop="hospitalId">
         <el-input
           v-model="queryParams.hospitalId"
           placeholder="请输入开单医院"
@@ -54,7 +54,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="支付时间" prop="payTime">
         <el-date-picker clearable size="small" style="width: 200px"
           v-model="queryParams.payTime"
@@ -73,7 +73,7 @@
           <el-option label="请选择字典生成" value="" />
         </el-select>
       </el-form-item>
-      <el-form-item label="紧急联系人" prop="urgentUserName">
+      <!-- <el-form-item label="紧急联系人" prop="urgentUserName">
         <el-input
           v-model="queryParams.urgentUserName"
           placeholder="请输入紧急联系人"
@@ -95,7 +95,7 @@
         <el-select v-model="queryParams.status" placeholder="请选择角色状态" clearable size="small">
           <el-option label="请选择字典生成" value="" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -161,10 +161,14 @@
           <span>{{ parseTime(scope.row.payTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="支付状态" align="center" prop="payStatus" />
-      <el-table-column label="检验状态" align="center" prop="inspectionStatus" />
-      <el-table-column label="紧急联系人" align="center" prop="urgentUserName" />
-      <el-table-column label="紧急联系人电话" align="center" prop="urgentUserPhone" />
+      <el-table-column label="支付状态" align="center" prop="payStatus" >
+        <template slot-scope="scope">
+          <span>{{ scope.row.payStatus | parsePayStatus }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="检验状态" align="center" prop="inspectionStatus" /> -->
+      <!-- <el-table-column label="紧急联系人" align="center" prop="urgentUserName" />
+      <el-table-column label="紧急联系人电话" align="center" prop="urgentUserPhone" /> -->
       <el-table-column label="角色状态" align="center" prop="status" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -198,48 +202,54 @@
     <!-- 订单详情弹框-->
     <el-dialog title="订单详情" :visible.sync="openDetail" width="500px" append-to-body>
       <el-form ref="detailForm" :model="orderDetail" label-width="80px">
-        <el-form-item label="订单编号" prop="number">
+        <el-form-item label="订单编号">
           {{orderDetail.number}}
         </el-form-item>
-        <el-form-item label="患者id" prop="userId">
-          {{orderDetail.userId}}
+        <el-form-item label="患者id">
+          {{orderDetail.patientId}}
         </el-form-item>
-        <el-form-item label="总金额" prop="amount">
+        <el-form-item label="患者姓名">
+          {{orderDetail.patientName}}
+        </el-form-item>
+        <el-form-item label="检验项目">
+          <el-tag size="small" v-for="(item,index) in orderDetail.itemList" :key="index">{{item.inspectName}}<span>{{item.inspectionStatus | parseInspectionStatus}}</span></el-tag>
+        </el-form-item>
+        <el-form-item label="总金额">
           {{orderDetail.amount}}
         </el-form-item>
-        <el-form-item label="实付金额" prop="actualAmount">
+        <el-form-item label="实付金额">
           {{orderDetail.actualAmount}}
         </el-form-item>
-        <el-form-item label="开单医院" prop="hospitalId">
+        <el-form-item label="开单医院">
           {{orderDetail.hospitalId}}
         </el-form-item>
-        <el-form-item label="开单医生" prop="doctorId">
+        <el-form-item label="开单医生">
           {{orderDetail.doctorId}}
         </el-form-item>
-        <el-form-item label="支付时间" prop="payTime">
+        <el-form-item label="支付时间">
          {{orderDetail.payTime}}
         </el-form-item>
         <!-- (1待支付，6已支付，9支付失败，10未支付) -->
         <el-form-item label="支付状态">
-          {{orderDetail.payStatus}}
+          {{orderDetail.payStatus | parsePayStatus}}
         </el-form-item>
         <!-- (1检验中，2检验完成) -->
-        <el-form-item label="检验状态">
+        <!-- <el-form-item label="检验状态">
           {{orderDetail.inspectionStatus}}
-        </el-form-item>
-        <el-form-item label="紧急联系人" prop="urgentUserName">
+        </el-form-item> -->
+        <el-form-item label="紧急联系人">
           {{orderDetail.urgentUserName}}
         </el-form-item>
-        <el-form-item label="紧急联系人电话" prop="urgentUserPhone">
+        <el-form-item label="紧急联系人电话">
           {{orderDetail.urgentUserPhone}}
         </el-form-item>
         <el-form-item label="角色状态">
          {{orderDetail.status}}
         </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
+        <el-form-item label="删除标志">
           {{orderDetail.delFlag}}
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="备注">
           {{orderDetail.remark}}
         </el-form-item>
       </el-form>
@@ -366,6 +376,45 @@ export default {
         ],
       }
     };
+  },
+  filters:{
+    parseInspectionStatus: function(val){
+      let text = ''
+      switch(val)
+      {
+        case '1':
+          text = '(检验中)'
+            break;
+        case '2':
+          text = '(检验完成)'
+            break;
+        default:
+          break
+      }
+      return text
+    },
+    parsePayStatus: function(val){
+      let text = ''
+      switch(val)
+      {
+        case 1:
+          text = '待支付'
+            break;
+        case 6:
+          text = '已支付'
+            break;
+        case 9:
+          text = '支付失败'
+          break;
+        case 10:
+          text = '未支付'
+            break;
+        default:
+          break
+      }
+      return text
+    }
+
   },
   created() {
     this.getList();
@@ -502,5 +551,5 @@ export default {
         })
     }
   }
-};
+}
 </script>
