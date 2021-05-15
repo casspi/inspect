@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="所属医院" prop="hospitalId">
+      <el-form-item label="所属医院" prop="hospitalName">
         <el-input
-          v-model="queryParams.hospitalId"
+          v-model="queryParams.hospitalName"
           placeholder="请输入所属医院"
           clearable
           size="small"
@@ -19,12 +19,12 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="医生性别" prop="sex">
+      <!-- <el-form-item label="医生性别" prop="sex">
         <el-select v-model="queryParams.sex" placeholder="请选择医生性别" clearable size="small">
           <el-option label="请选择字典生成" value="" />
         </el-select>
-      </el-form-item>
-      <el-form-item label="年龄" prop="age">
+      </el-form-item> -->
+      <!-- <el-form-item label="年龄" prop="age">
         <el-input
           v-model="queryParams.age"
           placeholder="请输入年龄"
@@ -32,7 +32,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="医生身份证号" prop="idNumber">
         <el-input
           v-model="queryParams.idNumber"
@@ -42,7 +42,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="科室类别-字典表" prop="deptType">
+      <!-- <el-form-item label="科室类别-字典表" prop="deptType">
         <el-select v-model="queryParams.deptType" placeholder="请选择科室类别-字典表" clearable size="small">
           <el-option label="请选择字典生成" value="" />
         </el-select>
@@ -64,7 +64,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="联系方式" prop="phone">
         <el-input
           v-model="queryParams.phone"
@@ -74,19 +74,30 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="业务员ID" prop="salesmanId">
+      <el-form-item label="业务员" prop="salesmanName">
         <el-input
-          v-model="queryParams.salesmanId"
-          placeholder="请输入业务员ID"
+          v-model="queryParams.salesmanName"
+          placeholder="请输入业务员"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="角色状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择角色状态" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
+      <el-form-item label="状态" prop="status">
+        <el-select
+              v-model="queryParams.status"
+              placeholder="状态"
+              clearable
+              size="small"
+              style="width: 240px"
+            >
+              <el-option
+                v-for="dict in statusOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -143,13 +154,22 @@
       <el-table-column label="医生性别" align="center" prop="sexStr" />
       <el-table-column label="年龄" align="center" prop="age" />
       <el-table-column label="医生身份证号" align="center" prop="idNumber" />
-      <el-table-column label="科室类别" align="center" prop="deptType" />
+      <el-table-column label="科室类别" align="center" prop="deptType" :formatter="deptTypeFormat" />
       <el-table-column label="职务" align="center" prop="position" />
       <el-table-column label="职称" align="center" prop="jobTitle" />
       <el-table-column label="联系方式" align="center" prop="phone" />
       <el-table-column label="业务员" align="center" prop="salesmanName" />
       <el-table-column label="医生简介" align="center" prop="summary" />
-      <el-table-column label="状态" align="center" prop="status" />
+       <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                active-value="0"
+                inactive-value="1"
+                @change="handleStatusChange(scope.row)"
+              ></el-switch>
+            </template>
+          </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -181,28 +201,45 @@
 
     <!-- 添加或修改医生对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="所属医院" prop="hospitalId">
-          <el-input v-model="form.hospitalId" placeholder="请输入所属医院" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px" >
+        <el-form-item label="所属医院" prop="hospitalId" v-if="form.id == undefined" width="200px">
+          <el-select v-model="form.hospitalId" placeholder="请选择">
+                <el-option
+                  v-for="dict in hospitalList"
+                  :key="dict.id"
+                  :label="dict.hospitalName"
+                  :value="dict.id"
+                ></el-option>
+              </el-select>
         </el-form-item>
         <el-form-item label="医生姓名" prop="doctorName">
           <el-input v-model="form.doctorName" placeholder="请输入医生姓名" />
         </el-form-item>
-        <el-form-item label="医生性别" prop="sex">
-          <el-select v-model="form.sex" placeholder="请选择医生性别">
-            <el-option label="请选择字典生成" value="" />
-          </el-select>
+        <el-form-item label="医生身份证号" prop="idNumber">
+          <el-input v-model="form.idNumber" placeholder="请输入医生身份证号" />
+        </el-form-item>
+        <el-form-item label="医生性别">
+              <el-select v-model="form.sex" placeholder="请选择">
+                <el-option
+                  v-for="dict in sexOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                ></el-option>
+              </el-select>
         </el-form-item>
         <el-form-item label="年龄" prop="age">
           <el-input v-model="form.age" placeholder="请输入年龄" />
         </el-form-item>
-        <el-form-item label="医生身份证号" prop="idNumber">
-          <el-input v-model="form.idNumber" placeholder="请输入医生身份证号" />
-        </el-form-item>
-        <el-form-item label="科室类别-字典表" prop="deptType">
-          <el-select v-model="form.deptType" placeholder="请选择科室类别-字典表">
-            <el-option label="请选择字典生成" value="" />
-          </el-select>
+        <el-form-item label="科室类别" prop="deptType">
+          <el-select v-model="form.deptType" placeholder="请选择">
+                <el-option
+                  v-for="dict in doctorDepartmentTypeOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                ></el-option>
+              </el-select>
         </el-form-item>
         <el-form-item label="职务" prop="position">
           <el-input v-model="form.position" placeholder="请输入职务" />
@@ -213,20 +250,28 @@
         <el-form-item label="联系方式" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入联系方式" />
         </el-form-item>
-        <el-form-item label="业务员ID" prop="salesmanId">
-          <el-input v-model="form.salesmanId" placeholder="请输入业务员ID" />
+        <el-form-item label="业务员" prop="salesmanId">
+          <el-select v-model="form.salesmanId" placeholder="请选择">
+                <el-option
+                  v-for="dict in salesmanList"
+                  :key="dict.id"
+                  :label="dict.salesmanName"
+                  :value="dict.id"
+                ></el-option>
+              </el-select>
         </el-form-item>
         <el-form-item label="医生简介" prop="summary">
           <el-input v-model="form.summary" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="角色状态">
-          <el-radio-group v-model="form.status">
-            <el-radio label="1">请选择字典生成</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
-        </el-form-item>
+       <el-form-item label="状态">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{dict.dictLabel}}</el-radio>
+              </el-radio-group>
+       </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -240,7 +285,9 @@
 </template>
 
 <script>
-import { listDoctor, getDoctor, delDoctor, addDoctor, updateDoctor, exportDoctor } from "@/api/base/doctor";
+import { listDoctor, getDoctor, delDoctor, addDoctor, updateDoctor, exportDoctor,changeDoctorStatus } from "@/api/base/doctor";
+import { getSalesmanList } from "@/api/base/salesman";
+import { getHospitallist } from "@/api/base/hospital";
 
 export default {
   name: "Doctor",
@@ -254,6 +301,16 @@ export default {
       single: true,
       // 非多个禁用
       multiple: true,
+      statusOptions:[],
+       // 性别状态字典
+      sexOptions: [],
+     //科室类别
+      doctorDepartmentTypeOptions: [],
+      //业务员
+      salesmanList: [],
+
+      //医院列表
+      hospitalList: [], 
       // 显示搜索条件
       showSearch: true,
       // 总条数
@@ -268,7 +325,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        hospitalId: null,
+        hospitalName: null,
         doctorName: null,
         sex: null,
         age: null,
@@ -277,7 +334,7 @@ export default {
         position: null,
         jobTitle: null,
         phone: null,
-        salesmanId: null,
+        salesmanName: null,
         summary: null,
         status: null,
       },
@@ -286,13 +343,24 @@ export default {
       // 表单校验
       rules: {
         status: [
-          { required: true, message: "角色状态不能为空", trigger: "blur" }
+          { required: true, message: "状态不能为空", trigger: "blur" }
         ],
       }
     };
   },
   created() {
     this.getList();
+    this. getSalesman();
+    this. getHospitalData();
+    this.getDicts("sys_user_sex").then(response => {
+      this.sexOptions = response.data;
+    });
+    this.getDicts("doctor_department_type").then(response => {
+      this.doctorDepartmentTypeOptions = response.data;
+    });
+    this.getDicts("sys_normal_disable").then(response => {
+      this.statusOptions = response.data;
+    });
   },
   methods: {
     /** 查询医生列表 */
@@ -308,6 +376,23 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+    },
+    //业务员信息
+    getSalesman(){
+    getSalesmanList(this.salesmanName).then(response => {
+        this.salesmanList = response.data;
+      });
+    },
+
+    //医院列表信息
+    getHospitalData(){
+    getHospitallist(this.hospitalName).then(response => {
+        this.hospitalList = response.data;
+      });
+    },
+     // 性别
+    deptTypeFormat(row, column) {
+      return this.selectDictLabel(this.doctorDepartmentTypeOptions, row.deptType);
     },
     // 表单重置
     reset() {
@@ -349,6 +434,21 @@ export default {
       this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
+    },
+    // 医生状态修改
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要' + text + '<' + row.doctorName + '>医生吗?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return changeDoctorStatus(row.id, row.status);
+        }).then(() => {
+          this.msgSuccess(text + "成功");
+        }).catch(function() {
+          row.status = row.status === "0" ? "1" : "0";
+        });
     },
     /** 新增按钮操作 */
     handleAdd() {
