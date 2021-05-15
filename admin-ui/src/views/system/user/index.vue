@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row :gutter="20">
+    <el-row :gutter="24">
       <!--部门数据-->
       <!-- <el-col :span="4" :xs="24">
         <div class="head-container">
@@ -26,7 +26,7 @@
         </div>
       </el-col> -->
       <!--用户数据-->
-      <el-col :span="20" :xs="24">
+      <el-col :span="24" :xs="24">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
           <el-form-item label="用户名称" prop="userName">
             <el-input
