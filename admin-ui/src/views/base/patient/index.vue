@@ -1,7 +1,25 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="用户姓名" prop="realName">
+        <el-form-item label="注册人" prop="registerName">
+        <el-input
+          v-model="queryParams.registerName"
+          placeholder="请输入注册人"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="注册人手机号码" prop="registerPhonenumber">
+        <el-input
+          v-model="queryParams.registerPhonenumber"
+          placeholder="请输入手机号码"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="患者姓名" prop="realName">
         <el-input
           v-model="queryParams.realName"
           placeholder="请输入用户姓名"
@@ -10,7 +28,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
+      <el-form-item label="患者手机号码" prop="phonenumber">
         <el-input
           v-model="queryParams.phonenumber"
           placeholder="请输入手机号码"
@@ -19,28 +37,33 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="身份证id" prop="idNumber">
+      <el-form-item label="患者身份证" prop="idNumber">
         <el-input
           v-model="queryParams.idNumber"
-          placeholder="请输入身份证id"
+          placeholder="请输入身份证"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="用户性别" prop="sex">
-        <el-select v-model="queryParams.sex" placeholder="请选择用户性别" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="年龄" prop="age">
+            <el-form-item label="患者性别">
+              <el-select v-model="form.sex" placeholder="请选择">
+                <el-option
+                  v-for="dict in sexOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                ></el-option>
+              </el-select>
+        </el-form-item>
+      <!-- <el-form-item label="年龄" prop="age">
         <el-input
           v-model="queryParams.age"
           placeholder="请输入年龄"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
-        />
+        /> -->
       </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -49,7 +72,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="primary"
           icon="el-icon-plus"
@@ -86,19 +109,21 @@
           @click="handleExport"
           v-hasPermi="['base:patient:export']"
         >导出</el-button>
-      </el-col>
+      </el-col> -->
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="patientList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="用户姓名" align="center" prop="realName" />
-      <el-table-column label="手机号码" align="center" prop="phonenumber" />
-      <el-table-column label="身份证id" align="center" prop="idNumber" />
-      <el-table-column label="用户性别" align="center" prop="sex" />
-      <el-table-column label="年龄" align="center" prop="age" />
+      <!-- <el-table-column type="selection" width="55" align="center" /> -->
+      <el-table-column label="注册用户" align="center" prop="registerName" />
+      <el-table-column label="注册手机号" align="center" prop="registerPhonenumber" />
+      <el-table-column label="患者姓名" align="center" prop="realName" />
+      <el-table-column label="患者手机号码" align="center" prop="phonenumber" />
+      <el-table-column label="患者身份证" align="center" prop="idNumber" />
+      <el-table-column label="患者用户性别" align="center" prop="sex"  :formatter="sexFormat" />
+      <el-table-column label="患者年龄" align="center" prop="age" />
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -115,7 +140,7 @@
             v-hasPermi="['base:patient:remove']"
           >删除</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     
     <pagination
@@ -174,6 +199,8 @@ export default {
       ids: [],
       // 非单个禁用
       single: true,
+       // 性别状态字典
+      sexOptions: [],
       // 非多个禁用
       multiple: true,
       // 显示搜索条件
@@ -193,8 +220,10 @@ export default {
         realName: null,
         phonenumber: null,
         idNumber: null,
+        registerPhonenumber: null,
+        registerName: null,
         sex: null,
-        age: null,
+        // age: null,
       },
       // 表单参数
       form: {},
@@ -205,6 +234,9 @@ export default {
   },
   created() {
     this.getList();
+    this.getDicts("sys_user_sex").then(response => {
+    this.sexOptions = response.data;
+    });
   },
   methods: {
     /** 查询患者列表 */
@@ -248,6 +280,10 @@ export default {
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
+    },
+           // 性别
+    sexFormat(row, column) {
+      return this.selectDictLabel(this.sexOptions, row.sex);
     },
     // 多选框选中数据
     handleSelectionChange(selection) {

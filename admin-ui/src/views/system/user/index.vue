@@ -137,7 +137,7 @@
           <el-table-column type="selection" width="50" align="center" />
           <!-- <el-table-column label="用户编号" align="center" prop="id" /> -->
           <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
-          <!-- <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" /> -->
+          <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
           <el-table-column label="身份证号" align="center" prop="idNumber" :show-overflow-tooltip="true"  />
           <el-table-column label="年龄" align="center" prop="age" :show-overflow-tooltip="true" />
           <el-table-column label="性别" align="center" prop="sex" :show-overflow-tooltip="true"  :formatter="sexFormat"/>
@@ -232,8 +232,8 @@
         <!-- </el-row> -->
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="form.id == undefined" label="用户名称" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入用户名称" />
+            <el-form-item v-if="form.id == undefined" label="登录帐号" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入登录帐号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
