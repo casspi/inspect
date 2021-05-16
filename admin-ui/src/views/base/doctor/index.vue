@@ -157,9 +157,9 @@
       <el-table-column label="职务" align="center" prop="position" />
       <el-table-column label="职称" align="center" prop="jobTitle" />
       <el-table-column label="联系方式" align="center" prop="phone" />
-      <el-table-column label="业务员" align="center" prop="salesmanName" />
+      <el-table-column label="业务员" align="center" prop="salesmanName" width="100"/>
       <el-table-column label="医生简介" align="center" prop="summary" />
-       <el-table-column label="状态" align="center">
+       <el-table-column label="状态" align="center" width="100">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -179,6 +179,12 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['base:doctor:edit']"
           >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-user"
+            @click="$message.info('开发中')"
+          >我的推荐</el-button>
           <el-button
             size="mini"
             type="text"
@@ -225,7 +231,7 @@
           <el-input v-model="form.idNumber" placeholder="请输入医生身份证号" />
         </el-form-item>
         <el-form-item label="医生性别">
-              <el-select v-model="form.sex" placeholder="请选择">
+              <el-select v-model="form.sex" placeholder="请选择" disabled>
                 <el-option
                   v-for="dict in sexOptions"
                   :key="dict.dictValue"
@@ -234,8 +240,8 @@
                 ></el-option>
               </el-select>
         </el-form-item>
-        <el-form-item label="年龄" prop="age">
-          <el-input v-model="form.age" placeholder="请输入年龄" />
+        <el-form-item label="年龄" prop="age" >
+          <el-input v-model="form.age" placeholder="请输入年龄" readonly/>
         </el-form-item>
         <el-form-item label="科室类别" prop="deptType">
           <el-select v-model="form.deptType" placeholder="请选择">
@@ -294,6 +300,7 @@
 import { listDoctor, getDoctor, delDoctor, addDoctor, updateDoctor, exportDoctor,changeDoctorStatus,createQrCode } from "@/api/base/doctor";
 import { getSalesmanList } from "@/api/base/salesman";
 import { getHospitallist } from "@/api/base/hospital";
+import { idnumberValidator } from '@/utils/index'
 
 export default {
   name: "Doctor",
@@ -354,6 +361,16 @@ export default {
       }
     };
   },
+  watch:{
+    'form.idNumber':function(val){
+      if (idnumberValidator(val)) {
+        this.setAgeAndsex(val);
+      } else {
+        this.form.sex = "";
+        this.form.age = "";
+      }
+    }
+  },
   created() {
     this.getList();
     this. getSalesman();
@@ -369,6 +386,20 @@ export default {
     });
   },
   methods: {
+    setAgeAndsex(value) {
+      let myDate = new Date();
+      let month = myDate.getMonth() + 1;
+      let day = myDate.getDate();
+      let age = myDate.getFullYear() - value.substring(6, 10) - 1;
+      if (
+        value.substring(10, 12) < month ||
+        (value.substring(10, 12) == month && value.substring(12, 14) <= day)
+      ) {
+        age++;
+      }
+      this.form.age = age;
+      this.form.sex = parseInt(value.substr(16, 1)) % 2 == 1 ? "0" : "1";
+    },
     /** 查询医生列表 */
     getList() {
       this.loading = true;
@@ -467,7 +498,11 @@ export default {
       this.reset();
       const id = row.id || this.ids
       getDoctor(id).then(response => {
+        // console.log(response.data)
         this.form = response.data;
+        this.$nextTick(()=>{
+          this.form.idNumber = response.data.idNumber
+        })
         this.open = true;
         this.title = "修改医生";
       });

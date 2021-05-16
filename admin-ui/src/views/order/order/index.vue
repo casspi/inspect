@@ -173,7 +173,7 @@
           v-hasPermi="['order:order:edit']"
           >修改</el-button
         > -->
-      </el-col>
+      <!-- </el-col> -->
       <!-- <el-col :span="1.5">
         <el-button
           type="danger"
