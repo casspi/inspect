@@ -258,7 +258,7 @@
       width="680px"
       append-to-body
     >
-      <el-form ref="detailForm" :model="orderDetail" label-position="right" label-width="110px">
+      <el-form ref="detailForm" :model="orderDetail" label-position="left" label-width="110px">
         <el-form-item label="订单编号">
           {{ orderDetail.number }}
         </el-form-item>

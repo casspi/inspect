@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="业务员名称" prop="salesmanName">
         <el-input
           v-model="queryParams.salesmanName"
@@ -134,20 +134,20 @@
 
     <!-- 添加或修改业务员对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="业务员名称" prop="salesmanName">
           <el-input v-model="form.salesmanName" placeholder="请输入业务员名称" />
         </el-form-item>
-        <el-form-item label="年龄" prop="age">
-          <el-input v-model="form.age" placeholder="请输入年龄" />
-        </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-select v-model="form.sex" placeholder="请选择性别">
-            <el-option label="请选择字典生成" value="" />
-          </el-select>
-        </el-form-item>
         <el-form-item label="身份证号" prop="idNumber">
           <el-input v-model="form.idNumber" placeholder="请输入身份证号" />
+        </el-form-item>
+        <el-form-item label="年龄" prop="age">
+          <el-input v-model="form.age" placeholder="请输入年龄"  readonly/>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-select v-model="form.sex" placeholder="请选择性别" disabled>
+            <el-option label="请选择字典生成" value="" />
+          </el-select>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入联系方式" />
@@ -174,6 +174,7 @@
 
 <script>
 import { listSalesman, getSalesman, delSalesman, addSalesman, updateSalesman, exportSalesman } from "@/api/base/salesman";
+import { idnumberValidator } from '@/utils/index'
 
 export default {
   name: "Salesman",
@@ -218,10 +219,34 @@ export default {
       }
     };
   },
+  watch:{
+    'form.idNumber':function(val){
+      if (idnumberValidator(val)) {
+        this.setAgeAndsex(val);
+      } else {
+        this.form.sex = "";
+        this.form.age = "";
+      }
+    }
+  },
   created() {
     this.getList();
   },
   methods: {
+    setAgeAndsex(value) {
+      let myDate = new Date();
+      let month = myDate.getMonth() + 1;
+      let day = myDate.getDate();
+      let age = myDate.getFullYear() - value.substring(6, 10) - 1;
+      if (
+        value.substring(10, 12) < month ||
+        (value.substring(10, 12) == month && value.substring(12, 14) <= day)
+      ) {
+        age++;
+      }
+      this.form.age = age;
+      this.form.sex = parseInt(value.substr(16, 1)) % 2 == 1 ? "0" : "1";
+    },
     /** 查询业务员列表 */
     getList() {
       this.loading = true;
