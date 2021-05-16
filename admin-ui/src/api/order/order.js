@@ -17,6 +17,14 @@ export function getOrder(id) {
   })
 }
 
+// 状态
+export function getStatus() {
+  return request({
+    url: '/order/order/getStatus',
+    method: 'get'
+  })
+}
+
 // 新增订单
 export function addOrder(data) {
   return request({

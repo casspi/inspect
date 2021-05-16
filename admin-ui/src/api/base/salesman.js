@@ -59,3 +59,16 @@ export function exportSalesman(query) {
     params: query
   })
 }
+
+// 业务员状态修改
+export function changeStatus(id, status) {
+  const data = {
+    id,
+    status
+  }
+  return request({
+    url: '/base/salesman/changeStatus',
+    method: 'put',
+    data: data
+  })
+}

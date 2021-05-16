@@ -9,6 +9,15 @@ export function listHospital(query) {
   })
 }
 
+// 查询医院列表
+export function getHospitallist(query) {
+  return request({
+    url: '/base/hospital/getlist',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询医院详细
 export function getHospital(id) {
   return request({

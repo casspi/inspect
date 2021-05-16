@@ -152,7 +152,7 @@
       <el-table-column label="医生姓名" align="center" prop="doctorName" />
       <el-table-column label="医生性别" align="center" prop="sexStr" />
       <el-table-column label="年龄" align="center" prop="age" />
-      <el-table-column label="医生身份证号" align="center" prop="idNumber" />
+      <el-table-column label="医生身份证号" align="center" prop="idNumber" width="200" />
       <el-table-column label="科室类别" align="center" prop="deptType" :formatter="deptTypeFormat" />
       <el-table-column label="职务" align="center" prop="position" />
       <el-table-column label="职称" align="center" prop="jobTitle" />
@@ -186,6 +186,13 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['base:doctor:remove']"
           >删除</el-button>
+           <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleQrCode(scope.row)"
+            v-hasPermi="['base:doctor:edit']"
+          >二维码下载</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -199,8 +206,8 @@
     />
 
     <!-- 添加或修改医生对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px" >
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px" >
         <el-form-item label="所属医院" prop="hospitalId" v-if="form.id == undefined" width="200px">
           <el-select v-model="form.hospitalId" placeholder="请选择">
                 <el-option
@@ -284,7 +291,7 @@
 </template>
 
 <script>
-import { listDoctor, getDoctor, delDoctor, addDoctor, updateDoctor, exportDoctor,changeDoctorStatus } from "@/api/base/doctor";
+import { listDoctor, getDoctor, delDoctor, addDoctor, updateDoctor, exportDoctor,changeDoctorStatus,createQrCode } from "@/api/base/doctor";
 import { getSalesmanList } from "@/api/base/salesman";
 import { getHospitallist } from "@/api/base/hospital";
 
@@ -511,6 +518,17 @@ export default {
         }).then(response => {
           this.download(response.data);
         })
+    },
+    handleQrCode(row){
+        if(!row.qrCodePath){
+        this.msgSuccess("暂未生成二维码，请刷新列表重新再试.."); 
+           createQrCode(row.id).then(response => {
+           row.qrCodePath=response.data;
+            });  
+          return;
+        }
+       let url = "base/doctor/qrCode/"+row.id;
+        this.qrCodeDownload(url);
     }
   }
 };

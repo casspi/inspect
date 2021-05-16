@@ -77,6 +77,18 @@ export function selectDictLabel(datas, value) {
 	return actions.join('');
 }
 
+// 回显数据字典
+export function selectEnumsLabel(datas, value) {
+	var actions = [];
+	Object.keys(datas).some((key) => {
+		if (datas[key].code == ('' + value)) {
+			actions.push(datas[key].msg);
+			return true;
+		}
+	})
+	return actions.join('');
+}
+
 // 回显数据字典（字符串数组）
 export function selectDictLabels(datas, value, separator) {
 	var actions = [];
@@ -95,6 +107,11 @@ export function selectDictLabels(datas, value, separator) {
 // 通用下载方法
 export function download(fileName) {
 	window.location.href = baseURL + "/common/download?fileName=" + encodeURI(fileName) + "&delete=" + true;
+}
+
+// 通用下载方法
+export function qrCodeDownload(url) {
+	window.location.href = baseURL + '/'+url;
 }
 
 // 字符串格式化(%s )

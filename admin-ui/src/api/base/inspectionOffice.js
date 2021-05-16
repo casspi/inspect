@@ -9,6 +9,15 @@ export function listInspectionOffice(query) {
   })
 }
 
+// 查询检验所列表
+export function getInspectionOfficeList(query) {
+  return request({
+    url: '/base/inspectionOffice/getList',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询检验所详细
 export function getInspectionOffice(id) {
   return request({
@@ -49,5 +58,18 @@ export function exportInspectionOffice(query) {
     url: '/base/inspectionOffice/export',
     method: 'get',
     params: query
+  })
+}
+
+//状态修改
+export function changeStatus(id, status) {
+  const data = {
+    id,
+    status
+  }
+  return request({
+    url: '/base/inspectionOffice/changeStatus',
+    method: 'put',
+    data: data
   })
 }

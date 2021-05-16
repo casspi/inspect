@@ -51,3 +51,25 @@ export function exportDoctor(query) {
     params: query
   })
 }
+
+// 医生状态修改
+export function changeDoctorStatus(id, status) {
+  const data = {
+    id,
+    status
+  }
+  return request({
+    url: '/base/doctor/changeStatus',
+    method: 'put',
+    data: data
+  })
+}
+
+// 医生生成二维码
+export function createQrCode(id) {
+  return request({
+    url: '/base/doctor/createQrCode/'+id,
+    method: 'get',
+  })
+}
+

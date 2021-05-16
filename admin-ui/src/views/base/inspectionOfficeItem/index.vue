@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="项目信息名称" prop="itemName">
         <el-input
           v-model="queryParams.itemName"
@@ -28,18 +28,29 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="所属检验所" prop="inspectionOfficeId">
+      <el-form-item label="所属检验所" prop="inspectionOfficeName">
         <el-input
-          v-model="queryParams.inspectionOfficeId"
+          v-model="queryParams.inspectionOfficeName"
           placeholder="请输入所属检验所"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="角色状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择角色状态" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
+      <el-form-item label="状态" prop="status">
+       <el-select
+              v-model="queryParams.status"
+              placeholder="状态"
+              clearable
+              size="small"
+              style="width: 240px"
+            >
+              <el-option
+                v-for="dict in statusOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -78,7 +89,7 @@
           v-hasPermi="['base:inspectionOfficeItem:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button
           type="warning"
           icon="el-icon-download"
@@ -86,7 +97,7 @@
           @click="handleExport"
           v-hasPermi="['base:inspectionOfficeItem:export']"
         >导出</el-button>
-      </el-col>
+      </el-col> -->
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -95,9 +106,18 @@
       <el-table-column label="项目信息名称" align="center" prop="itemName" />
       <el-table-column label="单位" align="center" prop="itemUnit" />
       <el-table-column label="编码" align="center" prop="coding" />
-      <el-table-column label="所属检验所" align="center" prop="inspectionOfficeId" />
+      <el-table-column label="所属检验所" align="center" prop="inspectionOfficeName" />
       <el-table-column label="简介" align="center" prop="summary" />
-      <el-table-column label="角色状态" align="center" prop="status" />
+      <el-table-column label="状态" align="center" prop="status" >
+      <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.status"
+            active-value="0"
+            inactive-value="1"
+            @change="handleStatusChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -129,7 +149,7 @@
 
     <!-- 添加或修改检验所项目信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="项目信息名称" prop="itemName">
           <el-input v-model="form.itemName" placeholder="请输入项目信息名称" />
         </el-form-item>
@@ -140,18 +160,31 @@
           <el-input v-model="form.coding" placeholder="请输入编码" />
         </el-form-item>
         <el-form-item label="所属检验所" prop="inspectionOfficeId">
-          <el-input v-model="form.inspectionOfficeId" placeholder="请输入所属检验所" />
+           <el-select
+              v-model="form.inspectionOfficeId"
+              placeholder="请选择检验所"
+              clearable
+              size="small"
+            >
+              <el-option
+                v-for="dict in inspectionOfficeArr"
+                :key="dict.id"
+                :label="dict.officeName"
+                :value="dict.id"
+              />
+            </el-select>
         </el-form-item>
         <el-form-item label="简介" prop="summary">
           <el-input v-model="form.summary" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="角色状态">
+        <el-form-item label="状态">
           <el-radio-group v-model="form.status">
-            <el-radio label="1">请选择字典生成</el-radio>
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{dict.dictLabel}}</el-radio>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -166,7 +199,8 @@
 </template>
 
 <script>
-import { listInspectionOfficeItem, getInspectionOfficeItem, delInspectionOfficeItem, addInspectionOfficeItem, updateInspectionOfficeItem, exportInspectionOfficeItem } from "@/api/base/inspectionOfficeItem";
+import { listInspectionOfficeItem, getInspectionOfficeItem, delInspectionOfficeItem, addInspectionOfficeItem, updateInspectionOfficeItem, exportInspectionOfficeItem,changeStatus } from "@/api/base/inspectionOfficeItem";
+import { getInspectionOfficeList } from "@/api/base/inspectionOffice";
 
 export default {
   name: "InspectionOfficeItem",
@@ -184,8 +218,14 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
+       // 状态数据字典
+      statusOptions: [],
       // 检验所项目信息表格数据
       inspectionOfficeItemList: [],
+      //检验所列表
+      inspectionOfficeArr:[],
+      // 状态数据字典
+      statusOptions: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -197,7 +237,7 @@ export default {
         itemName: null,
         itemUnit: null,
         coding: null,
-        inspectionOfficeId: null,
+        inspectionOfficeName: null,
         summary: null,
         status: null,
       },
@@ -213,6 +253,10 @@ export default {
   },
   created() {
     this.getList();
+    this.getInspectionOfficeList();
+    this.getDicts("sys_normal_disable").then(response => {
+      this.statusOptions = response.data;
+    });
   },
   methods: {
     /** 查询检验所项目信息列表 */
@@ -280,6 +324,13 @@ export default {
         this.title = "修改检验所项目信息";
       });
     },
+
+    /** 修改按钮操作 */
+    getInspectionOfficeList() {
+      getInspectionOfficeList().then(response => {
+        this.inspectionOfficeArr = response.data;
+      });
+    },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
@@ -299,6 +350,21 @@ export default {
           }
         }
       });
+    },
+                // 状态修改
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要' + text + '<' + row.itemName + '>检验所项目吗?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return changeStatus(row.id, row.status);
+        }).then(() => {
+          this.msgSuccess(text + "成功");
+        }).catch(function() {
+          row.status = row.status === "0" ? "1" : "0";
+        });
     },
     /** 删除按钮操作 */
     handleDelete(row) {
