@@ -134,16 +134,25 @@
     <el-table v-loading="loading" :data="inspectionItemList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="检验项目名称" align="center" prop="itemName" />
-      <el-table-column label="检验项目分类" align="center" prop="itemClassify" />
-      <el-table-column label="样本类型" align="center" prop="sampleType" />
+      <el-table-column label="检验项目分类" align="center" prop="itemClassifyStr" />
+      <el-table-column label="样本类型" align="center" prop="sampleTypeStr" />
       <el-table-column label="单位" align="center" prop="itemUnit" />
       <el-table-column label="价格" align="center" prop="amount" />
-      <el-table-column label="折扣百分比" align="center" prop="discountPercent" />
+      <!-- <el-table-column label="折扣百分比" align="center" prop="discountPercent" /> -->
       <el-table-column label="折扣金额" align="center" prop="discountAmount" />
       <el-table-column label="检验项目介绍" align="center" prop="summary" />
-      <el-table-column label="检验所主键" align="center" prop="inspectionOfficeId" />
-      <el-table-column label="检验所项目主键" align="center" prop="inspectionOfficeItemId" />
-      <el-table-column label="角色状态" align="center" prop="status" />
+      <el-table-column label="检验所" align="center" prop="officeName" />
+      <el-table-column label="检验所项目" align="center" prop="officeItemName" />
+      <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                active-value="0"
+                inactive-value="1"
+                @change="handleStatusChange(scope.row)"
+              ></el-switch>
+            </template>
+     </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -174,17 +183,29 @@
     />
 
     <!-- 添加或修改检验项目信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="检验项目名称" prop="itemName">
           <el-input v-model="form.itemName" placeholder="请输入检验项目名称" />
         </el-form-item>
         <el-form-item label="检验项目分类" prop="itemClassify">
-          <el-input v-model="form.itemClassify" placeholder="请输入检验项目分类" />
+          <el-select v-model="form.itemClassify" placeholder="请输入检验项目分类" >
+            <el-option
+              v-for="dict in itemClassifyOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="样本类型" prop="sampleType">
-          <el-select v-model="form.sampleType" placeholder="请选择样本类型">
-            <el-option label="请选择字典生成" value="" />
+          <el-select v-model="form.sampleType" placeholder="请选择样本类型" >
+            <el-option
+              v-for="dict in sampleTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="单位" prop="itemUnit">
@@ -193,28 +214,43 @@
         <el-form-item label="价格" prop="amount">
           <el-input v-model="form.amount" placeholder="请输入价格" />
         </el-form-item>
-        <el-form-item label="折扣百分比" prop="discountPercent">
+        <!-- <el-form-item label="折扣百分比" prop="discountPercent">
           <el-input v-model="form.discountPercent" placeholder="请输入折扣百分比" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="折扣金额" prop="discountAmount">
           <el-input v-model="form.discountAmount" placeholder="请输入折扣金额" />
         </el-form-item>
         <el-form-item label="检验项目介绍" prop="summary">
           <el-input v-model="form.summary" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="检验所主键" prop="inspectionOfficeId">
-          <el-input v-model="form.inspectionOfficeId" placeholder="请输入检验所主键" />
+        <el-form-item label="检验所" prop="inspectionOfficeId">
+          <el-select v-model="form.inspectionOfficeId" placeholder="请选择检验所" @change="inspectionOfficeItemChange(form.inspectionOfficeId)">
+            <el-option
+              v-for="dict in inspectionOfficeList"
+              :key="dict.id"
+              :label="dict.officeName"
+              :value="dict.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="检验所项目主键" prop="inspectionOfficeItemId">
-          <el-input v-model="form.inspectionOfficeItemId" placeholder="请输入检验所项目主键" />
+        <el-form-item label="检验所项目" prop="inspectionOfficeItemId">
+           <el-select v-model="form.inspectionOfficeItemId" placeholder="请选择检验所项目" >
+            <el-option
+              v-for="dict in inspectionOfficeItemList"
+              :key="dict.id"
+              :label="dict.itemName"
+              :value="dict.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="角色状态">
+       <el-form-item label="状态">
           <el-radio-group v-model="form.status">
-            <el-radio label="1">请选择字典生成</el-radio>
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{dict.dictLabel}}</el-radio>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="删除标志" prop="delFlag">
-          <el-input v-model="form.delFlag" placeholder="请输入删除标志" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -229,7 +265,9 @@
 </template>
 
 <script>
-import { listInspectionItem, getInspectionItem, delInspectionItem, addInspectionItem, updateInspectionItem, exportInspectionItem } from "@/api/base/inspectionItem";
+import { listInspectionItem, getInspectionItem, delInspectionItem, addInspectionItem, updateInspectionItem, exportInspectionItem,changeStatus } from "@/api/base/inspectionItem";
+import { getInspectionOfficeList } from "@/api/base/inspectionOffice";
+import { getListByInspectionOfficeId } from "@/api/base/inspectionOfficeItem";
 
 export default {
   name: "InspectionItem",
@@ -245,10 +283,21 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
+      // 状态数据字典
+      statusOptions: [],
       // 总条数
       total: 0,
       // 检验项目信息表格数据
       inspectionItemList: [],
+      //检验所
+      inspectionOfficeList: [],
+      //检验所项目
+      inspectionOfficeItemList: [],
+      //样本类型
+      sampleTypeOptions: [],
+
+    //样本分类
+      itemClassifyOptions: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -274,13 +323,45 @@ export default {
       // 表单校验
       rules: {
         status: [
-          { required: true, message: "角色状态不能为空", trigger: "blur" }
+          { required: true, message: "状态不能为空", trigger: "blur" }
+        ],
+        itemName: [
+          { required: true, message: "检验项目不能为空", trigger: "blur" }
+        ],
+        itemClassify: [
+          { required: true, message: "项目分类不能为空", trigger: "blur" }
+        ],
+        sampleType: [
+          { required: true, message: "样本类型不能为空", trigger: "blur" }
+        ],
+        amount: [
+          { required: true, message: "价格不能为空", trigger: "blur" }
+        ],
+        discountAmount: [
+          { required: true, message: "折扣金额不能为空", trigger: "blur" }
+        ],
+        inspectionOfficeId: [
+          { required: true, message: "检验所不能为空", trigger: "blur" }
+        ],
+        inspectionOfficeItemId: [
+          { required: true, message: "检验所项目不能为空", trigger: "blur" }
         ],
       }
     };
   },
   created() {
     this.getList();
+    this.inspectionOfficeData();
+    this.getDicts("sys_normal_disable").then(response => {
+      this.statusOptions = response.data;
+    });
+    this.getDicts("inspect_item_classify").then(response => {
+      this.itemClassifyOptions = response.data;
+    });
+    this.getDicts("inspect_sample_type").then(response => {
+      this.sampleTypeOptions = response.data;
+      console.log(this.sampleTypeOptions);
+    });
   },
   methods: {
     /** 查询检验项目信息列表 */
@@ -321,6 +402,21 @@ export default {
       };
       this.resetForm("form");
     },
+            // 状态修改
+    handleStatusChange(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm('确认要' + text + '<' + row.itemName + '>项目吗?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return changeStatus(row.id, row.status);
+        }).then(() => {
+          this.msgSuccess(text + "成功");
+        }).catch(function() {
+          row.status = row.status === "0" ? "1" : "0";
+        });
+    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -346,11 +442,35 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      let _this = this;
       const id = row.id || this.ids
+      let officeId = '';
       getInspectionItem(id).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "修改检验项目信息";
+        _this.inspectionOfficeItemChange(response.data.inspectionOfficeId);
+      });
+    },
+
+    /** 检验所列表 */
+    inspectionOfficeData() {
+      this.inspectionOfficeItemList = [];
+      this.form.inspectionOfficeItemId=null;
+      getInspectionOfficeList().then(response => {
+        this.inspectionOfficeList = response.data;
+      });
+    },
+        /** 修改按钮操作 */
+    inspectionOfficeItemChange(id) {
+      console.log(id);
+      let _this= this;
+      getListByInspectionOfficeId(id).then(response => {
+        _this.inspectionOfficeItemList = response.data;
+        if(_this.inspectionOfficeItemList!=null&&_this.inspectionOfficeItemList.length==0){
+          _this.form.inspectionOfficeItemId =_this.inspectionOfficeItemList[0].id;
+        }
+         console.log( _this.form.inspectionOfficeItemId );
       });
     },
     /** 提交按钮 */

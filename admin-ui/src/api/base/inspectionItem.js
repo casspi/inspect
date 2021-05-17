@@ -51,3 +51,16 @@ export function exportInspectionItem(query) {
     params: query
   })
 }
+
+//状态修改
+export function changeStatus(id, status) {
+  const data = {
+    id,
+    status
+  }
+  return request({
+    url: '/base/inspection/changeStatus',
+    method: 'put',
+    data: data
+  })
+}

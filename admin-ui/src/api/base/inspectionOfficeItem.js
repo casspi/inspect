@@ -9,6 +9,14 @@ export function listInspectionOfficeItem(query) {
   })
 }
 
+// 查询检验所项目信息列表
+export function getListByInspectionOfficeId(id) {
+  return request({
+    url: '/base/inspectionOfficeItem/getListByInspectionOfficeId/'+id,
+    method: 'get',
+  })
+}
+
 // 查询检验所项目信息详细
 export function getInspectionOfficeItem(id) {
   return request({

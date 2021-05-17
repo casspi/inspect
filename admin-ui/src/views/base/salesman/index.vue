@@ -151,7 +151,7 @@
         <el-form-item label="年龄" prop="age">
           <el-input v-model="form.age" placeholder="请输入年龄"  readonly/>
         </el-form-item>
-            <el-form-item label="性别" prop="phone">
+        <el-form-item label="性别" prop="phone">
           <el-select v-model="form.sex" placeholder="请选择性别" disabled>
             <el-option
               v-for="dict in sexOptions"
