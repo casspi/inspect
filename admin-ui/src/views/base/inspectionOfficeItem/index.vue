@@ -149,7 +149,7 @@
 
     <!-- 添加或修改检验所项目信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="项目信息名称" prop="itemName">
           <el-input v-model="form.itemName" placeholder="请输入项目信息名称" />
         </el-form-item>
@@ -245,8 +245,17 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        itemName: [
+          { required: true, message: "检验所项目不能为空", trigger: "blur" }
+        ],
+        coding: [
+          { required: true, message: "编码不能为空", trigger: "blur" }
+        ],
+        inspectionOfficeId: [
+          { required: true, message: "所属检验所不能为空", trigger: "blur" }
+        ],
         status: [
-          { required: true, message: "角色状态不能为空", trigger: "blur" }
+          { required: true, message: "状态不能为空", trigger: "blur" }
         ],
       }
     };

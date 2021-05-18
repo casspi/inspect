@@ -188,7 +188,7 @@
 
 <script>
 import { listInspectionOffice, getInspectionOffice, delInspectionOffice, addInspectionOffice, updateInspectionOffice, exportInspectionOffice,changeStatus } from "@/api/base/inspectionOffice";
-
+import {checkMobile } from "@/utils/index";
 export default {
   name: "InspectionOffice",
   data() {
@@ -228,8 +228,18 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        officeName: [
+          { required: true, message: "检验所不能为空", trigger: "blur" }
+        ],
+        principal: [
+          { required: true, message: "负责人不能为空", trigger: "blur" }
+        ],
         status: [
-          { required: true, message: "角色状态不能为空", trigger: "blur" }
+          { required: true, message: "状态不能为空", trigger: "blur" }
+        ],
+        phone: [
+          { required: true, message: "手机号不能为空", trigger: "blur" },
+          { validator: checkMobile, trigger: 'blur'}
         ],
       }
     };

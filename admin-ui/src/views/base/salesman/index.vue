@@ -151,7 +151,7 @@
         <el-form-item label="年龄" prop="age">
           <el-input v-model="form.age" placeholder="请输入年龄"  readonly/>
         </el-form-item>
-        <el-form-item label="性别" prop="phone">
+        <el-form-item label="性别" prop="sex">
           <el-select v-model="form.sex" placeholder="请选择性别" disabled>
             <el-option
               v-for="dict in sexOptions"
@@ -187,7 +187,7 @@
 
 <script>
 import { listSalesman, getSalesman, delSalesman, addSalesman, updateSalesman, exportSalesman,changeStatus } from "@/api/base/salesman";
-import { idnumberValidator } from '@/utils/index'
+import { idnumberValidator,checkIdNum,checkMobile } from "@/utils/index";
 export default {
   name: "Salesman",
   data() {
@@ -229,8 +229,19 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        salesmanName: [
+          { required: true, message: "业务员名称不能为空", trigger: "blur" }
+        ],
         status: [
-          { required: true, message: "角色状态不能为空", trigger: "blur" }
+          { required: true, message: "状态不能为空", trigger: "blur" }
+        ],
+        idNumber: [
+          { required: true, message: "身份证号不能为空", trigger: "blur" },
+          { validator: checkIdNum, trigger: "blur" }
+        ],
+        phone: [
+          { required: true, message: "手机号不能为空", trigger: "blur" },
+          { validator: checkMobile, trigger: "blur" }
         ],
       }
     };
