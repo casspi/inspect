@@ -390,7 +390,8 @@ export function isNumberStr(str) {
  
 //验证身份证函数
 export const idnumberValidator = (value, callback) => {
-  if (value == null || value.trim() == "") {
+  console.log(value);
+  if (value == null || value.toString().trim() == "") {
     callback && callback()();
     return false;
   }
@@ -450,5 +451,16 @@ export const idnumberValidator = (value, callback) => {
         return false;
     }
   }
-
+}
+// 身份证号校验
+export const  checkIdNum = (rule, value, callback) => {
+  const reg =
+    /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)/
+  if (!value) {
+    return callback(new Error('证件号码不能为空'))
+  } else if (!reg.test(value)) {
+    return callback(new Error('证件号码不正确'))
+  } else {
+    callback()
+  }
 }
