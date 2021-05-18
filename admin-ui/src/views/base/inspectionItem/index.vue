@@ -114,7 +114,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['base:inspectionItem:add']"
+          v-hasPermi="['base:inspection:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -124,7 +124,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['base:inspectionItem:edit']"
+          v-hasPermi="['base:inspection:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -134,7 +134,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['base:inspectionItem:remove']"
+          v-hasPermi="['base:inspection:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -143,7 +143,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['base:inspectionItem:export']"
+          v-hasPermi="['base:inspection:export']"
         >导出</el-button>
       </el-col>
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -179,14 +179,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['base:inspectionItem:edit']"
+            v-hasPermi="['base:inspection:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['base:inspectionItem:remove']"
+            v-hasPermi="['base:inspection:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
