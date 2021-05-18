@@ -6,7 +6,7 @@ import {
   Button, Tabbar, TabbarItem, Skeleton, Icon, TreeSelect, Dialog, Toast, Form,
   Field, Popup, Picker, Tabs, Tab, PullRefresh, List, Card, Cell, ContactCard,
   NoticeBar, Swipe, SwipeItem, Lazyload, RadioGroup, Radio,
-  Sticky, Tag, Search
+  Sticky, Tag, Search, Divider
 } from 'vant'
 import '../src/common/style/custom.less'
 import * as filters from './common/js/filters'
@@ -39,7 +39,8 @@ Vue.use(Button)
   .use(Radio)
   .use(Sticky)
   .use(Tag)
-  .use(Search);
+  .use(Search)
+  .use(Divider);
 
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

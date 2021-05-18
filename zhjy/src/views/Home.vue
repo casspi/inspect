@@ -31,7 +31,7 @@
     </van-pull-refresh>
     <div class="block"></div>
     <van-tabbar route active-color="#1baeae" inactive-color="#000">
-      <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item>
+      <!-- <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item> -->
       <van-tabbar-item replace to="/" icon="notes-o">检查</van-tabbar-item>
       <van-tabbar-item replace to="/user" icon="user-o">我的</van-tabbar-item>
     </van-tabbar>

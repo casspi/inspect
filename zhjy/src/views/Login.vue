@@ -184,6 +184,10 @@ export default {
         let token = "Bearer " + data.token;
         await setLocal("token", token);
         this.setUserInfo(data);
+        // if(!data.openid){
+        //   const promptMsg = await getPrompt()
+        //   consoel.log(promptMsg)
+        // }
         window.location.href = '/'
         // 需要刷新页面，否则 axios.js 文件里的 token 不会被重置
         // this.$router.push('/')

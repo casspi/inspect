@@ -93,6 +93,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/base',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'myRecommend',
+        component: (resolve) => require(['@/views/base/doctor/recommend'], resolve),
+        name: 'Recommend',
+        meta: { title: '我的推荐', icon: '' }
+      }
+    ]
+  },
+  {
     path: '/job',
     component: Layout,
     hidden: true,

@@ -1,6 +1,12 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
+    <el-form
+      :model="queryParams"
+      ref="queryForm"
+      :inline="true"
+      v-show="showSearch"
+      label-width="100px"
+    >
       <el-form-item label="所属医院" prop="hospitalName">
         <el-input
           v-model="queryParams.hospitalName"
@@ -23,7 +29,7 @@
         <el-select v-model="queryParams.sex" placeholder="请选择医生性别" clearable size="small">
           <el-option label="请选择字典生成" value="" />
         </el-select>
-      </el-form-item> -->
+      </el-form-item>-->
       <!-- <el-form-item label="年龄" prop="age">
         <el-input
           v-model="queryParams.age"
@@ -32,7 +38,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item> -->
+      </el-form-item>-->
       <el-form-item label="医生身份证号" prop="idNumber">
         <el-input
           v-model="queryParams.idNumber"
@@ -64,7 +70,7 @@
           size="small"
           @keyup.enter.native="handleQuery"
         />
-      </el-form-item> -->
+      </el-form-item>-->
       <el-form-item label="联系方式" prop="phone">
         <el-input
           v-model="queryParams.phone"
@@ -84,19 +90,14 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select
-              v-model="queryParams.status"
-              placeholder="状态"
-              clearable
-              size="small"
-            >
-              <el-option
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
-            </el-select>
+        <el-select v-model="queryParams.status" placeholder="状态" clearable size="small">
+          <el-option
+            v-for="dict in statusOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -142,34 +143,34 @@
           @click="handleExport"
           v-hasPermi="['base:doctor:export']"
         >导出</el-button>
-      </el-col> -->
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      </el-col>-->
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="doctorList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="所属医院" align="center" prop="hospitalName" />
-      <el-table-column label="医生姓名" align="center" prop="doctorName" />
-      <el-table-column label="医生性别" align="center" prop="sexStr" />
-      <el-table-column label="年龄" align="center" prop="age" />
-      <el-table-column label="医生身份证号" align="center" prop="idNumber" width="200" />
-      <el-table-column label="科室类别" align="center" prop="deptType" :formatter="deptTypeFormat" />
-      <el-table-column label="职务" align="center" prop="position" />
-      <el-table-column label="职称" align="center" prop="jobTitle" />
-      <el-table-column label="联系方式" align="center" prop="phone" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="所属医院" align="center" prop="hospitalName"/>
+      <el-table-column label="医生姓名" align="center" prop="doctorName"/>
+      <el-table-column label="医生性别" align="center" prop="sexStr"/>
+      <el-table-column label="年龄" align="center" prop="age"/>
+      <el-table-column label="医生身份证号" align="center" prop="idNumber" width="200"/>
+      <el-table-column label="科室类别" align="center" prop="deptType" :formatter="deptTypeFormat"/>
+      <el-table-column label="职务" align="center" prop="position"/>
+      <el-table-column label="职称" align="center" prop="jobTitle"/>
+      <el-table-column label="联系方式" align="center" prop="phone"/>
       <el-table-column label="业务员" align="center" prop="salesmanName" width="100"/>
-      <el-table-column label="医生简介" align="center" prop="summary" />
-       <el-table-column label="状态" align="center" width="100">
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.status"
-                active-value="0"
-                inactive-value="1"
-                @change="handleStatusChange(scope.row)"
-              ></el-switch>
-            </template>
-          </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="医生简介" align="center" prop="summary"/>
+      <el-table-column label="状态" align="center" width="100">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.status"
+            active-value="0"
+            inactive-value="1"
+            @change="handleStatusChange(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -179,12 +180,7 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['base:doctor:edit']"
           >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-user"
-            @click="$message.info('开发中')"
-          >我的推荐</el-button>
+          <el-button size="mini" type="text" icon="el-icon-user" @click="go2Recommend(scope.row)">我的推荐</el-button>
           <el-button
             size="mini"
             type="text"
@@ -192,7 +188,7 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['base:doctor:remove']"
           >删除</el-button>
-           <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -202,7 +198,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -213,79 +209,79 @@
 
     <!-- 添加或修改医生对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px" >
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="所属医院" prop="hospitalId" v-if="form.id == undefined" width="200px">
           <el-select v-model="form.hospitalId" placeholder="请选择">
-                <el-option
-                  v-for="dict in hospitalList"
-                  :key="dict.id"
-                  :label="dict.hospitalName"
-                  :value="dict.id"
-                ></el-option>
-              </el-select>
+            <el-option
+              v-for="dict in hospitalList"
+              :key="dict.id"
+              :label="dict.hospitalName"
+              :value="dict.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="医生姓名" prop="doctorName">
-          <el-input v-model="form.doctorName" placeholder="请输入医生姓名" />
+          <el-input v-model="form.doctorName" placeholder="请输入医生姓名"/>
         </el-form-item>
         <el-form-item label="医生身份证号" prop="idNumber">
-          <el-input v-model="form.idNumber" placeholder="请输入医生身份证号" />
+          <el-input v-model="form.idNumber" placeholder="请输入医生身份证号"/>
         </el-form-item>
         <el-form-item label="医生性别">
-              <el-select v-model="form.sex" placeholder="请选择" disabled>
-                <el-option
-                  v-for="dict in sexOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                ></el-option>
-              </el-select>
+          <el-select v-model="form.sex" placeholder="请选择" disabled>
+            <el-option
+              v-for="dict in sexOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="年龄" prop="age" >
+        <el-form-item label="年龄" prop="age">
           <el-input v-model="form.age" placeholder="请输入年龄" readonly/>
         </el-form-item>
         <el-form-item label="科室类别" prop="deptType">
           <el-select v-model="form.deptType" placeholder="请选择">
-                <el-option
-                  v-for="dict in doctorDepartmentTypeOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                ></el-option>
-              </el-select>
+            <el-option
+              v-for="dict in doctorDepartmentTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="职务" prop="position">
-          <el-input v-model="form.position" placeholder="请输入职务" />
+          <el-input v-model="form.position" placeholder="请输入职务"/>
         </el-form-item>
         <el-form-item label="职称" prop="jobTitle">
-          <el-input v-model="form.jobTitle" placeholder="请输入职称" />
+          <el-input v-model="form.jobTitle" placeholder="请输入职称"/>
         </el-form-item>
         <el-form-item label="联系方式" prop="phone">
-          <el-input v-model="form.phone" placeholder="请输入联系方式" />
+          <el-input v-model="form.phone" placeholder="请输入联系方式"/>
         </el-form-item>
         <el-form-item label="业务员" prop="salesmanId">
           <el-select v-model="form.salesmanId" placeholder="请选择">
-                <el-option
-                  v-for="dict in salesmanList"
-                  :key="dict.id"
-                  :label="dict.salesmanName"
-                  :value="dict.id"
-                ></el-option>
-              </el-select>
+            <el-option
+              v-for="dict in salesmanList"
+              :key="dict.id"
+              :label="dict.salesmanName"
+              :value="dict.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="医生简介" prop="summary">
-          <el-input v-model="form.summary" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.summary" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
-       <el-form-item label="状态">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in statusOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictValue"
-                >{{dict.dictLabel}}</el-radio>
-              </el-radio-group>
-       </el-form-item>
+        <el-form-item label="状态">
+          <el-radio-group v-model="form.status">
+            <el-radio
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictValue"
+            >{{dict.dictLabel}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -297,10 +293,19 @@
 </template>
 
 <script>
-import { listDoctor, getDoctor, delDoctor, addDoctor, updateDoctor, exportDoctor,changeDoctorStatus,createQrCode } from "@/api/base/doctor";
+import {
+  listDoctor,
+  getDoctor,
+  delDoctor,
+  addDoctor,
+  updateDoctor,
+  exportDoctor,
+  changeDoctorStatus,
+  createQrCode
+} from "@/api/base/doctor";
 import { getSalesmanList } from "@/api/base/salesman";
 import { getHospitallist } from "@/api/base/hospital";
-import { idnumberValidator } from '@/utils/index'
+import { idnumberValidator } from "@/utils/index";
 
 export default {
   name: "Doctor",
@@ -314,16 +319,16 @@ export default {
       single: true,
       // 非多个禁用
       multiple: true,
-      statusOptions:[],
-       // 性别状态字典
+      statusOptions: [],
+      // 性别状态字典
       sexOptions: [],
-     //科室类别
+      //科室类别
       doctorDepartmentTypeOptions: [],
       //业务员
       salesmanList: [],
 
       //医院列表
-      hospitalList: [], 
+      hospitalList: [],
       // 显示搜索条件
       showSearch: true,
       // 总条数
@@ -349,20 +354,18 @@ export default {
         phone: null,
         salesmanName: null,
         summary: null,
-        status: null,
+        status: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        status: [
-          { required: true, message: "状态不能为空", trigger: "blur" }
-        ],
+        status: [{ required: true, message: "状态不能为空", trigger: "blur" }]
       }
     };
   },
-  watch:{
-    'form.idNumber':function(val){
+  watch: {
+    "form.idNumber": function(val) {
       if (idnumberValidator(val)) {
         this.setAgeAndsex(val);
       } else {
@@ -373,8 +376,8 @@ export default {
   },
   created() {
     this.getList();
-    this. getSalesman();
-    this. getHospitalData();
+    this.getSalesman();
+    this.getHospitalData();
     this.getDicts("sys_user_sex").then(response => {
       this.sexOptions = response.data;
     });
@@ -415,21 +418,24 @@ export default {
       this.reset();
     },
     //业务员信息
-    getSalesman(){
-    getSalesmanList(this.salesmanName).then(response => {
+    getSalesman() {
+      getSalesmanList(this.salesmanName).then(response => {
         this.salesmanList = response.data;
       });
     },
 
     //医院列表信息
-    getHospitalData(){
-    getHospitallist(this.hospitalName).then(response => {
+    getHospitalData() {
+      getHospitallist(this.hospitalName).then(response => {
         this.hospitalList = response.data;
       });
     },
-     // 性别
+    // 性别
     deptTypeFormat(row, column) {
-      return this.selectDictLabel(this.doctorDepartmentTypeOptions, row.deptType);
+      return this.selectDictLabel(
+        this.doctorDepartmentTypeOptions,
+        row.deptType
+      );
     },
     // 表单重置
     reset() {
@@ -468,22 +474,29 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
+      this.ids = selection.map(item => item.id);
+      this.single = selection.length !== 1;
+      this.multiple = !selection.length;
     },
     // 医生状态修改
     handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "停用";
-      this.$confirm('确认要' + text + '<' + row.doctorName + '>医生吗?', "警告", {
+      this.$confirm(
+        "确认要" + text + "<" + row.doctorName + ">医生吗?",
+        "警告",
+        {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
-        }).then(function() {
+        }
+      )
+        .then(function() {
           return changeDoctorStatus(row.id, row.status);
-        }).then(() => {
+        })
+        .then(() => {
           this.msgSuccess(text + "成功");
-        }).catch(function() {
+        })
+        .catch(function() {
           row.status = row.status === "0" ? "1" : "0";
         });
     },
@@ -496,13 +509,13 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const id = row.id || this.ids
+      const id = row.id || this.ids;
       getDoctor(id).then(response => {
         // console.log(response.data)
         this.form = response.data;
-        this.$nextTick(()=>{
-          this.form.idNumber = response.data.idNumber
-        })
+        this.$nextTick(() => {
+          this.form.idNumber = response.data.idNumber;
+        });
         this.open = true;
         this.title = "修改医生";
       });
@@ -531,39 +544,46 @@ export default {
     handleDelete(row) {
       const ids = row.id || this.ids;
       this.$confirm('是否确认删除医生编号为"' + ids + '"的数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return delDoctor(ids);
-        }).then(() => {
+        })
+        .then(() => {
           this.getList();
           this.msgSuccess("删除成功");
-        })
+        });
     },
     /** 导出按钮操作 */
     handleExport() {
       const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有医生数据项?', "警告", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }).then(function() {
+      this.$confirm("是否确认导出所有医生数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(function() {
           return exportDoctor(queryParams);
-        }).then(response => {
-          this.download(response.data);
         })
+        .then(response => {
+          this.download(response.data);
+        });
     },
-    handleQrCode(row){
-        if(!row.qrCodePath){
-        this.msgSuccess("暂未生成二维码，请刷新列表重新再试.."); 
-           createQrCode(row.id).then(response => {
-           row.qrCodePath=response.data;
-            });  
-          return;
-        }
-       let url = "base/doctor/qrCode/"+row.id;
-        this.qrCodeDownload(url);
+    handleQrCode(row) {
+      if (!row.qrCodePath) {
+        this.msgSuccess("暂未生成二维码，请刷新列表重新再试..");
+        createQrCode(row.id).then(response => {
+          row.qrCodePath = response.data;
+        });
+        return;
+      }
+      let url = "base/doctor/qrCode/" + row.id;
+      this.qrCodeDownload(url);
+    },
+    go2Recommend(item){
+      this.$router.push({path:'/base/myRecommend',query:{doctorId: item.id}})
     }
   }
 };

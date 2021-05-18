@@ -7,7 +7,10 @@ export function getUserInfo() {
 export function EditUserInfo(params) {
   return axios.put('/user/info', params);
 }
-
+// 修改密码
+export function resetPwd(params) {
+  return axios.put('/user/resetPwd', params);
+}
 export function login(params) {
   return axios.post('/login', params);
 }

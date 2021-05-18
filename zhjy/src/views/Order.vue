@@ -5,7 +5,7 @@
       :color="'#1baeae'"
       :title-active-color="'#1baeae'"
       class="order-tab"
-      v-model="status"
+      v-model="payStatus"
     >
       <van-tab title="全部" name=""></van-tab>
       <van-tab title="待支付" name="1"></van-tab>
@@ -73,7 +73,7 @@ export default {
   name: "Order",
   data() {
     return {
-      status: "",
+      payStatus: "",
       loading: false,
       finished: false,
       refreshing: false,
@@ -88,7 +88,8 @@ export default {
   methods: {
     async loadData() {
       let userId = this.userInfo && this.userInfo.userId
-      const {data} = await getOrderList({ userId});
+      let payStatus = this.payStatus
+      const {data} = await getOrderList({ userId, payStatus});
       let list = data.rows
       this.list = this.list.concat(list);
       //   this.totalPage = data.totalPage;
@@ -97,7 +98,7 @@ export default {
     },
     onChangeTab(name) {
       // 这里 Tab 最好采用点击事件，@click，如果用 @change 事件，会默认进来执行一次。
-      this.status = name;
+      this.payStatus = name;
       this.onRefresh();
     },
     goTo(order) {

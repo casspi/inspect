@@ -8,7 +8,7 @@
       @click-item="itemClickHandler"
     />
     <van-tabbar route active-color="#1baeae" inactive-color="#000">
-      <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item>
+      <!-- <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item> -->
       <van-tabbar-item replace to="/" icon="notes-o">检查</van-tabbar-item>
       <van-tabbar-item replace to="/user" icon="user-o">我的</van-tabbar-item>
     </van-tabbar>
@@ -17,7 +17,7 @@
 
 <script>
 // @ is an alias to /src
-import { wxLogin, wxCallback } from '@/api/index'
+import { wxLogin, wxCallback, getPrompt } from '@/api/index'
 import { getCheckList } from '../api/index'
 import { mapGetters, mapActions } from 'vuex'
 export default { 
@@ -42,6 +42,7 @@ export default {
     this.getCheckList()
     console.log(this.userInfo)
     if(this.userInfo && this.userInfo.userId && !this.userInfo.openid){
+      this.getPromptHandler()
       this.WXgetCode()
     }
     this.$nextTick(()=>{
@@ -52,6 +53,15 @@ export default {
   },
   methods: {
     ...mapActions(['updateUserInfo']),
+    async getPromptHandler() {
+      const promptMsg = await getPrompt()
+      this.$dialog.alert({
+        title: promptMsg.data.noticeTitle,
+        message: promptMsg.data.noticeContent,
+      }).then(() => {
+        // on close
+      });
+    },
     async WXgetCode() {
       // 静默授权
       this.code = "";
@@ -59,7 +69,9 @@ export default {
       if (this.code == null || this.code === "") {
         // 如果没有code，则去请求
         let {data} = await wxLogin()
-        window.location.href = data
+        if(data){
+          window.location.href = data
+        }
       } else {
         this.WXgetOpenId()
       }
@@ -89,7 +101,6 @@ export default {
     async getCheckList(){
       const {data} = await getCheckList()
       this.checkItems = JSON.parse(JSON.stringify(data).replace(/itemName/g,'text').replace(/itemList/g,'children'))
-      console.log(data, this.checkItems, this.checkItems.flat(Infinity))
     },
     itemClickHandler(data){
       if(!localStorage.getItem('token')){

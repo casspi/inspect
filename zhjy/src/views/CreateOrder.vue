@@ -246,10 +246,10 @@ export default {
               // inspectName: item.text
             });
           });
-          const { urgentUserName, urgentUserPhone, remark } = this;
+          const { urgentUserName, urgentUserPhone, remark, patientId} = this;
           const {data} = await createOrder({
             itemList,
-            patientId: this.userInfo.userId,
+            patientId,
             urgentUserName,
             urgentUserPhone,
             remark,

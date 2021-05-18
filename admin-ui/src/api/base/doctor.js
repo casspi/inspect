@@ -68,8 +68,17 @@ export function changeDoctorStatus(id, status) {
 // 医生生成二维码
 export function createQrCode(id) {
   return request({
-    url: '/base/doctor/createQrCode/'+id,
+    url: '/base/doctor/createQrCode/' + id,
     method: 'get',
   })
 }
 
+//我的推荐
+export function myRecommendList(query) {
+  console.log(query)
+  return request({
+    url:'base/doctor/myRecommendList',
+    method: 'get',
+    params: query
+  })
+}

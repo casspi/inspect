@@ -450,6 +450,7 @@ export default {
         this.open = true;
         this.title = "修改检验项目信息";
         _this.inspectionOfficeItemChange(response.data.inspectionOfficeId);
+        this.form.inspectionOfficeId = response.data.inspectionOfficeId
       });
     },
 
@@ -465,6 +466,7 @@ export default {
     inspectionOfficeItemChange(id) {
       console.log(id);
       let _this= this;
+      this.form.inspectionOfficeItemId = ''
       getListByInspectionOfficeId(id).then(response => {
         _this.inspectionOfficeItemList = response.data;
         if(_this.inspectionOfficeItemList!=null&&_this.inspectionOfficeItemList.length==0){

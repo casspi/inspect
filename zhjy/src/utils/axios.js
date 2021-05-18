@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Toast } from 'vant'
 import router from '../router'
 console.log(process.env)
-axios.defaults.baseURL = process.env.NODE_ENV !== 'development' ? 'http://121.37.185.29:12021' : 'http://96166.xiaomy.net'
+axios.defaults.baseURL = process.env.NODE_ENV == 'development' ? 'http://121.37.185.29:12021' : 'http://96166.xiaomy.net'
 axios.defaults.withCredentials = true
 axios.defaults.timeout = 5000;
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'

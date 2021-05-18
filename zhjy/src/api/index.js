@@ -20,3 +20,7 @@ export function getRecommend(params) {
 export function prePay(params) {
   return axios.get('/pay/toPay/'+params.id+'/'+params.orderNumber)
 }
+// 提示
+export function getPrompt() {
+  return axios.get('/notice/getPrompt')
+}
