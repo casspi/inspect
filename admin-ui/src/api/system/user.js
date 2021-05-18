@@ -125,3 +125,11 @@ export function importTemplate() {
     method: 'get'
   })
 }
+
+//常量参数
+export function getOptions() {
+  return request({
+    url: '/system/user/getOptions',
+    method: 'get'
+  })
+}

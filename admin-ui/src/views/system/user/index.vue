@@ -64,6 +64,22 @@
               />
             </el-select>
           </el-form-item>
+            <el-form-item label="用户类型" prop="status">
+            <el-select
+              v-model="queryParams.userType"
+              placeholder="用户类型"
+              clearable
+              size="small"
+              style="width: 240px"
+            >
+              <el-option
+                v-for="dict in userTypeOptions"
+                :key="dict.code"
+                :label="dict.msg"
+                :value="dict.code"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="创建时间">
             <el-date-picker
               v-model="dateRange"
@@ -343,7 +359,7 @@
 </template>
 
 <script>
-import { listUser, getUser, delUser, addUser, updateUser, exportUser, resetUserPwd, changeUserStatus, importTemplate } from "@/api/system/user";
+import { listUser, getUser, delUser, addUser, updateUser, exportUser, resetUserPwd, changeUserStatus, importTemplate,getOptions } from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 import { treeselect } from "@/api/system/dept";
 import Treeselect from "@riophae/vue-treeselect";
@@ -384,6 +400,8 @@ export default {
       dateRange: [],
       // 状态数据字典
       statusOptions: [],
+      // 用户类别
+      userTypeOptions: [],
       // 性别状态字典
       sexOptions: [],
       // 岗位选项
@@ -418,7 +436,8 @@ export default {
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
-        deptId: undefined
+        deptId: undefined,
+        userType:'',
       },
       // 表单校验
       rules: {
@@ -471,6 +490,7 @@ export default {
     this.getConfigKey("sys.user.initPassword").then(response => {
       this.initPassword = response.msg;
     });
+    this.getOptions();
   },
   methods: {
     /** 查询用户列表 */
@@ -482,6 +502,12 @@ export default {
           this.loading = false;
         }
       );
+    },
+    //常量参数
+    getOptions(){
+      getOptions().then(response => {
+        this.userTypeOptions = response.data.userType;
+      });
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
