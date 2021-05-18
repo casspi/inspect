@@ -29,7 +29,8 @@
       <el-table-column type="index" label="序号" width="55" align="center" />
       <el-table-column label="公众号登录者姓名" align="center" prop="realName" />
       <el-table-column label="公众号登录者手机号" align="center" prop="phonenumber" />
-      <el-table-column label="医生" align="center" prop="doctorName" />
+      <el-table-column label="公众号登录者身份证" align="center" prop="idNumber" />
+      <el-table-column label="推荐医生" align="center" prop="doctorName" />
       <el-table-column label="推荐时间" align="center" prop="createTime">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>

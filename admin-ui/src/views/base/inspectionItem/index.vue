@@ -224,7 +224,7 @@
           <el-input v-model="form.summary" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="检验所" prop="inspectionOfficeId">
-          <el-select v-model="form.inspectionOfficeId" placeholder="请选择检验所" @change="inspectionOfficeItemChange(form.inspectionOfficeId)">
+          <el-select v-model="form.inspectionOfficeId" placeholder="请选择检验所" @change="inspectionOfficeItemChange(form.inspectionOfficeId,null)">
             <el-option
               v-for="dict in inspectionOfficeList"
               :key="dict.id"
@@ -449,30 +449,28 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改检验项目信息";
-        _this.inspectionOfficeItemChange(response.data.inspectionOfficeId);
-        this.form.inspectionOfficeId = response.data.inspectionOfficeId
+        _this.inspectionOfficeItemChange(response.data.inspectionOfficeId,this.form.inspectionOfficeItemId);
       });
     },
 
     /** 检验所列表 */
     inspectionOfficeData() {
       this.inspectionOfficeItemList = [];
-      this.form.inspectionOfficeItemId=null;
       getInspectionOfficeList().then(response => {
         this.inspectionOfficeList = response.data;
       });
     },
         /** 修改按钮操作 */
-    inspectionOfficeItemChange(id) {
-      console.log(id);
+    inspectionOfficeItemChange(id,itemId) {
       let _this= this;
-      this.form.inspectionOfficeItemId = ''
+      if(itemId==null){
+        this.form.inspectionOfficeItemId = ''
+      }
       getListByInspectionOfficeId(id).then(response => {
         _this.inspectionOfficeItemList = response.data;
-        if(_this.inspectionOfficeItemList!=null&&_this.inspectionOfficeItemList.length==0){
-          _this.form.inspectionOfficeItemId =_this.inspectionOfficeItemList[0].id;
+        if(itemId!=null){
+        _this.inspectionOfficeItemId=itemId;
         }
-         console.log( _this.form.inspectionOfficeItemId );
       });
     },
     /** 提交按钮 */
