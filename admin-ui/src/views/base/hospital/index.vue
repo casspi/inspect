@@ -193,6 +193,8 @@
 import { listHospital, getHospital, delHospital, addHospital, updateHospital, exportHospital } from "@/api/base/hospital";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import {checkMobile } from "@/utils/index";
+
 export default {
   name: "Hospital",
   components: { Treeselect },
@@ -250,10 +252,8 @@ export default {
           { required: true, message: "院长姓名不能为空", trigger: "blur" }
         ],
          deanPhone: [
-          { required: true, message: "院长联系方式不能为空", trigger: "blur" }
-        ],
-         phone: [
-          { required: true, message: "联系方式不能为空", trigger: "blur" }
+          { required: true, message: "院长联系方式不能为空", trigger: "blur" },
+          { validator: checkMobile, trigger: 'blur'}
         ],
       }
     };

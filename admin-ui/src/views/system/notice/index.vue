@@ -91,7 +91,7 @@
         :formatter="statusFormat"
         width="100"
       />
-      <el-table-column label="创建者" align="center" prop="createBy" width="100" />
+      <el-table-column label="创建者" align="center" prop="createName" width="100" />
       <el-table-column label="创建时间" align="center" prop="createTime" width="100">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
