@@ -25,7 +25,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="dataList" >
       <el-table-column type="index" label="序号" width="55" align="center" />
       <el-table-column label="公众号登录者姓名" align="center" prop="realName" />
       <el-table-column label="公众号登录者手机号" align="center" prop="phonenumber" />
