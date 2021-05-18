@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="检验项目名称" prop="itemName">
         <el-input
           v-model="queryParams.itemName"
@@ -11,18 +11,36 @@
         />
       </el-form-item>
       <el-form-item label="检验项目分类" prop="itemClassify">
-        <el-input
-          v-model="queryParams.itemClassify"
-          placeholder="请输入检验项目分类"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-select
+              v-model="queryParams.itemClassify"
+              placeholder="检验项目分类"
+              clearable
+              size="small"
+              style="width: 240px"
+            >
+              <el-option
+                v-for="dict in itemClassifyOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
       </el-form-item>
       <el-form-item label="样本类型" prop="sampleType">
-        <el-select v-model="queryParams.sampleType" placeholder="请选择样本类型" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
+        <el-select
+              v-model="queryParams.sampleType"
+              placeholder="样本类型"
+              clearable
+              size="small"
+              style="width: 240px"
+            >
+              <el-option
+                v-for="dict in sampleTypeOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
       </el-form-item>
       <!-- <el-form-item label="单位" prop="itemUnit">
         <el-input
