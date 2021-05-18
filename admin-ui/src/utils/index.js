@@ -464,3 +464,28 @@ export const  checkIdNum = (rule, value, callback) => {
     callback()
   }
 }
+//校验手机号
+export const  checkMobile = (rule, value, callback) => {
+  const reg =/^1[3|4|5|6|7|8|9][0-9]\d{8}$/;
+  if (!value) {
+    return callback(new Error('手机号码不能为空'))
+  } else if (!reg.test(value)) {
+    return callback(new Error('手机号码不正确'))
+  } else {
+    callback()
+  }
+}
+
+//校验金钱
+export const  checkAmount = (rule, value, callback) => {
+  const reg =/^(([1-9]{1}\d*)|(0{1}))(\.\d{1,2})?$/;
+  if (!value) {
+    return callback(new Error('金额不能为空'))
+  } else if (!reg.test(value)) {
+    return callback(new Error('金额不正确'))
+  } else {
+    callback()
+  }
+}
+
+

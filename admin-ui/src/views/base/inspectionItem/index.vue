@@ -286,6 +286,7 @@
 import { listInspectionItem, getInspectionItem, delInspectionItem, addInspectionItem, updateInspectionItem, exportInspectionItem,changeStatus } from "@/api/base/inspectionItem";
 import { getInspectionOfficeList } from "@/api/base/inspectionOffice";
 import { getListByInspectionOfficeId } from "@/api/base/inspectionOfficeItem";
+import { checkAmount }from "@/utils/index";
 
 export default {
   name: "InspectionItem",
@@ -353,10 +354,12 @@ export default {
           { required: true, message: "样本类型不能为空", trigger: "blur" }
         ],
         amount: [
-          { required: true, message: "价格不能为空", trigger: "blur" }
+          { required: true, message: "价格不能为空", trigger: "blur" },
+          { validator: checkAmount, trigger: "blur" }
         ],
         discountAmount: [
-          { required: true, message: "折扣金额不能为空", trigger: "blur" }
+          { required: true, message: "折扣金额不能为空", trigger: "blur" },
+           { validator: checkAmount, trigger: "blur" }
         ],
         inspectionOfficeId: [
           { required: true, message: "检验所不能为空", trigger: "blur" }

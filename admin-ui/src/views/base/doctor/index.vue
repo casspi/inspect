@@ -149,7 +149,7 @@
 
     <el-table v-loading="loading" :data="doctorList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="所属医院" align="center" prop="hospitalName"/>
+      <el-table-column label="所属医院" align="center" prop="hospitalName" width="200"/>
       <el-table-column label="医生姓名" align="center" prop="doctorName"/>
       <el-table-column label="医生性别" align="center" prop="sexStr"/>
       <el-table-column label="年龄" align="center" prop="age"/>
@@ -157,7 +157,7 @@
       <el-table-column label="科室类别" align="center" prop="deptType" :formatter="deptTypeFormat"/>
       <el-table-column label="职务" align="center" prop="position"/>
       <el-table-column label="职称" align="center" prop="jobTitle"/>
-      <el-table-column label="联系方式" align="center" prop="phone"/>
+      <el-table-column label="联系方式" align="center" prop="phone" width="150"/>
       <el-table-column label="业务员" align="center" prop="salesmanName" width="100"/>
       <el-table-column label="医生简介" align="center" prop="summary"/>
       <el-table-column label="状态" align="center" width="100">
@@ -209,7 +209,7 @@
 
     <!-- 添加或修改医生对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="所属医院" prop="hospitalId" v-if="form.id == undefined" width="200px">
           <el-select v-model="form.hospitalId" placeholder="请选择">
             <el-option
@@ -305,7 +305,7 @@ import {
 } from "@/api/base/doctor";
 import { getSalesmanList } from "@/api/base/salesman";
 import { getHospitallist } from "@/api/base/hospital";
-import { idnumberValidator } from "@/utils/index";
+import { idnumberValidator,checkIdNum,checkMobile } from "@/utils/index";
 
 export default {
   name: "Doctor",
@@ -360,7 +360,15 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        status: [{ required: true, message: "状态不能为空", trigger: "blur" }]
+        doctorName: [{ required: true, message: "医生姓名不能为空", trigger: "blur" }],
+        idNumber: [{ required: true, message: "身份证号不能为空", trigger: "blur" },
+        { validator: checkIdNum, trigger: 'blur'}],
+        age: [{ required: true, message: "年龄不能为空", trigger: "blur" }],
+        sex: [{ required: true, message: "性别不能为空", trigger: "blur" }],
+        phone: [{ required: true, message: "手机号不能为空", trigger: "blur" },
+        { validator: checkMobile, trigger: 'blur'}],
+        status: [{ required: true, message: "状态不能为空", trigger: "blur" }],
+        hospitalId: [{ required: true, message: "所属医院不能为空", trigger: "blur" }],
       }
     };
   },
