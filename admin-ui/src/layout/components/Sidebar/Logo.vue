@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      title: '管理系统',
+      title: '医检大师管理系统',
       logo: logoImg
     }
   }

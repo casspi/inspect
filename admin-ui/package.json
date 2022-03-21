@@ -1,7 +1,7 @@
 {
   "name": "ahview",
   "version": "1.0.0",
-  "description": "管理系统",
+  "description": "医检大师管理系统",
   "author": "darren",
   "license": "MIT",
   "scripts": {

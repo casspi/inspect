@@ -10,9 +10,9 @@ export function listHospital(query) {
 }
 
 // 查询医院列表
-export function getHospitallist(query) {
+export function getHospitalList(query) {
   return request({
-    url: '/base/hospital/getlist',
+    url: '/base/hospital/getList',
     method: 'get',
     params: query
   })

@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || '管理系统' // 标题
+const name = defaultSettings.title || '' // 标题
 
 const port = process.env.port || process.env.npm_config_port || 80 // 端口
 
@@ -35,7 +35,8 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: 'http://96166.xiaomy.net',//http://121.37.185.29:12020
+       // target: 'http://96166.xiaomy.net',//http://121.37.185.29:12020
+       target:'http://localhost:12020',
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
