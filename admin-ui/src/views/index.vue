@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard-editor-container">
+欢迎光临
+    <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
 
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
-
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+    <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
-    </el-row>
-
+    </el-row> -->
+<!-- 
     <el-row :gutter="32">
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="chart-wrapper">
@@ -23,7 +23,7 @@
           <bar-chart />
         </div>
       </el-col>
-    </el-row>
+    </el-row> -->
 
     
   </div>
@@ -58,11 +58,11 @@ const lineChartData = {
 export default {
   name: 'Index',
   components: {
-    PanelGroup,
-    LineChart,
-    RaddarChart,
-    PieChart,
-    BarChart
+    // PanelGroup,
+    // LineChart,
+    // RaddarChart,
+    // PieChart,
+    // BarChart
   },
   data() {
     return {
