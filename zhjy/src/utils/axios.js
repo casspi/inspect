@@ -2,13 +2,18 @@ import axios from 'axios'
 import { Toast } from 'vant'
 import router from '../router'
 console.log(process.env)
-axios.defaults.baseURL = process.env.NODE_ENV == 'development' ? 'https://gzh.huichangyx.com/prod-api/' : 'https://gzh.huichangyx.com/prod-api/'
+axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? 'https://gzh.huichangyx.com/prod-api/' : 'https://gzh.huichangyx.com/prod-api/'
 axios.defaults.withCredentials = true
 axios.defaults.timeout = 5000;
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
-// axios.defaults.headers['token'] = localStorage.getItem('token') || ''
-axios.defaults.headers['Authorization'] = localStorage.getItem('token') || ''
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+axios.interceptors.request.use((config)=>{
+    config.headers['Authorization'] = localStorage.getItem('token') || ''
+    return config
+}, (error) => {
+  return Promise.reject(error)
+})
 axios.interceptors.response.use((res) => {
   if (res.config.responseType == "blob") {//图片流
     return res
@@ -29,8 +34,9 @@ axios.interceptors.response.use((res) => {
   }
 
   return res.data
-},res => {
-  console.log(res)
+},error => {
+  return Promise.reject(error)
+
 })
 
 export default axios
