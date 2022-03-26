@@ -68,8 +68,9 @@ export default {
         id: this.user.id
       };
       await resetPwd(params);
-      Toast.success("修改密码成功，请重新登录！");
       localStorage.removeItem('token');
+      Toast.success("修改密码成功，请重新登录！");
+      alert(localStorage.getItem("token"));
       this.$router.replace({path: '/login'})
     },
     // async handleLogout() {

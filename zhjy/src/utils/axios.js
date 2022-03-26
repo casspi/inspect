@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Toast } from 'vant'
 import router from '../router'
 console.log(process.env)
-axios.defaults.baseURL = process.env.NODE_ENV == 'development' ? 'http://121.37.185.29:12021' : 'http://96166.xiaomy.net'
+axios.defaults.baseURL = process.env.NODE_ENV == 'development' ? 'https://gzh.huichangyx.com/prod-api/' : 'https://gzh.huichangyx.com/prod-api/'
 axios.defaults.withCredentials = true
 axios.defaults.timeout = 5000;
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
@@ -10,8 +10,6 @@ axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers['Authorization'] = localStorage.getItem('token') || ''
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.interceptors.response.use((res) => {
-  console.log(res)
-  console.log(typeof res.data)
   if (res.config.responseType == "blob") {//图片流
     return res
   }
@@ -21,7 +19,8 @@ axios.interceptors.response.use((res) => {
   }
   if (res.data.code != 200) {
     if (res.data.code == 401) {
-      Toast.fail('该功能需要您先登录！')
+      localStorage.removeItem("token");
+      Toast.fail('需要您先登录！')
       router.replace({ path: '/login' })
       return Promise.reject(res.data)
     }

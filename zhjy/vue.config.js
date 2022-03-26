@@ -7,7 +7,7 @@ module.exports = {
         config
             .plugin('html')
             .tap(args => {
-                args[0].title = '智慧检验'
+                args[0].title = '医检大师'
                 return args
             });
         config.resolve.alias

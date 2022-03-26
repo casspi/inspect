@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <h3>{{ type !== "login" ? "用户注册" : "用户登录" }}</h3>
+    <h3>{{ type !== "login" ? "注册" : "登录" }}</h3>
     <!-- <s-header :name="type == 'login' ? '登录' : '注册'" :back="'/home'"></s-header> -->
     <!-- <img class="logo" src="//s.yezgea02.com/1604045825972/newbee-mall-vue3-app-logo.png" alt=""> -->
     <div v-if="type == 'login'" class="login-body login">
