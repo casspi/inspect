@@ -32,6 +32,10 @@ export const setLocal = (name, value) => {
   localStorage.setItem(name, value)
 }
 
+export const removeLocal = (name) => {
+  localStorage.removeItem(name)
+}
+
 export const tdist = {
   210184: ["沈北新区", "210100"],
   210185: ["其它区", "210100"],
