@@ -45,6 +45,7 @@ Vue.use(Button)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+;(s => s.keys().forEach(k => s(k).default && Vue.use(s(k).default)))(require.context('./plugins', true, /\.js$/));
 new Vue({
   router,
   store,
