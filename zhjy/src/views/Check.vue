@@ -42,8 +42,8 @@ export default {
     this.getCheckList()
     console.log(this.userInfo)
     if(this.userInfo && this.userInfo.userId && !this.userInfo.openid){
-      this.getPromptHandler()
-      this.WXgetCode()
+      this.getPromptHandler();
+      this.WXgetCode();
     }
     this.$nextTick(()=>{
       // console.log(window.screen.height,window.screen.availHeight)
@@ -65,8 +65,9 @@ export default {
     async WXgetCode() {
       // 静默授权
       this.code = "";
+    
       this.code = this.getUrlCode().code; // 截取code
-      if (this.code == null || this.code === "") {
+      if (this.code == null || this.code === ""|| this.code === undefined|| this.code === 'undefined') {
         // 如果没有code，则去请求
         let {data} = await wxLogin()
         if(data){

@@ -61,6 +61,7 @@
 <script>
 import { getUserInfo, logout } from '../api/user'
 import { removeLocal } from "@/common/js/utils";
+import { Dialog, Form, Toast } from "vant";
 import { mapMutations } from "vuex";
 
 export default {
@@ -110,10 +111,19 @@ export default {
     },
     //登出
     async handleLogOut(){
+        let _this = this;
+          Dialog.confirm({
+          title: "是否退出？",
+      })
+        .then(() => {
+         removeLocal('token')
+          _this.setUserInfo('')
+          _this.$router.push('login')
+          })
+        .catch(() => {
+          // on cancel
+        });
         await logout()
-        removeLocal('token')
-        this.setUserInfo('')
-        this.$router.push('login')
     }
   },
 };

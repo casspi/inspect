@@ -173,7 +173,7 @@ export default {
         //   const promptMsg = await getPrompt()
         //   consoel.log(promptMsg)
         // }
-        window.location.href = '/'
+        window.location.href = '/?t=1'
         // 需要刷新页面，否则 axios.js 文件里的 token 不会被重置
         // this.$router.push('/')
         // } catch (error) {
