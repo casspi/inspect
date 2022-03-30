@@ -41,6 +41,10 @@
         <span>关于我们</span>
         <van-icon name="arrow" />
       </li>
+      <li class="van-hairline--bottom" @click="handleLogOut">
+          <span>退出登录</span>
+          <van-icon name="arrow" />
+      </li>
     </ul>
     <van-dialog v-model="showQrcode" title="我的推荐码">
       <img :src="qrcodeSrc" />
@@ -55,8 +59,10 @@
 </template>
 
 <script>
-import { getUserInfo } from '../api/user'
-import axios from 'axios'
+import { getUserInfo, logout } from '../api/user'
+import { removeLocal } from "@/common/js/utils";
+import { mapMutations } from "vuex";
+
 export default {
   name: "User",
   data() {
@@ -72,6 +78,7 @@ export default {
     this.getUserInfoFn()
   },
   methods: {
+      ...mapMutations(["setUserInfo"]),
     async getUserInfoFn(){
      const { data } =  await getUserInfo()
      this.user = data.user
@@ -100,24 +107,13 @@ export default {
       };
       xhr.send()
       this.showQrcode = true
-      // axios.get('http://121.37.185.29:12021/hospital/doctor/qrCode/1391238665749004288', {
-      //     // responseType: "arraybuffer",//这里是声明期望返回的数据类型
-      //     responseType: "blob",
-      // }).then(function (response) {
-      //     //将从后台获取的图片流进行转换
-      //     return 'data:image/jpeg;base64,' + btoa(
-      //         new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
-      //     );
-      // }).then(function (data) {
-      //     //接收转换后的Base64图片
-      //     console.log(data);
-      //     this.qrcode = data
-      // }).catch(function (error) {
-      //     // this.$message.error(error);
-      // })
-      // const data = await getQrcode2({id: this.user.id})
-      // console.log(data)
-      // this.qrcode = data.data
+    },
+    //登出
+    async handleLogOut(){
+        await logout()
+        removeLocal('token')
+        this.setUserInfo('')
+        this.$router.push('login')
     }
   },
 };

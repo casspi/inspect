@@ -1,8 +1,6 @@
 <template>
   <div class="login">
     <h3>{{ type !== "login" ? "注册" : "登录" }}</h3>
-    <!-- <s-header :name="type == 'login' ? '登录' : '注册'" :back="'/home'"></s-header> -->
-    <!-- <img class="logo" src="//s.yezgea02.com/1604045825972/newbee-mall-vue3-app-logo.png" alt=""> -->
     <div v-if="type == 'login'" class="login-body login">
       <van-form @submit="onSubmit">
         <van-field
@@ -23,18 +21,6 @@
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
         />
-
-        <!-- <van-field
-          center
-          clearable
-          label="验证码"
-          placeholder="输入验证码"
-          v-model="verify"
-        >
-          <template #button>
-            <vue-img-verify ref="verifyRef" />
-          </template>
-        </van-field> -->
         <div style="margin: 16px">
           <div class="link-register" @click="toggle('register')">立即注册</div>
           <van-button round block color="#1baeae" native-type="submit"
@@ -109,7 +95,6 @@
 import { login, register } from "@/api/user";
 import { setLocal, idnumberValidator } from "@/common/js/utils";
 import { mapState, mapMutations } from "vuex";
-// import md5 from "js-md5";
 import { Toast } from "vant";
 export default {
   name: "Login",
