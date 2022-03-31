@@ -15,3 +15,9 @@ export function getOrderDetail(params) {
   console.log(params)
   return axios.get('/order/getInfo', { params })
 }
+
+//取消订单
+export function cancelOrder(params) {
+  console.log(params)
+  return axios.post('/order/cancelOrder', params)
+}

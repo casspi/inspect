@@ -66,11 +66,11 @@
             <span>{{ item.itemUnit }}</span>
           </div>
           <div class="good-btn">
-            <div class="price">项目金额：¥{{ item.amount | toFixed }}</div>
+            <div class="price">项目金额：¥{{ item.amount | toFixed }}元</div>
             <div class="discountAmount">
-              优惠金额：¥<span>{{ item.discountAmount | toFixed }}</span>
+              优惠金额：¥<span>{{ item.discountAmount | toFixed }}元</span>
             </div>
-            <div>实际金额：¥{{ item.amount - item.discountAmount | toFixed }}</div>
+            <div>实际金额：¥{{ item.amount - item.discountAmount | toFixed }}元</div>
             <!-- <div>实际金额：¥{{item.actualAmount}}</div> -->
           </div>
         </div>
@@ -80,16 +80,16 @@
     <div class="pay-wrap">
       <div class="price">
         <span>总金额</span>
-        <span>¥{{ total }}</span>
+        <span>¥{{ total }}元</span>
       </div>
       <div class="price">
         <span>优惠金额</span>
-        <span>-¥{{ discountTotal }}</span>
+        <span>-¥{{ discountTotal }}元</span>
       </div>
       <div class="price-bottom">
         实付金额
         <div class="price-total">
-          ¥<span>{{ actualTotal }}</span>
+          ¥<span>{{ actualTotal }}元</span>
         </div>
         <van-button
           @click="payHandler"

@@ -11,7 +11,7 @@
       <van-tab title="待支付" name="1"></van-tab>
       <van-tab title="已支付" name="6"></van-tab>
       <!-- <van-tab title="支付失败" name="9"></van-tab> -->
-      <van-tab title="未支付" name="10"></van-tab>
+      <van-tab title="已取消" name="10"></van-tab>
       <!-- <van-tab title="已发货" name="3"></van-tab> -->
       <!-- <van-tab title="交易完成" name="4"></van-tab> -->
     </van-tabs>
@@ -40,7 +40,7 @@
               <span>{{ item.payStatusStr }}</span>
             </div>
             <div class="order-item-header">
-              <span>实付金额：{{ item.actualAmount }}</span>
+              <span>实付金额：¥ {{ item.actualAmount }}元</span>
               <span>{{ item.inspectionStatus }}</span>
             </div>
             <van-card
@@ -106,8 +106,6 @@ export default {
     },
     onLoad() {
       if (!this.refreshing && this.page < this.totalPage) {
-        console.log(this.page);
-        console.log(this.totalPage);
         this.page = this.page + 1;
       }
       if (this.refreshing) {

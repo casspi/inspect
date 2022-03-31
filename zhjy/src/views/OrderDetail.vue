@@ -28,7 +28,7 @@
       </div>
       <div class="status-item">
         <label>就诊人：</label>
-        <span>{{ detail.patientName }}{{   detail.patientIdNumber}}</span>
+        <span>{{ detail.patientName }}({{   detail.patientIdNumber}})</span>
       </div>
       <div class="status-item">
         <label>送检医生：</label>
@@ -36,11 +36,11 @@
       </div>
       <div class="status-item">
         <label>紧急联系人：</label>
-        <span>{{ detail.urgentUserName }}{{detail.urgentUserPhone}}</span>
+        <span>{{ detail.urgentUserName }}({{detail.urgentUserPhone}})</span>
       </div>
       <!-- <van-button v-if="[1,2,3].includes(detail.payStatus)" style="margin-bottom: 10px" color="#1baeae" block @click="confirmOrder(detail.orderNo)">确认订单</van-button> -->
       <van-button
-        v-if="detail.payStatus == 1 || detail.payStatus == 10"
+        v-if="detail.payStatus == 1 "
         style="margin-bottom: 10px"
         color="#1baeae"
         block
@@ -48,18 +48,18 @@
         >去支付</van-button
       >
       <!-- v-if="!(detail.payStatus == 1 || detail.payStatus == 2)" -->
-      <van-button block @click="handleCancelOrder(detail.orderNo)"
+      <van-button  v-if="(detail.payStatus == 1 || detail.payStatus == 6)" block @click="handleCancelOrder(detail.id)"
         >取消订单</van-button
       >
     </div>
     <div class="order-price">
       <div class="price-item">
         <label>总金额：</label>
-        <span>¥ {{ detail.amount }}</span>
+        <span>¥ {{ detail.amount }}元</span>
       </div>
       <div class="price-item">
         <label>实付金额：</label>
-        <span>¥ {{ detail.actualAmount }}</span>
+        <span>¥ {{ detail.actualAmount }}元</span>
       </div>
     </div>
     <van-card
@@ -125,9 +125,9 @@ export default {
         title: "确认取消订单？",
       })
         .then(() => {
-          cancelOrder(id).then((res) => {
+          cancelOrder({id}).then((res) => {
             if (res.resultCode == 200) {
-              Toast("删除成功");
+              Toast("取消成功");
               this.init();
             }
           });
