@@ -93,7 +93,7 @@ import {
   // payOrder,
 } from "@/api/order";
 import { prePay } from '@/api/index'
-import { Dialog, Form, Toast } from "vant";
+import { Dialog, Toast } from "vant";
 import { mapGetters } from'vuex'
 export default {
   name: "OrderDetail",
@@ -115,8 +115,8 @@ export default {
         message: "加载中...",
         forbidClick: true,
       });
-      const { orderId } = this.$route.query;
-      const { data } = await getOrderDetail({id:orderId})
+      const { orderId:id } = this.$route.query;
+      const { data } = await getOrderDetail({id})
       this.detail = data || {};
       Toast.clear();
     },
@@ -126,7 +126,7 @@ export default {
       })
         .then(() => {
           cancelOrder({id}).then((res) => {
-            if (res.resultCode == 200) {
+            if (res.code == 200) {
               Toast("取消成功");
               this.init();
             }
@@ -142,7 +142,7 @@ export default {
       })
         .then(() => {
           confirmOrder(id).then((res) => {
-            if (res.resultCode == 200) {
+            if (res.code == 200) {
               Toast("确认成功");
               this.init();
             }
