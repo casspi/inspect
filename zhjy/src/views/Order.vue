@@ -37,7 +37,7 @@
           >
             <div class="order-item-header">
               <span>订单时间：{{ item.createTime }}</span>
-              <span>{{ item.payStatusStr }}</span>
+              <span :class="computedStatusClass(item.payStatus)">{{ item.payStatusStr }}</span>
             </div>
             <div class="order-item-header">
               <span>实付金额：¥ {{ item.actualAmount }}元</span>
@@ -84,6 +84,16 @@ export default {
   },
   computed:{
     ...mapGetters(["userInfo"]),
+      computedStatusClass() {
+          let dic = {
+              1:'status-1',
+              6:'status-6',
+              10:'status-10',
+          }
+          return (status) => {
+             return dic[status]
+          }
+      }
   },
   methods: {
     async loadData() {
@@ -142,6 +152,7 @@ export default {
     height: calc(~"(100vh)");
     overflow: hidden;
     overflow-y: scroll;
+      background-color: #f2f2f2;
   }
   .order-list-refresh {
     .van-card__content {
@@ -154,6 +165,7 @@ export default {
       background: #f9f9f9;
     }
     .order-item-box {
+        border-radius: 4px;
       margin: 20px 10px 0;
       padding-bottom: 20px;
       background-color: #fff;
@@ -169,5 +181,10 @@ export default {
       }
     }
   }
+
 }
+.status-1{color: @orange}
+.status-6{color: @primary}
+.status-10{color: @c9}
+
 </style>
