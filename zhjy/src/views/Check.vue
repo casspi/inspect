@@ -7,7 +7,9 @@
       :main-active-index.sync="activeIndex"
       @click-item="itemClickHandler"
     />
-      <van-button type="info" icon="cart-o" class="pay-btn" color="rgb(27, 174, 174)" @click="handlePay"></van-button>
+      <van-badge :content="activeIds.length" max="10" class="pay-btn">
+        <van-button type="info" icon="cart-o" color="rgb(27, 174, 174)" @click="handlePay"></van-button>
+      </van-badge>
     <van-tabbar route active-color="#1baeae" inactive-color="#000">
       <!-- <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item> -->
       <van-tabbar-item replace to="/" icon="notes-o">检查</van-tabbar-item>

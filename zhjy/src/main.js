@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store/index'
 import {
-  Button, Tabbar, TabbarItem, Skeleton, Icon, TreeSelect, Dialog, Toast, Form,
+  Button, Badge, Tabbar, TabbarItem, Skeleton, Icon, TreeSelect, Dialog, Toast, Form,
   Field, Popup, Picker, Tabs, Tab, PullRefresh, List, Card, Cell, ContactCard,
   NoticeBar, Swipe, SwipeItem, Lazyload, RadioGroup, Radio,
   Sticky, Tag, Search, Divider
@@ -13,6 +13,7 @@ import * as filters from './common/js/filters'
 
 Vue.config.productionTip = false
 Vue.use(Button)
+    .use(Badge)
   .use(Icon)
   .use(Skeleton)
   .use(Tabbar)
