@@ -67,8 +67,8 @@
       :key="item.inspectId"
       style="background: #fff"
       :num="item.goodsCount"
-      :price="item.actualAmount"
-      :origin-price="item.amount"
+      :price="(item.actualAmount || '-') +'元'"
+      :origin-price="(item.amount || '-') + '元'"
       desc=""
     >
     <template slot="title">

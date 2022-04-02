@@ -7,6 +7,7 @@
       :main-active-index.sync="activeIndex"
       @click-item="itemClickHandler"
     />
+      <van-button type="info" icon="cart-o" class="pay-btn" color="rgb(27, 174, 174)" @click="handlePay"></van-button>
     <van-tabbar route active-color="#1baeae" inactive-color="#000">
       <!-- <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item> -->
       <van-tabbar-item replace to="/" icon="notes-o">检查</van-tabbar-item>
@@ -20,7 +21,7 @@
 import { wxLogin, wxCallback, getPrompt } from '@/api/index'
 import { getCheckList } from '../api/index'
 import { mapGetters, mapActions } from 'vuex'
-export default { 
+export default {
   name: 'Home',
   components: {
   },
@@ -32,7 +33,7 @@ export default {
       activeIndex: 0,
       scHeight: '100%',
       checkItems: [
-        
+
       ],
       activeIds: [],
       code:''
@@ -65,7 +66,7 @@ export default {
     async WXgetCode() {
       // 静默授权
       this.code = "";
-    
+
       this.code = this.getUrlCode().code; // 截取code
       if (this.code == null || this.code === ""|| this.code === undefined|| this.code === 'undefined') {
         // 如果没有code，则去请求
@@ -113,25 +114,36 @@ export default {
         this.$toast('已取消');
         return
       }
-      let selectItems = []
-      this.checkItems.map(item=>{
-        selectItems = selectItems.concat(item.children.filter(o => this.activeIds.includes(o.id)))
-      })
-      this.$dialog.confirm({
-        confirmButtonText:'去支付',
-        cancelButtonText:'继续选择',
-        title: '温馨提示',
-        message: `您选择了【${data.text}】,您可以继续添加项目或者去支付！`,
-      })
-      .then(() => {
-        console.log(selectItems)
-        this.$router.push({path: 'create-order', query: { selectItems:JSON.stringify(selectItems) }})
-      })
-      .catch(() => {
-        // this.activeIds = ''
-        // this.$toast('已取消');
-      });
-    }
+    },
+      handlePay() {
+          let selectItems = []
+          this.checkItems.map(item=>{
+              selectItems = selectItems.concat(item.children.filter(o => this.activeIds.includes(o.id)))
+          })
+          if(!selectItems.length){
+              this.$toast('请选择检查项目')
+              return
+          }
+          console.log(selectItems)
+          let selectItemsText = ''
+          selectItems.forEach(item => {
+              selectItemsText += `【${item.text}】`
+          })
+          this.$dialog.confirm({
+              title: '温馨提示',
+              confirmButtonText:'去支付',
+              cancelButtonText:'继续选择',
+              message: `您选择了${selectItemsText},您可以继续添加项目或者去支付！`,
+          })
+          .then(() => {
+              console.log(selectItems)
+              this.$router.push({path: 'create-order', query: { selectItems:JSON.stringify(selectItems) }})
+          })
+          .catch(() => {
+              // this.activeIds = ''
+              // this.$toast('已取消');
+          });
+      }
   },
 }
 </script>
@@ -149,5 +161,10 @@ export default {
     .home{
       width: 100%;
       padding-bottom: 50px;
+    }
+    .pay-btn{
+        position: fixed;
+        right: 20px;
+        bottom: 70px;
     }
 </style>
