@@ -32,7 +32,7 @@
       </div>
       <div class="status-item">
         <label>送检医生：</label>
-        <span>{{ '未知' }}</span>
+        <span>{{detail.doctorName }}</span>
       </div>
       <div class="status-item">
         <label>紧急联系人：</label>
