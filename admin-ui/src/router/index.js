@@ -106,6 +106,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/order',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'detail/:id',
+        component: (resolve) => require(['@/views/order/order/detail'], resolve),
+        name: 'detail',
+        meta: { title: '订单详情', icon: '' }
+      }
+    ]
+  },
+  {
     path: '/job',
     component: Layout,
     hidden: true,
