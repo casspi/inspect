@@ -273,7 +273,7 @@ export default {
       //   })()
       // }
 
-      
+
     },
     patientConfirm(val) {
       this.patientId = val.id;
@@ -323,7 +323,7 @@ export default {
     margin-bottom: 20px;
   }
   .good {
-    margin-bottom: 120px;
+    padding-bottom: 142px;
   }
   .good-box-title {
     background: #fff;
@@ -371,9 +371,6 @@ export default {
         }
       }
     }
-  }
-  .bottom-block {
-    height: 1px;
   }
   .pay-wrap {
     position: fixed;

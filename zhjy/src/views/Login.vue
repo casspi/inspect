@@ -93,6 +93,7 @@
 
 <script>
 import { login, register } from "@/api/user";
+import { wxLogin, getPrompt } from '@/api/index'
 import { setLocal, idnumberValidator } from "@/common/js/utils";
 import { mapState, mapMutations } from "vuex";
 import { Toast } from "vant";
@@ -124,9 +125,6 @@ export default {
         this.age = "";
       }
     },
-  },
-  mounted() {
-    
   },
   methods: {
     ...mapMutations(["setUserInfo"]),
@@ -169,16 +167,8 @@ export default {
         let token = "Bearer " + data.token;
         await setLocal("token", token);
         this.setUserInfo(data);
-        // if(!data.openid){
-        //   const promptMsg = await getPrompt()
-        //   consoel.log(promptMsg)
-        // }
-        window.location.href = '/?t=1'
-        // 需要刷新页面，否则 axios.js 文件里的 token 不会被重置
-        // this.$router.push('/')
-        // } catch (error) {
-        //   Toast.fail(error.msg)
-        // }
+          this.getPromptHandler();
+          this.WXgetCode();
       } else {
         let { age, idNumber, realName, sex } = this;
         try {
@@ -198,7 +188,24 @@ export default {
         }
       }
     },
-    
+    async getPromptHandler() {
+      const promptMsg = await getPrompt()
+      this.$dialog.alert({
+          title: promptMsg.data.noticeTitle,
+          message: promptMsg.data.noticeContent,
+      }).then(() => {
+          // on close
+      });
+    },
+      async WXgetCode() {
+          // 静默授权
+          // 如果没有code，则去请求
+          let {data} = await wxLogin()
+          if(data){
+              window.location.href = data
+          }
+      },
+
   },
 };
 </script>

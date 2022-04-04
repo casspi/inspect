@@ -20,8 +20,7 @@
 
 <script>
 // @ is an alias to /src
-import { wxLogin, wxCallback, getPrompt } from '@/api/index'
-import { getCheckList } from '../api/index'
+import { wxCallback, getCheckList } from '@/api/index'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Home',
@@ -38,16 +37,11 @@ export default {
 
       ],
       activeIds: [],
-      code:''
     }
   },
-  mounted() {
-    this.getCheckList()
-    console.log(this.userInfo)
-    if(this.userInfo && this.userInfo.userId && !this.userInfo.openid){
-      this.getPromptHandler();
-      this.WXgetCode();
-    }
+  async mounted() {
+      await  this.WXgetOpenId()
+      this.getCheckList()
     this.$nextTick(()=>{
       // console.log(window.screen.height,window.screen.availHeight)
       // console.log(this.$refs.home.querySelector('.van-tabbar').offsetHeight)
@@ -55,52 +49,6 @@ export default {
     })
   },
   methods: {
-    ...mapActions(['updateUserInfo']),
-    async getPromptHandler() {
-      const promptMsg = await getPrompt()
-      this.$dialog.alert({
-        title: promptMsg.data.noticeTitle,
-        message: promptMsg.data.noticeContent,
-      }).then(() => {
-        // on close
-      });
-    },
-    async WXgetCode() {
-      // 静默授权
-      this.code = "";
-
-      this.code = this.getUrlCode().code; // 截取code
-      if (this.code == null || this.code === ""|| this.code === undefined|| this.code === 'undefined') {
-        // 如果没有code，则去请求
-        let {data} = await wxLogin()
-        if(data){
-          window.location.href = data
-        }
-      } else {
-        this.WXgetOpenId()
-      }
-    },
-    getUrlCode() {
-      // 截取url中的code方法
-      var url = location.search;
-      var theRequest = new Object();
-      if (url.indexOf("?") != -1) {
-        var str = url.substr(1);
-        var strs = str.split("&");
-        for (var i = 0; i < strs.length; i++) {
-          theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1];
-        }
-      }
-      return theRequest;
-    },
-    async WXgetOpenId() {
-      const {code} = this
-      const data = await wxCallback({ code })
-      console.log(data)
-      //更新userInfo
-      this.updateUserInfo()
-      console.log(this.userInfo)
-    },
     //获取检查项目
     async getCheckList(){
       const {data} = await getCheckList()
@@ -145,6 +93,29 @@ export default {
               // this.activeIds = ''
               // this.$toast('已取消');
           });
+      },
+      async WXgetOpenId() {
+          const code = this.getUrlCode().code
+          if(code){
+              const data = await wxCallback({ code })
+              console.log(data)
+              //更新userInfo
+              this.updateUserInfo()
+              console.log(this.userInfo)
+          }
+      },
+      getUrlCode() {
+          // 截取url中的code方法
+          let url = location.search;
+          let theRequest = new Object();
+          if (url.indexOf("?") != -1) {
+              let str = url.substr(1);
+              let strs = str.split("&");
+              for (let i = 0; i < strs.length; i++) {
+                  theRequest[strs[i].split("=")[0]] = strs[i].split("=")[1];
+              }
+          }
+          return theRequest;
       }
   },
 }
