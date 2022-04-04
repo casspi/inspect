@@ -96,7 +96,8 @@ export default {
           });
       },
       async WXgetOpenId() {
-          const code = this.getUrlCode().code
+          const { code } = this.$route.query
+          this.$route.query.code = ''
           if(code){
               const data = await wxCallback({ code })
               console.log(data)
