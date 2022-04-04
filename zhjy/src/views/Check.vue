@@ -49,6 +49,7 @@ export default {
     })
   },
   methods: {
+      ...mapActions(['updateUserInfo']),
     //获取检查项目
     async getCheckList(){
       const {data} = await getCheckList()
