@@ -96,9 +96,11 @@ export default {
           });
       },
       async WXgetOpenId() {
-          const { code } = this.$route.query
-          this.$route.query.code = '';
+          //const { code } = this.$route.query;
+          let code = this.getQueryString('code');
           console.log("code;",code);
+          //this.$route.query.code = '';
+          //console.log("code;",code);
           if(code){
               const data = await wxCallback({ code })
               console.log(data)
@@ -119,7 +121,14 @@ export default {
               }
           }
           return theRequest;
-      }
+      },
+      getQueryString(name) {
+          // 截取url中的code方法
+          var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+          var r = window.location.search.substr(1).match(reg);
+          if (r != null) return unescape(r[2]);
+          return null;
+      },
   },
 }
 </script>
