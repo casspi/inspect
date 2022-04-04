@@ -48,9 +48,8 @@
         >去支付</van-button
       >
       <!-- v-if="!(detail.payStatus == 1 || detail.payStatus == 2)" -->
-      <van-button  v-if="(detail.payStatus == 1 || detail.payStatus == 6)" block @click="handleCancelOrder(detail.id)"
-        >取消订单</van-button
-      >
+      <van-button  v-if="(detail.payStatus == 1)" block @click="handleCancelOrder(detail.id)">取消订单</van-button>
+      <van-button  v-if="(detail.payStatus == 6)" block @click="handleRefundOrder(detail.id)">申请退款</van-button>
     </div>
     <div class="order-price">
       <div class="price-item">
@@ -90,6 +89,7 @@ import {
   getOrderDetail,
   cancelOrder,
   confirmOrder,
+  refund,
   // payOrder,
 } from "@/api/order";
 import { prePay } from '@/api/index'
@@ -128,6 +128,23 @@ export default {
           cancelOrder({id}).then((res) => {
             if (res.code == 200) {
               Toast("取消成功");
+              this.init();
+            }
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+
+    handleRefundOrder(id) {
+      Dialog.confirm({
+        title: "确认退款？",
+      })
+        .then(() => {
+          refund({id: this.detail.id,number: this.detail.number}).then((res) => {
+            if (res.code == 200) {
+              Toast("退款成功");
               this.init();
             }
           });

@@ -21,3 +21,9 @@ export function cancelOrder(params) {
   console.log(params)
   return axios.post('/order/cancelOrder', params)
 }
+
+//退款
+export function refund(params) {
+  console.log(params)
+  return axios.post('/pay/refund', params)
+}
