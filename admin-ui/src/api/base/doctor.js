@@ -75,9 +75,17 @@ export function createQrCode(id) {
 
 //我的推荐
 export function myRecommendList(query) {
-  console.log(query)
   return request({
     url:'base/doctor/myRecommendList',
+    method: 'get',
+    params: query
+  })
+}
+
+//根据医院id查询医生列表
+export function getDoctorListByHospitalId(query) {
+  return request({
+    url:'base/doctor/getDoctorListByHospitalId',
     method: 'get',
     params: query
   })

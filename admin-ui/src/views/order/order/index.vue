@@ -16,51 +16,53 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="患者id" prop="userId">
+     <el-form-item label="所属医院" prop="hospitalId" >
+        <el-select v-model="queryParams.hospitalId" placeholder="请选择医院" @change="getDoctorListByHospitalId"  clearable size="small">
+         <el-option 
+            v-for="dict in hospitalOptions"
+            :key="dict.id"
+            :label="dict.hospitalName"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="医生" prop="doctorId" >
+        <el-select v-model="queryParams.doctorId" placeholder="请选择医生"  clearable size="small">
+         <el-option 
+            v-for="dict in doctorOptions"
+            :key="dict.id"
+            :label="dict.doctorName"
+            :value="dict.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="注册人" prop="userId">
         <el-input
           v-model="queryParams.userId"
-          placeholder="请输入患者id"
+          placeholder="请输入注册人姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="总金额" prop="amount">
+        /></el-form-item>
+        <el-form-item label="注册人手机号" prop="userId2">
         <el-input
-          v-model="queryParams.amount"
-          placeholder="请输入总金额"
+          v-model="queryParams.userId"
+          placeholder="请输入注册人手机号"
           clearable
           size="small"
+          @keyup.enter.native="handleQuery"
+        />  
+      </el-form-item>
+      <el-form-item label="患者" prop="userId">
+        <el-input
+          v-model="queryParams.userId"
+          placeholder="请输入患者姓名"
+          clearable
+          size="small"
+          style="width:80%"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="实付金额" prop="actualAmount">
-        <el-input
-          v-model="queryParams.actualAmount"
-          placeholder="请输入实付金额"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="开单医院" prop="hospitalId">
-        <el-input
-          v-model="queryParams.hospitalId"
-          placeholder="请输入开单医院"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="开单医生" prop="doctorId">
-        <el-input
-          v-model="queryParams.doctorId"
-          placeholder="请输入开单医生"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           clearable
@@ -77,20 +79,21 @@
         <el-date-picker
           clearable
           size="small"
-          style="width: 200px"
+          style="width:80%"
           v-model="queryParams.payTime"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="选择支付时间"
+          placeholder="请选择"
         >
         </el-date-picker>
       </el-form-item>
       <el-form-item label="支付状态" prop="payStatus">
         <el-select
           v-model="queryParams.payStatus"
-          placeholder="请选择支付状态"
+          placeholder="请选择"
           clearable
           size="small"
+          style="width:60%"
         >
         <el-option
                 v-for="dict in payStatusAarr"
@@ -103,9 +106,10 @@
       <el-form-item label="检验状态" prop="inspectionStatus">
         <el-select
           v-model="queryParams.inspectionStatus"
-          placeholder="请选择检验状态"
+          placeholder="请选择"
           clearable
           size="small"
+           style="width:60%"
         >
           <el-option
                 v-for="dict in inspectionArr"
@@ -115,29 +119,6 @@
               />  
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="紧急联系人" prop="urgentUserName">
-        <el-input
-          v-model="queryParams.urgentUserName"
-          placeholder="请输入紧急联系人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="紧急联系人电话" prop="urgentUserPhone">
-        <el-input
-          v-model="queryParams.urgentUserPhone"
-          placeholder="请输入紧急联系人电话"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="角色状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择角色状态" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item> -->
       <el-form-item>
         <el-button
           type="cyan"
@@ -153,48 +134,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['order:order:add']"
-          >新增</el-button
-        >
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['order:order:edit']"
-          >修改</el-button
-        > -->
-      <!-- </el-col> -->
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['order:order:remove']"
-          >删除</el-button
-        >
-      </el-col> -->
-      <!-- <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['order:order:export']"
-          >导出</el-button
-        >
-      </el-col> -->
       <right-toolbar
         :showSearch.sync="showSearch"
         @queryTable="getList"
@@ -206,21 +145,25 @@
       :data="orderList"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="订单编号" align="center" prop="number" width="300">
-        <template slot-scope="scope">
+      <el-table-column label="订单编号" align="center" prop="number" width="280">
+        <!-- <template slot-scope="scope">
           <el-link type="primary" @click="openDetailHandle(scope.row)">{{
             scope.row.number
           }}</el-link>
+        </template> -->
+        <template slot-scope="scope">
+          <router-link :to="'/order/detail/' + scope.row.id" class="link-type">
+            <span>{{ scope.row.number }}</span>
+          </router-link>
         </template>
       </el-table-column>
-      <el-table-column label="注册人" align="center" prop="realName" />
-      <el-table-column label="注册人手机号" align="center" prop="phonenumber" />
-      <!-- <el-table-column label="患者" align="center" prop="patientName" /> -->
-      <el-table-column label="总金额" align="center" prop="amount" />
-      <el-table-column label="实付金额" align="center" prop="actualAmount" />
       <el-table-column label="开单医院" align="center" prop="hospitalName" />
       <el-table-column label="开单医生" align="center" prop="doctorName" />
+      <el-table-column label="注册人" align="center" prop="realName" />
+      <el-table-column label="注册人手机号" align="center" prop="phonenumber" />
+      <el-table-column label="患者" align="center" prop="patientName" />
+      <!-- <el-table-column label="总金额" align="center" prop="amount" /> -->
+      <el-table-column label="实付金额" align="center" prop="actualAmount" />
       <el-table-column label="创建时间" align="center" prop="createTime"  width="150" />
       <el-table-column
         label="支付时间"
@@ -276,126 +219,6 @@
       @pagination="getList"
     />
 
-    <!-- 订单详情弹框-->
-    <el-dialog
-      title="订单详情"
-      :visible.sync="openDetail"
-      width="900px"
-      append-to-body
-    >
-      <el-form ref="detailForm" :model="orderDetail" label-position="right" label-width="120px">
-        <el-form-item label="订单编号">
-          {{ orderDetail.number }}
-        </el-form-item>
-         <el-row>
-          <el-col :span="12">
-        <el-form-item label="下单人：">
-          {{ orderDetail.realName }}
-        </el-form-item>
-         </el-col>
-          <el-col :span="12">
-         <el-form-item label="下单人手机号：">
-          {{ orderDetail.phonenumber }}
-        </el-form-item>
-          </el-col>
-          <el-col :span="12">
-        <el-form-item label="患者姓名：">
-          {{ orderDetail.patientName }}
-        </el-form-item>
-         </el-col>
-          <el-col :span="12">
-         <el-form-item label="患者身份证号：">
-          {{ orderDetail.patientIdNumber }}
-        </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="检验项目：">
-          <el-table :data="orderDetail.itemList" border style="line-height: 0">
-            <el-table-column label="项目名称" align="center" prop="inspectName" >
-              <template slot-scope="scope">
-                <el-tag size="small">{{ scope.row.inspectName }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="检验所" align="center" prop="officeName" >
-              <template slot-scope="scope">
-                {{ scope.row.officeName }}
-              </template>
-            </el-table-column>
-            <el-table-column label="检验所项目" align="center" prop="officeItemName" >
-              <template slot-scope="scope">
-               {{ scope.row.officeItemName }}
-              </template>
-            </el-table-column>
-            <el-table-column label="状态" align="center" :formatter="inspectionStatusFormat">
-              
-            </el-table-column>
-            <el-table-column label="检验时间" align="center" prop="inspectionStatusTime">
-             <template slot-scope="scope">
-                {{ scope.row.inspectionStatusTime }}
-              </template>  
-            </el-table-column>
-          </el-table>
-          <!-- <el-tag size="small" v-for="(item,index) in orderDetail.itemList" :key="index">{{item.inspectName}}<span>{{item.inspectionStatus | parseInspectionStatus}}</span></el-tag> -->
-        </el-form-item>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="总金额：">
-              {{ orderDetail.amount }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="实付金额：">
-              {{ orderDetail.actualAmount }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="开单医院：">
-              {{ orderDetail.hospitalName }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="开单医生:">
-              {{ orderDetail.doctorName }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="支付时间:">
-              {{ orderDetail.payTime }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="支付状态:">
-              {{ orderDetail.payStatus | parsePayStatus }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="紧急联系人:">
-              {{ orderDetail.urgentUserName }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="紧急联系人电话:">
-              {{ orderDetail.urgentUserPhone }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="备注">
-              {{ orderDetail.remark }}
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <!-- (1待支付，6已支付，9支付失败，10未支付) -->
-
-        <!-- (1检验中，2检验完成) -->
-        <!-- <el-form-item label="检验状态">
-          {{orderDetail.inspectionStatus}}
-        </el-form-item> -->
-      </el-form>
-      <div slot="footer" class="dialog-footer text-center">
-        <el-button type="primary" @click="detailCom">确 定</el-button>
-      </div>
-    </el-dialog>
     <!-- 添加或修改订单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -485,6 +308,8 @@ import {
   exportOrder,
   getStatus,
 } from "@/api/order/order";
+import { getHospitalList } from "@/api/base/hospital";
+import { getDoctorListByHospitalId } from "@/api/base/doctor";
 
 export default {
   name: "Order",
@@ -509,6 +334,10 @@ export default {
       //是否显示订单详情
       openDetail: false,
       orderDetail: {},
+            //医院
+      hospitalOptions:[],
+      //医生
+      doctorOptions:[],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -569,7 +398,7 @@ export default {
           text = "支付失败";
           break;
         case 10:
-          text = "未支付";
+          text = "已取消";
           break;
         default:
           break;
@@ -578,6 +407,7 @@ export default {
     },
   },
   created() {
+    this.getHospitalList();
     this.getList();
     this.getStatusList();
   },
@@ -727,6 +557,19 @@ export default {
           this.download(response.data);
         });
     },
+        // 医院
+   getHospitalList() {
+      getHospitalList({'status':'0'}).then(response => {
+        this.hospitalOptions = response.data;
+      });
+    },
+    getDoctorListByHospitalId(value){
+      this.$set(this.queryParams, 'doctorId', '')
+      getDoctorListByHospitalId({'hospitalId':value}).then(response => {
+        this.doctorOptions = response.data;
+      });
+    },
+ 
   },
 };
 </script>
