@@ -96,16 +96,13 @@ export default {
           });
       },
       async WXgetOpenId() {
-          //const { code } = this.$route.query;
-          let code = this.getQueryString('code');
-          console.log("code;",code);
-          //this.$route.query.code = '';
-          //console.log("code;",code);
+          let { code } = this.getUrlCode();
           if(code){
               const data = await wxCallback({ code })
               console.log(data)
               //更新userInfo
               this.updateUserInfo()
+              location.search = ''
               console.log(this.userInfo)
           }
       },
