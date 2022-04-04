@@ -40,7 +40,7 @@ export default {
     }
   },
   async mounted() {
-      await  this.WXgetOpenId()
+      await  this.WXgetOpenId();
       this.getCheckList()
     this.$nextTick(()=>{
       // console.log(window.screen.height,window.screen.availHeight)
@@ -97,7 +97,8 @@ export default {
       },
       async WXgetOpenId() {
           const { code } = this.$route.query
-          this.$route.query.code = ''
+          this.$route.query.code = '';
+          console.log("code;",code);
           if(code){
               const data = await wxCallback({ code })
               console.log(data)
