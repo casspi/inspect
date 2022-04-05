@@ -44,7 +44,7 @@
         style="margin-bottom: 10px"
         color="#1baeae"
         block
-        @click="goPayHandler"
+        @click="WXpay"
         >去支付</van-button
       >
       <!-- v-if="!(detail.payStatus == 1 || detail.payStatus == 2)" -->
@@ -169,14 +169,9 @@ export default {
           // on cancel
         });
     },
-    goPayHandler() {
-      this.WXpay()
-    },
-    wxPrePay() {
-
-    },
     async WXpay() {
-      const resData = await prePay({id: this.detail.id,orderNumber: this.detail.number})
+        const _this = this
+        const resData = await prePay({id: this.detail.id,orderNumber: this.detail.number})
       console.log(resData)
       if (typeof WeixinJSBridge == "undefined") {
         if (document.addEventListener) {
@@ -195,27 +190,19 @@ export default {
       }
       function onBridgeReady() {
         try {
-          // let timeStamp = Math.round(new Date().getTime()/1000).toString()
-          // alert(timeStamp)
           WeixinJSBridge.invoke(
             "getBrandWCPayRequest",
             {
               ...resData.data
-              // appId: "wx34249919a9bfd313", //公众号ID，由商户传入
-              // timeStamp, //时间戳，自1970年以来的秒数
-              // nonceStr: "e61463f8efa94090b1f366cccfbbb444", //随机串
-              // package: "prepay_id=" + this.detail.number,
-              // signType: "MD5", //微信签名方式：
-              // paySign: "70EA570631E4BB79628FBCA90534C63FF7FADD89", //微信签名
             },
             function (res) {
                 console.log(res)
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
-                // 使用以上方式判断前端返回,微信团队郑重提示：
-                //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                //刷新页面
-                this.init()
-              }
+                    // 使用以上方式判断前端返回,微信团队郑重提示：
+                    //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                    //刷新页面
+                    _this.init()
+                }
             }
           );
         } catch (error) {
