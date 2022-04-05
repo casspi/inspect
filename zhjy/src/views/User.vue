@@ -90,7 +90,7 @@ export default {
     //打开二维码
     async openQrcode() {
       let that = this
-      let url = 'https://gzh.huichangyx.com/hospital/doctor/qrCode/1391238665749004288'
+      let url = 'https://gzh.huichangyx.com/prod-api/hospital/doctor/qrCode/'+this.user.id;
       let xhr = new XMLHttpRequest()
       xhr.open('GET', url, true)
       xhr.responseType = 'arraybuffer'
