@@ -12,15 +12,18 @@
         :finished-text="list.length<=0?'暂无数据':'没有更多了'"
         @load="onLoad"
       >
-        <van-contact-card
-          v-for="item in list"
-          :key="item.id"
-          type="edit"
-          :editable="false"
-          :name="`${item.realName} ${item.sexStr} ${item.age}`"
-          :tel="item.phonenumber"
-        />
-          <!-- 
+        <div
+            v-for="item in list"
+            :key="item.id">
+            <van-contact-card
+                type="edit"
+                :editable="false"
+                :name="`${item.realName} ${item.sexStr} ${item.age}`"
+                :tel="item.phonenumber"
+            />
+            <span>推荐时间：{{item.createTime}}</span>
+        </div>
+          <!--
           @click="goTo('edit',item)" -->
       </van-list>
     </van-pull-refresh>
