@@ -17,7 +17,7 @@
           :key="item.id"
           type="edit"
           :editable="false"
-          :name="`${item.realName} ${item.sexStr} ${item.age}`"
+          :name="`${item.realName} ${item.sexStr} ${item.age}岁`"
           :tel="item.phonenumber"
         />
           <!-- 
