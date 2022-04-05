@@ -391,6 +391,9 @@ export default {
         case 1:
           text = "待支付";
           break;
+        case 2:
+          text = "已取消";
+          break;  
         case 6:
           text = "已支付";
           break;
@@ -398,8 +401,11 @@ export default {
           text = "支付失败";
           break;
         case 10:
-          text = "已取消";
+          text = "已退款";
           break;
+        case 11:
+          text = "退款失败";
+          break;  
         default:
           break;
       }
