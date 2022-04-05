@@ -10,7 +10,8 @@
       <van-tab title="全部" name=""></van-tab>
       <van-tab title="待支付" name="1"></van-tab>
       <van-tab title="已支付" name="6"></van-tab>
-      <van-tab title="已取消" name="10"></van-tab>
+      <van-tab title="已退款" name="10"></van-tab>
+      <van-tab title="已取消" name="2"></van-tab>
     </van-tabs>
       <van-pull-refresh
         v-model="refreshing"
