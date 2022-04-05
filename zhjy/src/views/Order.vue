@@ -10,13 +10,8 @@
       <van-tab title="全部" name=""></van-tab>
       <van-tab title="待支付" name="1"></van-tab>
       <van-tab title="已支付" name="6"></van-tab>
-      <!-- <van-tab title="支付失败" name="9"></van-tab> -->
       <van-tab title="已取消" name="10"></van-tab>
-      <!-- <van-tab title="已发货" name="3"></van-tab> -->
-      <!-- <van-tab title="交易完成" name="4"></van-tab> -->
     </van-tabs>
-    <div class="block"></div>
-    <div class="content">
       <van-pull-refresh
         v-model="refreshing"
         @refresh="onRefresh"
@@ -27,7 +22,7 @@
           :finished="finished"
           finished-text="没有更多了"
           @load="onLoad"
-          @offset="10"
+          @offset="300"
         >
           <div
             v-for="(item, index) in list"
@@ -62,7 +57,6 @@
           </div>
         </van-list>
       </van-pull-refresh>
-    </div>
   </div>
 </template>
 
@@ -97,13 +91,18 @@ export default {
   },
   methods: {
     async loadData() {
-      let userId = this.userInfo && this.userInfo.userId
+        this.$toast.loading({message: '加载中', overlay: true})
+        this.loading = true
+      const { userId } = this.userInfo
       let payStatus = this.payStatus
-      const {data} = await getOrderList({ userId, payStatus});
+      const pageNum = this.page
+      const pageSize = 10
+      const { data }  = await getOrderList({ userId, payStatus, pageNum, pageSize});
       let list = data.rows
       this.list = this.list.concat(list);
-      //   this.totalPage = data.totalPage;
+      this.totalPage = Math.ceil(data.total/pageSize);
       this.loading = false;
+        this.$toast.clear()
       if (this.list.length >= data.total) this.finished = true;
     },
     onChangeTab(name) {
@@ -137,25 +136,24 @@ export default {
 
 <style lang="less" scoped>
 @import "../common/style/mixin";
-.block {
-  height: 44px;
-}
 .order-box {
   .order-tab {
-    position: fixed;
-    left: 0;
-    z-index: 1000;
-    width: 100%;
     border-bottom: 1px solid #e9e9e9;
+      position: fixed;
+      left: 0;
+      z-index: 1000;
+      width: 100%
   }
   .content {
-    height: calc(~"(100vh)");
+    height: calc(~"(100vh-44px)");
     overflow: hidden;
     overflow-y: scroll;
       background-color: #f2f2f2;
   }
   .order-list-refresh {
-    .van-card__content {
+      margin-top: 45px;
+      background-color: #f2f2f2;
+      .van-card__content {
       min-height: auto!important;
       display: flex;
       flex-direction: column;
