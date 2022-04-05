@@ -76,7 +76,7 @@
         <span v-if="detail.payStatus === 6">检验状态：<van-tag :type="item.inspectionStatus===2?'success':'danger'">{{item.inspectionStatus===2? '检验完成':'检验中'}}</van-tag></span>
       </div>
     </template>
-     <template v-if="detail.payStatus === 6" #footer>
+     <template v-if="detail.payStatus === 6 && item.inspectionStatus === 2" #footer>
        <router-link :to="{path: 'result', query: {inspect: JSON.stringify(item)}}"><van-button type="primary" size="mini">查看检验结果</van-button></router-link>
      </template>
     </van-card>
