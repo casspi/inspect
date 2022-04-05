@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-      <transition v-if="$helper.isWeiXin()">
+      <transition v-if="$helper.isDev() || $helper.isWeiXin()">
           <router-view class="router-view" />
       </transition>
       <van-empty v-else description="请访问微信公众号【医检大师】"></van-empty>

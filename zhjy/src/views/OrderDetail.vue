@@ -2,14 +2,14 @@
   <div class="order-detail-box">
     <van-sticky>
       <van-notice-bar
-        v-if="detail.payStatus === 6"
+        v-show="detail.payStatus === 6"
         color="#1989fa"
         background="#ecf9ff"
         left-icon="info-o"
       >
         您的检查项目已经下单成功，我们会尽快安排工作人员进行检测。
       </van-notice-bar>
-      <van-notice-bar v-if="detail.payStatus === 1" left-icon="info-o">
+      <van-notice-bar v-show="detail.payStatus === 1" left-icon="info-o">
         您的订单尚未完成支付，请尽快支付以免耽误检查。
       </van-notice-bar>
     </van-sticky>
@@ -47,7 +47,6 @@
         @click="WXpay"
         >去支付</van-button
       >
-      <!-- v-if="!(detail.payStatus == 1 || detail.payStatus == 2)" -->
       <van-button  v-if="(detail.payStatus == 1)" block @click="handleCancelOrder(detail.id)">取消订单</van-button>
       <van-button  v-if="(detail.payStatus == 6)" block @click="handleRefundOrder(detail.id)">申请退款</van-button>
     </div>

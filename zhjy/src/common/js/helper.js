@@ -9,3 +9,7 @@ export function isWeiXin() {
         return false;
     }
 }
+
+export function isDev() {
+    return process.env.NODE_ENV === 'development'
+}
