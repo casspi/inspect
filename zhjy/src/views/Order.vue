@@ -93,7 +93,7 @@ export default {
     async loadData() {
         this.$toast.loading({message: '加载中', overlay: true})
         this.loading = true
-      const { userId } = this.userInfo
+      const userId = this.userInfo? this.userInfo.userId : ''
       let payStatus = this.payStatus
       const pageNum = this.page
       const pageSize = 10
