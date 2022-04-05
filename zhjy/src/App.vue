@@ -1,19 +1,15 @@
 <template>
   <div id="app">
-    <!-- <div id="nav">
-
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div> -->
-    <transition>
-      <router-view class="router-view" />
-    </transition>
+      <transition v-if="$helper.isWeiXin()">
+          <router-view class="router-view" />
+      </transition>
+      <van-empty v-else description="请访问微信公众号【医检大师】"></van-empty>
   </div>
 </template>
 <script>
 export default {
   mounted() {
-    function initRem() {
+      function initRem() {
       let cale = window.screen.availWidth > 750 ? 2 : window.screen.availWidth / 375
       window.document.documentElement.style.fontSize = `${37.5 * cale}px`
     }
