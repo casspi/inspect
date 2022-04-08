@@ -133,3 +133,11 @@ export function getOptions() {
     method: 'get'
   })
 }
+
+//业务员查询
+export function getSalesmanList() {
+  return request({
+    url: '/system/user/getSalesmanList',
+    method: 'get'
+  })
+}

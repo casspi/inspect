@@ -182,7 +182,7 @@
             class-name="small-padding fixed-width"
           >
             <template slot-scope="scope">
-              <el-button v-if="scope.row.userType==0"
+              <el-button v-if="scope.row.userType==0||scope.row.userType==1"
                 size="mini"
                 type="text"
                 icon="el-icon-edit"
@@ -223,8 +223,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户昵称" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" />
+            <el-form-item label="昵称" prop="nickName">
+              <el-input v-model="form.nickName" placeholder="请输入昵称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -232,11 +232,11 @@
               <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="realName">
+              <el-input v-model="form.realName" placeholder="请输入姓名" />
             </el-form-item>
-          </el-col> -->
+          </el-col>
         </el-row>
         <!-- <el-row> -->
           
@@ -284,19 +284,18 @@
           </el-col>
         </el-row>
         <el-row>
-          <!-- <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择">
+          <el-col :span="12">
+            <el-form-item label="用户类型">
+              <el-select v-model="form.userType" placeholder="请选择">
                 <el-option
-                  v-for="item in postOptions"
-                  :key="item.id"
-                  :label="item.postName"
-                  :value="item.id"
-                  :disabled="item.status == 1"
+                  v-for="item in userTypeOptions"
+                  :key="item.code"
+                  :label="item.msg"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col> -->
+          </el-col>
           <el-col :span="12">
             <el-form-item label="角色">
               <el-select v-model="form.roleIds" multiple placeholder="请选择">

@@ -69,7 +69,7 @@
          <el-option
             v-for="dict in salesmanOptions"
             :key="dict.id"
-            :label="dict.salesmanName"
+            :label="dict.realName"
             :value="dict.id"
           />
         </el-select>
@@ -141,15 +141,12 @@
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="所属医院" align="center" prop="hospitalName" width="200"/>
       <el-table-column label="姓名" align="center" prop="doctorName"/>
-      <el-table-column label="性别" align="center" prop="sexStr"/>
-      <el-table-column label="年龄" align="center" prop="age"/>
+      <el-table-column label="登录手机号" align="center" prop="phonenumber" width="150"/>
       <el-table-column label="身份证号" align="center" prop="idNumber" width="200"/>
      <el-table-column label="科室类别" align="center" prop="deptType" :formatter="departmentTypeFormat" />
       <el-table-column label="职务" align="center" prop="position"/>
       <el-table-column label="职称" align="center" prop="jobTitle"/>
-      <el-table-column label="联系方式" align="center" prop="phone" width="150"/>
       <el-table-column label="业务员" align="center" prop="salesmanName" width="100"/>
-      <el-table-column label="简介" align="center" prop="summary"/>
       <el-table-column label="状态" align="center" width="100">
         <template slot-scope="scope">
           <el-switch
@@ -160,7 +157,6 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -185,6 +181,13 @@
             @click="handleQrCode(scope.row)"
             v-hasPermi="['base:doctor:edit']"
           >二维码下载</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-key"
+            @click="handleResetPwd(scope.row)"
+            v-hasPermi="['system:user:resetPwd']"
+            >重置密码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -198,10 +201,36 @@
     />
 
    <!-- 添加或修改医生对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-       <el-form-item label="所属医院" prop="hospitalId">
-        <el-select v-model="form.hospitalId" placeholder="请选择医院" size="small">
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="90px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item v-if="form.id == undefined" label="手机号" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入登录帐号" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.id == undefined" label="用户密码" prop="password">
+              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+         <el-col :span="12">
+             <el-form-item label="业务员" prop="salesmanId">
+          <el-select v-model="form.salesmanId" placeholder="请选择业务员" clearable size="small">
+         <el-option
+            v-for="dict in salesmanOptions"
+            :key="dict.id"
+            :label="dict.realName"
+            :value="dict.id"
+          />
+        </el-select>
+        </el-form-item>
+        </el-col>  
+        <el-col :span="12">
+         <el-form-item label="所属医院" prop="hospitalId">
+         <el-select v-model="form.hospitalId" placeholder="请选择医院" size="small">
          <el-option
             v-for="dict in hospitalOptions"
             :key="dict.id"
@@ -210,10 +239,14 @@
           />
         </el-select>
         </el-form-item>
+        </el-col>
+        </el-row>
+        <el-row>
+        <el-col :span="7">
         <el-form-item label="姓名" prop="doctorName">
           <el-input v-model="form.doctorName" placeholder="请输入姓名" />
         </el-form-item>
-        <el-row>
+        </el-col>
           <el-col :span="9">
             <el-form-item label="性别" prop="sex" size="small">
             <el-select v-model="form.sex" placeholder="请选择性别">
@@ -226,7 +259,7 @@
           </el-select>
         </el-form-item>
           </el-col >
-          <el-col :span="8">
+          <el-col :span="7">
           <el-form-item label="年龄" prop="age"  >
           <el-input v-model="form.age" placeholder="请输入年龄" size="small" />
         </el-form-item>
@@ -235,9 +268,9 @@
         <el-form-item label="身份证号" prop="idNumber">
           <el-input v-model="form.idNumber" placeholder="请输入身份证号" />
         </el-form-item>
-        <el-form-item label="联系方式" prop="phone">
+        <!-- <el-form-item label="联系方式" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入联系方式" />
-        </el-form-item>
+        </el-form-item> -->
         <el-row>
           <el-col :span="10">
             <el-form-item label="科室类别" prop="deptType">
@@ -252,16 +285,21 @@
         </el-form-item>
           </el-col>
           <el-col :span="10">
-             <el-form-item label="业务员" prop="salesmanId">
-          <el-select v-model="form.salesmanId" placeholder="请选择业务员" clearable size="small">
-         <el-option
-            v-for="dict in salesmanOptions"
-            :key="dict.id"
-            :label="dict.salesmanName"
-            :value="dict.id"
+          <el-form-item label="状态">
+          <el-select
+              v-model="form.status"
+              placeholder="状态"
+              clearable
+              size="small"
+            >
+          <el-option
+                v-for="dict in statusOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
           />
-        </el-select>
-        </el-form-item>
+            </el-select>
+          </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="职务" prop="position">
@@ -272,21 +310,6 @@
         </el-form-item>
         <el-form-item label="医生简介" prop="summary">
           <el-input v-model="form.summary" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="状态">
-        <el-select
-              v-model="form.status"
-              placeholder="状态"
-              clearable
-              size="small"
-            >
-        <el-option
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-          />
-            </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -311,8 +334,8 @@ import {
   changeDoctorStatus,
   createQrCode
 } from "@/api/base/doctor";
-import { getSalesmanList } from "@/api/base/salesman";
 import { getHospitalList } from "@/api/base/hospital";
+import { resetUserPwd,getSalesmanList} from "@/api/system/user";
 import { idnumberValidator,checkIdNum,checkMobile } from "@/utils/index";
 
 export default {
@@ -349,6 +372,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 默认密码
+      initPassword: undefined,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -370,9 +395,12 @@ export default {
       form: {},
       // 表单校验
       rules: {
+        userName: [{ required: true, message: "登录手机号不能为空", trigger: "blur" }],
+        password: [{ required: true, message: "密码不能为空", trigger: "blur" }],
         doctorName: [{ required: true, message: "医生姓名不能为空", trigger: "blur" }],
-        idNumber: [{ required: true, message: "身份证号不能为空", trigger: "blur" },
-        { validator: checkIdNum, trigger: 'blur'}],
+        salesmanId: [{ required: true, message: "业务员不能为空", trigger: "blur" }],
+        // idNumber: [{ required: true, message: "身份证号不能为空", trigger: "blur" },
+        // { validator: checkIdNum, trigger: 'blur'}],
         age: [{ required: true, message: "年龄不能为空", trigger: "blur" }],
         sex: [{ required: true, message: "性别不能为空", trigger: "blur" }],
         phone: [{ required: true, message: "手机号不能为空", trigger: "blur" },
@@ -397,6 +425,9 @@ export default {
       this.sexOptions = response.data['sys_user_sex'];
       this.departmentTypeOptions = response.data['doctor_department_type'];
       this.statusOptions = response.data['sys_normal_disable'];
+    });
+    this.getConfigKey("sys.user.initPassword").then(response => {
+      this.initPassword = response.msg;
     });
     this.getSalesmanList(); //获取业务员列表
     this.getHospitalList();//获取医院列表
@@ -519,6 +550,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加医生";
+      this.form.password = this.initPassword;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -619,7 +651,17 @@ export default {
         this.hospitalOptions = response.data;
       });
     },
-
+    /** 重置密码按钮操作 */
+    handleResetPwd(row) {
+      this.$prompt('请输入"' + row.doctorName + '"的新密码', "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      }).then(({ value }) => {
+          resetUserPwd(row.id, value).then(response => {
+            this.msgSuccess("修改成功，新密码是：" + value);
+          });
+        }).catch(() => {});
+    },
   }
 };
 </script>
