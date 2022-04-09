@@ -55,10 +55,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="联系方式" prop="phone">
+      <el-form-item label="手机号" prop="userName">
         <el-input
-          v-model="queryParams.phone"
-          placeholder="请输入联系方式"
+          v-model="queryParams.userName"
+          placeholder="请输入手机号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -141,7 +141,7 @@
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="所属医院" align="center" prop="hospitalName" width="200"/>
       <el-table-column label="姓名" align="center" prop="doctorName"/>
-      <el-table-column label="登录手机号" align="center" prop="phonenumber" width="150"/>
+      <el-table-column label="手机号" align="center" prop="userName" width="150"/>
       <el-table-column label="身份证号" align="center" prop="idNumber" width="200"/>
      <el-table-column label="科室类别" align="center" prop="deptType" :formatter="departmentTypeFormat" />
       <el-table-column label="职务" align="center" prop="position"/>
@@ -154,6 +154,7 @@
             active-value="0"
             inactive-value="1"
             @change="handleStatusChange(scope.row)"
+             v-if="scope.row.id!=100"
           ></el-switch>
         </template>
       </el-table-column>
@@ -167,13 +168,14 @@
             v-hasPermi="['base:doctor:edit']"
           >修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-user" @click="go2Recommend(scope.row)">我的推荐</el-button>
-          <!-- <el-button
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['base:doctor:remove']"
-          >删除</el-button>-->
+            v-if="scope.row.id!=100"
+          >删除</el-button>
           <el-button 
             size="mini"
             type="text"
@@ -201,7 +203,7 @@
     />
 
    <!-- 添加或修改医生对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body :close-on-click-modal='false'>
       <el-form ref="form" :model="form" :rules="rules" label-width="90px">
         <el-row>
           <el-col :span="12">
@@ -289,7 +291,6 @@
           <el-select
               v-model="form.status"
               placeholder="状态"
-              clearable
               size="small"
             >
           <el-option
@@ -427,7 +428,8 @@ export default {
       this.statusOptions = response.data['sys_normal_disable'];
     });
     this.getConfigKey("sys.user.initPassword").then(response => {
-      this.initPassword = response.msg;
+      this.initPassword = response.data;
+      console.log(this.initPassword);
     });
     this.getSalesmanList(); //获取业务员列表
     this.getHospitalList();//获取医院列表
@@ -657,7 +659,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       }).then(({ value }) => {
-          resetUserPwd(row.id, value).then(response => {
+          resetUserPwd(row.userId, value).then(response => {
             this.msgSuccess("修改成功，新密码是：" + value);
           });
         }).catch(() => {});

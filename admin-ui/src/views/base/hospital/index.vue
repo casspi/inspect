@@ -85,7 +85,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="hospitalList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center"  />
       <el-table-column label="医院名称" align="center" prop="hospitalName" />
       <el-table-column label="医院地址" align="center" prop="address" />
       <el-table-column label="医院电话" align="center" prop="phone" />
@@ -100,6 +100,7 @@
                 active-value="0"
                 inactive-value="1"
                 @change="handleStatusChange(scope.row)"
+                 v-if="scope.row.id!=100"
               ></el-switch>
             </template>
       </el-table-column>
@@ -118,6 +119,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['base:hospital:remove']"
+             v-if="scope.row.id!=100"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -358,6 +360,10 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
+      if(this.ids!=null&&this.ids.indexOf('100')>=0){//默认不许删除
+        this.msgError("默认医院不许删除！");
+           return;
+      }
       const ids = row.id || this.ids;
       this.$confirm('是否确认删除医院编号为"' + ids + '"的数据项?', "警告", {
           confirmButtonText: "确定",
