@@ -3,49 +3,47 @@
     <van-skeleton title :avatar="true" :row="3" :loading="loading">
       <div class="user-info">
         <div class="info">
-          <img v-if="user.sex==='女'" src="../assets/women.png" />
-          <img v-else src="../assets/men.png" />
+          <img v-if="user.sex === '0'" src="../assets/men.png" />
+          <img v-else src="../assets/women.png" />
           <div class="user-desc">
             <span>个人信息：{{ user.realName }} {{ user.sex==="0"?'男':'女' }} {{ user.age }}岁</span>
             <span>登录手机：{{ user.userName }}</span>
-            <!-- <span>性别：{{ user.sex }}</span>
-            <span>年龄：{{ user.age }}</span> -->
           </div>
         </div>
       </div>
+      <ul class="user-list">
+        <li class="van-hairline--bottom" @click="goTo('/order')">
+            <span>我的订单</span>
+            <van-icon name="arrow" />
+        </li>
+        <li class="van-hairline--bottom" @click="goTo('/setting')">
+            <span>账号管理</span>
+            <van-icon name="arrow" />
+        </li>
+        <template v-if="user.userType==='3'">
+            <li class="van-hairline--bottom" @click="goTo('/recommend', { from: 'mine' })">
+                <span>我的推荐</span>
+                <van-icon name="arrow" />
+            </li>
+            <li class="van-hairline--bottom" @click="openQrcode">
+                <span>我的二维码</span>
+                <van-icon name="scan" />
+            </li>
+        </template>
+        <li class="van-hairline--bottom" v-else @click="goTo('/patient', { from: 'mine' })">
+            <span>我的就诊人</span>
+            <van-icon name="arrow" />
+        </li>
+        <li class="van-hairline--bottom" @click="goTo('/about')">
+            <span>关于我们</span>
+            <van-icon name="arrow" />
+        </li>
+        <li class="van-hairline--bottom" @click="handleLogOut">
+            <span>退出登录</span>
+            <van-icon name="arrow" />
+        </li>
+      </ul>
     </van-skeleton>
-    <ul class="user-list">
-      <li class="van-hairline--bottom" @click="goTo('/order')">
-        <span>我的订单</span>
-        <van-icon name="arrow" />
-      </li>
-      <li class="van-hairline--bottom" @click="goTo('/setting')">
-        <span>账号管理</span>
-        <van-icon name="arrow" />
-      </li>
-      <template v-if="user.userType==='3'">
-        <li class="van-hairline--bottom" @click="goTo('/recommend', { from: 'mine' })">
-          <span>我的推荐</span>
-          <van-icon name="arrow" />
-        </li>
-        <li class="van-hairline--bottom" @click="openQrcode">
-          <span>我的二维码</span>
-          <van-icon name="scan" />
-        </li>
-      </template>
-      <li class="van-hairline--bottom" v-else @click="goTo('/patient', { from: 'mine' })">
-        <span>我的就诊人</span>
-        <van-icon name="arrow" />
-      </li>
-       <li class="van-hairline--bottom" @click="goTo('/about')">
-        <span>关于我们</span>
-        <van-icon name="arrow" />
-      </li>
-      <li class="van-hairline--bottom" @click="handleLogOut">
-          <span>退出登录</span>
-          <van-icon name="arrow" />
-      </li>
-    </ul>
     <van-dialog v-model="showQrcode" title="我的推荐码">
       <img :src="qrcodeSrc" />
     </van-dialog>
@@ -68,7 +66,7 @@ export default {
   name: "User",
   data() {
     return {
-      loading: false,
+      loading: true,
       user: {
       },
       qrcodeSrc:'',
@@ -83,6 +81,7 @@ export default {
     async getUserInfoFn(){
      const { data } =  await getUserInfo()
      this.user = data.user
+     this.loading = false
     },
     goTo(r, query){
       this.$router.push({ path: r, query: query || {} })
