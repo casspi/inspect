@@ -140,6 +140,7 @@ import { Toast } from "vant";
 import { mapGetters } from "vuex";
 // import { wxLogin } from "../api/index";
 import { getPatient } from "../api/patient";
+import { getHospitalList,getDoctorList } from "../api/doctor";
 import { createOrder } from "../api/order";
 export default {
   name: "CreateOrder",
@@ -151,15 +152,21 @@ export default {
       patientName: "",
       urgentUserName: "",
       urgentUserPhone: "",
+      doctorUserId:'1512974846500405248',
       remark: "",
       patientList: [],
+      hosptialList:[],
+      doctorList:[],
       patientPicker: false,
     };
   },
   mounted() {
     this.init();
+    this.selectDoctorList('1384878507879882753');
   },
-  created() {},
+  created() {
+
+  },
   computed: {
     ...mapGetters(["userInfo"]),
     checkName() {
@@ -206,6 +213,8 @@ export default {
       //   const { id } = this.$route.query
       console.log(this.$route.query);
       this.tests = JSON.parse(this.$route.query.selectItems) || [];
+      const hospitalListData = await getHospitalList();
+      this.hosptialList = hospitalListData.data; // 医院列表
       // {
       //   testsName: this.$route.query.testsName,
       //   cartItemId: 9037,
@@ -227,14 +236,21 @@ export default {
       //   state.cartList = list
       //   state.address = address
     },
-    //选择病人
+
+      //选择病人
     patientPickerHandler() {
       if(this.patientList.length>0){
         this.patientPicker = true
       }else{
         this.$router.push({path:'patient-edit'})
       }
-    },
+    }, 
+      //选择病人
+    selectDoctorList(val) {
+      getDoctorList({id:val}).then((res) => {
+          console.log("医生列表：",res);
+      });
+    },  
     payHandler() {
       this.$refs.orderForm
         .validate()
@@ -246,12 +262,13 @@ export default {
               // inspectName: item.text
             });
           });
-          const { urgentUserName, urgentUserPhone, remark, patientId} = this;
+          const { urgentUserName, urgentUserPhone, remark, patientId,doctorUserId} = this;
           const {data} = await createOrder({
             itemList,
             patientId,
             urgentUserName,
             urgentUserPhone,
+            doctorUserId,
             remark,
           });
           // const data= await wxLogin()

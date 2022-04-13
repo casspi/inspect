@@ -166,6 +166,7 @@ export default {
         console.log(data);
         let token = "Bearer " + data.token;
         await setLocal("token", token);
+        await setLocal("userType", data.userType);
         this.setUserInfo(data);
           this.getPromptHandler();
           this.WXgetCode();

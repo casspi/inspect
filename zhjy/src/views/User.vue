@@ -16,7 +16,8 @@
     </van-skeleton>
     <ul class="user-list">
       <li class="van-hairline--bottom" @click="goTo('/order')">
-        <span>我的订单</span>
+        <span v-if="user.userType==='2'">我的订单</span>
+        <span v-if="user.userType!='2'">订单</span>
         <van-icon name="arrow" />
       </li>
       <li class="van-hairline--bottom" @click="goTo('/setting')">
@@ -33,8 +34,12 @@
           <van-icon name="scan" />
         </li>
       </template>
-      <li class="van-hairline--bottom" v-else @click="goTo('/patient', { from: 'mine' })">
+      <li class="van-hairline--bottom" v-if="user.userType==='2'" @click="goTo('/patient', { from: 'mine' })">
         <span>我的就诊人</span>
+        <van-icon name="arrow" />
+      </li>
+      <li class="van-hairline--bottom" v-if="user.userType==='1'" @click="goTo('/doctor', { from: 'mine' })">
+        <span>医生</span>
         <van-icon name="arrow" />
       </li>
        <li class="van-hairline--bottom" @click="goTo('/about')">
@@ -117,6 +122,7 @@ export default {
       })
         .then(() => {
          removeLocal('token')
+         removeLocal('userType')
           _this.setUserInfo('')
           _this.$router.push('login')
           })

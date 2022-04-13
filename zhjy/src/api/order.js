@@ -27,3 +27,9 @@ export function refund(params) {
   console.log(params)
   return axios.post('/pay/refund', params)
 }
+
+//退款申请
+export function cancelApply(params) {
+  console.log(params)
+  return axios.post('/order/cancelApply', params)
+}

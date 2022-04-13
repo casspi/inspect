@@ -26,13 +26,21 @@
         <label>下单时间：</label>
         <span>{{ detail.createTime }}</span>
       </div>
+      <div class="status-item" v-if="(userType!=3&&detail.payStatus == 8)">
+        <label>申请时间：</label>
+        <span>{{ detail.cancelApplyTime }}</span>
+      </div>
+      <div class="status-item" v-if="(userType!=2)">
+        <label>下单者：</label>
+        <span>{{ detail.createUser }}({{   detail.createUserPhone}})</span>
+      </div>
       <div class="status-item">
         <label>就诊人：</label>
         <span>{{ detail.patientName }}({{   detail.patientIdNumber}})</span>
       </div>
-      <div class="status-item">
+      <div class="status-item" v-if="(userType !=3)">
         <label>送检医生：</label>
-        <span>{{detail.doctorName }}</span>
+        <span>{{detail.doctorName }}({{detail.hospitalName}})</span>
       </div>
       <div class="status-item">
         <label>紧急联系人：</label>
@@ -40,15 +48,16 @@
       </div>
       <!-- <van-button v-if="[1,2,3].includes(detail.payStatus)" style="margin-bottom: 10px" color="#1baeae" block @click="confirmOrder(detail.orderNo)">确认订单</van-button> -->
       <van-button
-        v-if="detail.payStatus == 1 "
+        v-if="detail.payStatus == 1&&userType==2 "
         style="margin-bottom: 10px"
         color="#1baeae"
         block
         @click="WXpay"
         >去支付</van-button
       >
-      <van-button  v-if="(detail.payStatus == 1)" block @click="handleCancelOrder(detail.id)">取消订单</van-button>
-      <van-button  v-if="(detail.payStatus == 6)" block @click="handleRefundOrder(detail.id)">申请退款</van-button>
+      <van-button  v-if="(detail.payStatus == 1&&userType==2)" block @click="handleCancelOrder(detail.id)">取消订单</van-button>
+      <van-button  v-if="(detail.payStatus == 6&&userType==2)" block @click="handleCancelApplyOrder(detail.id)">申请退款</van-button>
+      <van-button  v-if="(detail.payStatus == 8&&userType==1)" block @click="handleAuditOrder(detail.id)">退款审核</van-button>
     </div>
     <div class="order-price">
       <div class="price-item">
@@ -84,11 +93,13 @@
 </template>
 
 <script>
+import { getLocal } from "@/common/js/utils";
 import {
   getOrderDetail,
   cancelOrder,
   confirmOrder,
   refund,
+  cancelApply,
   // payOrder,
 } from "@/api/order";
 import { prePay } from '@/api/index'
@@ -102,11 +113,14 @@ export default {
   },
   data() {
     return {
+      userType:-1,//用户角色
       detail: {},
     };
   },
   mounted() {
     this.init();
+    this.userType =  getLocal('userType');
+    console.log(this.userType);
   },
   methods: {
     async init() {
@@ -136,11 +150,29 @@ export default {
         });
     },
 
-    handleRefundOrder(id) {
+    //申请退款
+    handleCancelApplyOrder(id) {
       Dialog.confirm({
-        title: "确认退款？",
+        title: "确认取消订单？",
       })
         .then(() => {
+          cancelApply({id: this.detail.id,number: this.detail.number}).then((res) => {
+            if (res.code == 200) {
+              Toast("申请成功，请等待审核");
+              this.init();
+            }
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+
+    //申请退款 审核
+    handleAuditOrder(id) {
+      Dialog.confirm({
+        title: "审核是否通过？",
+      }).then(() => {
           refund({id: this.detail.id,number: this.detail.number}).then((res) => {
             if (res.code == 200) {
               Toast("退款成功");
@@ -152,6 +184,7 @@ export default {
           // on cancel
         });
     },
+
     handleConfirmOrder(id) {
       Dialog.confirm({
         title: "是否确认订单？",
