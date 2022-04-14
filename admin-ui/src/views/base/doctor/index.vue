@@ -174,7 +174,7 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['base:doctor:remove']"
-            v-if="scope.row.id!=100"
+            v-if="scope.row.doctorUserId!=600"
           >删除</el-button>
           <el-button 
             size="mini"

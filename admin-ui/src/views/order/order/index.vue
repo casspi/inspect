@@ -26,36 +26,36 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="医生" prop="doctorId" >
-        <el-select v-model="queryParams.doctorId" placeholder="请选择医生"  clearable size="small">
+      <el-form-item label="医生" prop="doctorUserId" >
+        <el-select v-model="queryParams.doctorUserId" placeholder="请选择医生"  clearable size="small">
          <el-option 
             v-for="dict in doctorOptions"
-            :key="dict.id"
+            :key="dict.doctorUserId"
             :label="dict.doctorName"
-            :value="dict.id"
+            :value="dict.doctorUserId"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="注册人" prop="userId">
+      <el-form-item label="注册人" prop="realName">
         <el-input
-          v-model="queryParams.userId"
+          v-model="queryParams.realName"
           placeholder="请输入注册人姓名"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         /></el-form-item>
-        <el-form-item label="注册人手机号" prop="userId2">
+        <el-form-item label="注册人手机号" prop="phonenumber">
         <el-input
-          v-model="queryParams.userId"
+          v-model="queryParams.phonenumber"
           placeholder="请输入注册人手机号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />  
       </el-form-item>
-      <el-form-item label="患者" prop="userId">
+      <el-form-item label="患者" prop="patientName">
         <el-input
-          v-model="queryParams.userId"
+          v-model="queryParams.patientName"
           placeholder="请输入患者姓名"
           clearable
           size="small"
@@ -351,7 +351,6 @@ export default {
         amount: null,
         actualAmount: null,
         hospitalId: null,
-        doctorId: null,
         payTime: null,
         createTime: null,
         payStatus: null,

@@ -1,25 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="120px">
-        <el-form-item label="注册人" prop="registerName">
-        <el-input
-          v-model="queryParams.registerName"
-          placeholder="请输入注册人"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="注册人手机号码" prop="registerPhonenumber">
-        <el-input
-          v-model="queryParams.registerPhonenumber"
-          placeholder="请输入手机号码"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="患者姓名" prop="realName">
+        <el-form-item label="用户" prop="realName">
         <el-input
           v-model="queryParams.realName"
           placeholder="请输入用户姓名"
@@ -28,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="患者手机号码" prop="phonenumber">
+      <el-form-item label="手机号码" prop="phonenumber">
         <el-input
           v-model="queryParams.phonenumber"
           placeholder="请输入手机号码"
@@ -37,34 +19,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="患者身份证" prop="idNumber">
-        <el-input
-          v-model="queryParams.idNumber"
-          placeholder="请输入身份证"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-            <el-form-item label="患者性别">
-              <el-select v-model="form.sex" placeholder="请选择">
-                <el-option
-                  v-for="dict in sexOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                ></el-option>
-              </el-select>
-        </el-form-item>
-      <!-- <el-form-item label="年龄" prop="age">
-        <el-input
-          v-model="queryParams.age"
-          placeholder="请输入年龄"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item>
         <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -113,25 +67,23 @@
 	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="patientList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">
       <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <el-table-column label="注册用户" align="center" prop="registerName" />
-      <el-table-column label="注册手机号" align="center" prop="registerPhonenumber" />
-      <el-table-column label="患者姓名" align="center" prop="realName" />
-      <el-table-column label="患者手机号码" align="center" prop="phonenumber" />
-      <el-table-column label="患者身份证" align="center" prop="idNumber" />
-      <el-table-column label="患者用户性别" align="center" prop="sex"  :formatter="sexFormat" />
-      <el-table-column label="患者年龄" align="center" prop="age" />
+      <el-table-column label="姓名" align="center" prop="realName" />
+      <el-table-column label="手机号" align="center" prop="phonenumber" />
+      <el-table-column label="身份证" align="center" prop="idNumber" />
+      <el-table-column label="用户性别" align="center" prop="sex"  :formatter="sexFormat" />
+      <el-table-column label="年龄" align="center" prop="age" />
       <el-table-column label="备注" align="center" prop="remark" />
-      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
+          <!-- <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['base:patient:edit']"
-          >修改</el-button>
+          >修改</el-button> -->
           <el-button
             size="mini"
             type="text"
@@ -139,8 +91,21 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['base:patient:remove']"
           >删除</el-button>
+           <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-key"
+                @click="handleResetPwd(scope.row)"
+                v-hasPermi="['system:user:resetPwd']"
+              >重置密码</el-button>
+            <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-key"
+                @click="openPatient(scope.row)"
+              >患者信息</el-button>    
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
     
     <pagination
@@ -150,6 +115,49 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
+
+ <!-- 添加或修改患者对话框 -->
+    <el-dialog :title="title" :visible.sync="openPatientFlag" width="1100px" append-to-body :close-on-click-modal='false'>
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-table :data="patientList"  border style="line-height: 0">
+            <el-table-column label="姓名" align="center" prop="realName" >
+              <template slot-scope="scope">
+                {{ scope.row.realName }}
+              </template>
+            </el-table-column>
+            <el-table-column label="手机号" align="center" prop="phonenumber" >
+              <template slot-scope="scope">
+                <el-tag size="small">{{ scope.row.phonenumber }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="身份证号" align="center" prop="idNumber" >
+              <template slot-scope="scope">
+                {{ scope.row.idNumber }}
+              </template>
+            </el-table-column>
+            <el-table-column label="性别" align="center" prop="sexStr" >
+              <template slot-scope="scope">
+               {{ scope.row.sexStr }}
+              </template>
+            </el-table-column>
+            <el-table-column label="年龄" align="center" prop="age" >
+              <template slot-scope="scope">
+               {{ scope.row.age }}
+              </template>
+               </el-table-column>
+              <el-table-column label="添加时间" align="center" prop="createTime" >
+              <template slot-scope="scope">
+               {{ scope.row.createTime }}
+              </template>
+            </el-table-column>
+          </el-table>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelPatient">关 闭</el-button>
+      </div>
+    </el-dialog>
+
 
     <!-- 添加或修改患者对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -187,7 +195,8 @@
 </template>
 
 <script>
-import { listPatient, getPatient, delPatient, addPatient, updatePatient, exportPatient } from "@/api/base/patient";
+import { listPatient, getPatient, delPatient, addPatient, updatePatient, exportPatient,listUser,listByUserId } from "@/api/base/patient";
+import { resetUserPwd,delUser } from "@/api/system/user";
 
 export default {
   name: "Patient",
@@ -207,12 +216,15 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
+      list:[],//用户列表
       // 患者表格数据
       patientList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
+      //查看患者详情
+      openPatientFlag:false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -242,9 +254,18 @@ export default {
     /** 查询患者列表 */
     getList() {
       this.loading = true;
-      listPatient(this.queryParams).then(response => {
-        this.patientList = response.rows;
+      listUser(this.queryParams).then(response => {
+        this.list = response.rows;
         this.total = response.total;
+        this.loading = false;
+      });
+    },
+
+    //根据注册人主键获取患者信息
+     getPatientList(val) {
+      this.loading = true;
+      listByUserId(val).then(response => {
+        this.patientList = response.data;
         this.loading = false;
       });
     },
@@ -252,6 +273,11 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+    },
+
+    // 取消按钮
+    cancelPatient() {
+      this.openPatientFlag = false;
     },
     // 表单重置
     reset() {
@@ -327,15 +353,16 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
+      /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$confirm('是否确认删除患者编号为"' + ids + '"的数据项?', "警告", {
+      const names = row.realName || this.names;
+      this.$confirm('是否确认删除用户为"' + names + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delPatient(ids);
+          return delUser(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
@@ -353,7 +380,24 @@ export default {
         }).then(response => {
           this.download(response.data);
         })
-    }
+    },
+      /** 重置密码按钮操作 */
+    handleResetPwd(row) {
+      this.$prompt('请输入"' + row.realName + '"的新密码', "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      }).then(({ value }) => {
+          resetUserPwd(row.id, value).then(response => {
+            this.msgSuccess("修改成功，新密码是：" + value);
+          });
+        }).catch(() => {});
+    },
+
+      /** 重置密码按钮操作 */
+    openPatient(row) {
+      this.getPatientList(row.id);
+      this.openPatientFlag =true;
+    },
   }
 };
 </script>
