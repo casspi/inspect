@@ -40,7 +40,8 @@
       </div>
       <div class="status-item" v-if="(userType !=3)">
         <label>送检医生：</label>
-        <span>{{detail.doctorName }}({{detail.hospitalName}})</span>
+        <span v-if="(userType ==1)">{{detail.doctorName }}({{detail.doctorPhone}},{{detail.hospitalName}})</span>
+        <span v-if="(userType ==2)">{{detail.doctorName }}({{detail.hospitalName}})</span>
       </div>
       <div class="status-item">
         <label>紧急联系人：</label>
