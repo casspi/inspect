@@ -5,11 +5,11 @@
         v-show="detail.payStatus === 6"
         color="#1989fa"
         background="#ecf9ff"
-        left-icon="info-o" v-if="(userType ==1)"
+        left-icon="info-o" v-if="(userType ==2)"
       >
         您的检查项目已经下单成功，我们会尽快安排工作人员进行检测。
       </van-notice-bar>
-      <van-notice-bar v-show="detail.payStatus === 1" v-if="(userType ==1)" left-icon="info-o">
+      <van-notice-bar v-show="detail.payStatus === 1" v-if="(userType ==2)" left-icon="info-o">
         您的订单尚未完成支付，请尽快支付以免耽误检查。
       </van-notice-bar>
     </van-sticky>
