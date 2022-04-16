@@ -152,14 +152,15 @@
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
           <!-- <el-table-column label="用户编号" align="center" prop="id" /> -->
-          <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true" />
+          <el-table-column label="账号" align="center" prop="userName" :show-overflow-tooltip="true" />
+          <el-table-column label="姓名" align="center" prop="realName" :show-overflow-tooltip="true" />
           <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true" />
-          <el-table-column label="身份证号" align="center" prop="idNumber" :show-overflow-tooltip="true"  />
-          <el-table-column label="年龄" align="center" prop="age" :show-overflow-tooltip="true" />
+           <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
+          <!-- <el-table-column label="身份证号" align="center" prop="idNumber" :show-overflow-tooltip="true"  /> -->
+          <!-- <el-table-column label="年龄" align="center" prop="age" :show-overflow-tooltip="true" /> -->
           <el-table-column label="性别" align="center" prop="sex" :show-overflow-tooltip="true"  :formatter="sexFormat"/>
           <el-table-column label="用户类型" align="center" prop="userTypeStr" :show-overflow-tooltip="true" />
           <!-- <el-table-column label="部门" align="center" prop="dept.deptName" :show-overflow-tooltip="true" /> -->
-          <el-table-column label="手机号码" align="center" prop="phonenumber" width="120" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
               <el-switch

@@ -139,14 +139,14 @@
 
     <el-table v-loading="loading" :data="doctorList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="所属医院" align="center" prop="hospitalName" width="200"/>
       <el-table-column label="姓名" align="center" prop="doctorName"/>
       <el-table-column label="手机号" align="center" prop="userName" width="150"/>
+      <el-table-column label="业务员" align="center" prop="salesmanName" width="100"/>
+      <el-table-column label="所属医院" align="center" prop="hospitalName" width="200"/>
       <el-table-column label="身份证号" align="center" prop="idNumber" width="200"/>
      <el-table-column label="科室类别" align="center" prop="deptType" :formatter="departmentTypeFormat" />
       <el-table-column label="职务" align="center" prop="position"/>
       <el-table-column label="职称" align="center" prop="jobTitle"/>
-      <el-table-column label="业务员" align="center" prop="salesmanName" width="100"/>
       <el-table-column label="状态" align="center" width="100">
         <template slot-scope="scope">
           <el-switch
@@ -659,7 +659,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       }).then(({ value }) => {
-          resetUserPwd(row.userId, value).then(response => {
+          resetUserPwd(row.doctorUserId, value).then(response => {
             this.msgSuccess("修改成功，新密码是：" + value);
           });
         }).catch(() => {});
