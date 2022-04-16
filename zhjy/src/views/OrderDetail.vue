@@ -32,7 +32,7 @@
       </div>
       <div class="status-item" v-if="(userType!=2)">
         <label>下单者：</label>
-        <span>{{ detail.createUser }}({{   detail.createUserPhone}})</span>
+        <span>{{ detail.realName }}({{   detail.phonenumber}})</span>
       </div>
       <div class="status-item">
         <label>就诊人：</label>
