@@ -505,6 +505,7 @@ export default {
         createTime: null,
         updateBy: null,
         updateTime: null,
+        password: undefined,
         remark: null
       };
       this.resetForm("form");

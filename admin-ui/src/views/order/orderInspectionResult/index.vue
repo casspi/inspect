@@ -91,9 +91,7 @@
 
     <el-table v-loading="loading" :data="orderInspectionResultList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="订单信息" align="center" prop="orderId" />
-      <el-table-column label="订单明细主键" align="center" prop="orderItemId" />
-      <el-table-column label="检验项目信息" align="center" prop="inspectionItemId" />
+      <el-table-column label="检验编号" align="center" prop="inspectionNumber" />
       <el-table-column label="检验结果" align="center" prop="inspectionResult" />
       <el-table-column label="检验时间" align="center" prop="inspectionTime" width="180">
         <template slot-scope="scope">
@@ -133,14 +131,8 @@
     <!-- 添加或修改订单检验结果对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="订单信息" prop="orderId">
+        <el-form-item label="检验编号" prop="inspectionNumber">
           <el-input v-model="form.orderId" placeholder="请输入订单信息" />
-        </el-form-item>
-        <el-form-item label="订单明细主键" prop="orderItemId">
-          <el-input v-model="form.orderItemId" placeholder="请输入订单明细主键" />
-        </el-form-item>
-        <el-form-item label="检验项目信息" prop="inspectionItemId">
-          <el-input v-model="form.inspectionItemId" placeholder="请输入检验项目信息" />
         </el-form-item>
         <el-form-item label="检验结果" prop="inspectionResult">
           <el-input v-model="form.inspectionResult" type="textarea" placeholder="请输入内容" />
