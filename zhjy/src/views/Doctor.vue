@@ -11,14 +11,17 @@
         :finished-text="list.length<=0?'暂无数据':'没有更多了'"
         @load="onLoad"
       >
-      <van-contact-card
-          v-for="item in list"
-          :key="item.id"
-          type="edit"
-          :name="`${item.doctorName} ${item.sexStr} ${item.age}岁`"
-          :tel="item.userName"
-          :editable="false"
-        />
+          <div
+              v-for="item in list"
+              :key="item.id"
+              class="my-contact-card">
+              <i class="van-icon van-icon-contact van-cell__left-icon"></i>
+              <div class="right-content">
+                  <div>姓名：{{`${item.doctorName} ${item.sexStr} ${item.age}岁`}}</div>
+                  <div>所属医院：{{`${item.hospitalName}`}} {{`${item.position}`}} {{`${item.jobTitle}`}}</div>
+                  <div>创建时间：{{`${item.createTime}`}}</div>
+              </div>
+          </div>
       </van-list>
     </van-pull-refresh>
   </div>
