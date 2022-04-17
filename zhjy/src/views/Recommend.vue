@@ -23,8 +23,6 @@
                 <div>推荐时间：{{`${item.createTime}`}}</div>
             </div>
         </div>
-          <!--
-          @click="goTo('edit',item)" -->
       </van-list>
     </van-pull-refresh>
   </div>
@@ -96,25 +94,6 @@ export default {
   overflow-y: scroll;
   .patient-list {
   }
-}
-.my-contact-card{
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    padding: 16px;
-    line-height: 20px;
-    position: relative;
-    &::before{
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        height: 0.05333rem;
-        background: -webkit-repeating-linear-gradient(135deg,#ff6c6c 0,#ff6c6c 20%,transparent 0,transparent 25%,#1989fa 0,#1989fa 45%,transparent 0,transparent 50%);
-        background: repeating-linear-gradient(-45deg,#ff6c6c 0,#ff6c6c 20%,transparent 0,transparent 25%,#1989fa 0,#1989fa 45%,transparent 0,transparent 50%);
-        background-size: 2.13333rem;
-        content: '';
-    }
 }
 .right-content{
     margin-left: 5px;

@@ -29,7 +29,7 @@ axios.interceptors.response.use((res) => {
       router.replace({ path: '/login' })
       return Promise.reject(res.data)
     }
-    if (res.data.msg) Toast.fail(res.data.msg)
+    // if (res.data.msg) Toast.fail(res.data.msg)
     return Promise.reject(res.data)
   }
 

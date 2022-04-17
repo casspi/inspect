@@ -58,7 +58,7 @@
       >
       <van-button  v-if="(detail.payStatus == 1&&userType==2)" block @click="handleCancelOrder(detail.id)">取消订单</van-button>
       <van-button  v-if="(detail.payStatus == 6&&userType==2)" block @click="handleCancelApplyOrder(detail.id)">申请退款</van-button>
-      <van-button  v-if="(detail.payStatus == 8&&userType==1)" block @click="handleAuditOrder(detail.id)">退款审核</van-button>
+      <van-button  v-if="1 || (detail.payStatus == 8&&userType==1)" block @click="handleAuditOrder(detail.id)">退款审核</van-button>
     </div>
     <div class="order-price">
       <div class="price-item">
@@ -89,7 +89,23 @@
        <router-link :to="{path: 'result', query: {inspect: JSON.stringify(item)}}"><van-button type="primary" size="mini">查看检验结果</van-button></router-link>
      </template>
     </van-card>
-      <!-- :thumb="item.goodsCoverImg" -->
+      <van-dialog v-model="showAuditDialog"
+                  title="审核是否通过？"
+                  show-cancel-button
+                  cancel-button-text="不通过"
+                  confirm-button-text="通过"
+                  @confirm="handleConfirmOrCancel(1)"
+                  @cancel="handleConfirmOrCancel(2)">
+          <van-field
+              v-model="content"
+              rows="2"
+              autosize
+              type="textarea"
+              maxlength="50"
+              placeholder="请输入审核意见"
+              show-word-limit
+          />
+      </van-dialog>
   </div>
 </template>
 
@@ -113,10 +129,12 @@ export default {
     ...mapGetters(['userInfo'])
   },
   data() {
-    return {
-      userType:-1,//用户角色
-      detail: {},
-    };
+        return {
+            userType:-1,//用户角色
+            detail: {},
+            showAuditDialog: false,
+            content: ''
+        }
   },
   mounted() {
     this.init();
@@ -134,6 +152,7 @@ export default {
       this.detail = data || {};
       Toast.clear();
     },
+    //取消订单
     handleCancelOrder(id) {
       Dialog.confirm({
         title: "确认取消订单？",
@@ -154,10 +173,10 @@ export default {
     //申请退款
     handleCancelApplyOrder(id) {
       Dialog.confirm({
-        title: "确认取消订单？",
+        title: "确认申请退款？",
       })
         .then(() => {
-          cancelApply({id: this.detail.id,number: this.detail.number}).then((res) => {
+          cancelApply({id, number: this.detail.number}).then((res) => {
             if (res.code == 200) {
               Toast("申请成功，请等待审核");
               this.init();
@@ -169,23 +188,21 @@ export default {
         });
     },
 
-    //申请退款 审核
-    handleAuditOrder(id) {
-      Dialog.confirm({
-        title: "审核是否通过？",
-      }).then(() => {
-          refund({id: this.detail.id,number: this.detail.number}).then((res) => {
-            if (res.code == 200) {
-              Toast("退款成功");
-              this.init();
+        //申请退款 审核弹框
+        handleAuditOrder() {
+            this.showAuditDialog = true
+        },
+        //通过、不通过
+        async handleConfirmOrCancel(auditStatus) {
+            const { detail: { id }, content } = this
+            if(!content) {
+                this.$toast('请输入审核意见')
+                return false
             }
-          });
-        })
-        .catch(() => {
-          // on cancel
-        });
-    },
-
+            this.content = ''
+            const { code } = await refund({id, auditStatus, content})
+            if(code == 200) this.init()
+        },
     handleConfirmOrder(id) {
       Dialog.confirm({
         title: "是否确认订单？",
