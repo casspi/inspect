@@ -92,8 +92,10 @@
       <van-dialog v-model="showAuditDialog"
                   title="审核是否通过？"
                   show-cancel-button
+                  close-on-click-overlay
                   cancel-button-text="不通过"
                   confirm-button-text="通过"
+                  :beforeClose="beforeClose"
                   @confirm="handleConfirmOrCancel(1)"
                   @cancel="handleConfirmOrCancel(2)">
           <van-field
@@ -195,13 +197,17 @@ export default {
         //通过、不通过
         async handleConfirmOrCancel(auditStatus) {
             const { detail: { id }, content } = this
-            if(!content) {
-                this.$toast('请输入审核意见')
-                return false
-            }
-            this.content = ''
+            if(!content) throw '审核意见不能为空'
             const { code } = await refund({id, auditStatus, content})
             if(code == 200) this.init()
+        },
+        beforeClose(action, done){
+            if (['confirm', 'cancel'].includes(action) && !this.content) {
+                return done(false)
+            }else {
+                done(true)
+                this.content = ''
+            }
         },
     handleConfirmOrder(id) {
       Dialog.confirm({
