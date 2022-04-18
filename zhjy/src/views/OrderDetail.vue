@@ -58,7 +58,7 @@
       >
       <van-button  v-if="(detail.payStatus == 1&&userType==2)" block @click="handleCancelOrder(detail.id)">取消订单</van-button>
       <van-button  v-if="(detail.payStatus == 6&&userType==2)" block @click="handleCancelApplyOrder(detail.id)">申请退款</van-button>
-      <van-button  v-if="1 || (detail.payStatus == 8&&userType==1)" block @click="handleAuditOrder(detail.id)">退款审核</van-button>
+      <van-button  v-if="(detail.payStatus == 8&&userType==1)" block @click="handleAuditOrder(detail.id)">退款审核</van-button>
     </div>
     <div class="order-price">
       <div class="price-item">
