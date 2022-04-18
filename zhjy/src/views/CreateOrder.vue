@@ -262,13 +262,12 @@ export default {
               // inspectName: item.text
             });
           });
-          const { urgentUserName, urgentUserPhone, remark, patientId,doctorUserId} = this;
+          const { urgentUserName, urgentUserPhone, remark, patientId} = this;
           const {data} = await createOrder({
             itemList,
             patientId,
             urgentUserName,
             urgentUserPhone,
-            doctorUserId,
             remark,
           });
           // const data= await wxLogin()
