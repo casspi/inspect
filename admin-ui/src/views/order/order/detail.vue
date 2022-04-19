@@ -86,7 +86,9 @@
             </el-table-column>
             <el-table-column label="检验结果" align="center" prop="inspectionResultTime">
               <template slot-scope="scope">
-                <el-button size="small" @click="handleResultPop(scope.row)">录入</el-button>
+                <el-button size="small" v-if="scope.row.inspectionStatus==1" @click="handleResultPop(scope.row,1)">录入</el-button>
+                <el-button size="small" v-if="scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,2)">补录</el-button>
+                <el-button size="small" v-if="scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,3)">查看</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -243,9 +245,13 @@ export default {
         console.log(row);
     },
     //打开录入弹框
-    handleResultPop(data) {
+    handleResultPop(data,type) {
       console.log(data.id);
-      this.$refs.refInspectinResult.show(data.id)
+      if(type==1){
+        this.$refs.refInspectinResult.show(data.id)
+      }else if(type==3){
+        this.$refs.refInspectinResult.look(data.id)
+      }
     }
   },
   components: {

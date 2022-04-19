@@ -73,7 +73,7 @@
     </el-dialog>
 </template>
 <script>
-import { saveResult } from "@/api/order/orderItem";
+import { saveResult,getOrderItem } from "@/api/order/orderItem";
 
 export default {
     data() {
@@ -103,6 +103,19 @@ export default {
                 this.reject = reject;
             })
         },
+
+        look(id) {
+            this.visible = true
+            this.id=id;
+            getOrderItem(id).then((response) => {
+             console.log(response.data) ;
+          });
+            return new Promise((resolve,reject) => {
+                this.resolve = resolve;
+                this.reject = reject;
+            })
+
+        },
         hide() {
             this.visible = false
             this.reject()
@@ -119,7 +132,7 @@ export default {
 
             //this.resolve()
             //this.hide()
-            saveResult({id:this.id,inspectionNumber:this.form.inspectionNumber,result:this.form.result,time:this.form.time,items:JSON.stringify(this.form.items)}).then((response) => {
+            saveResult({id:this.id,inspectionNumber:this.form.inspectionNumber,result:this.form.result,time:this.form.time,resultItems:JSON.stringify(this.form.items)}).then((response) => {
              console.log(response.data) ;
       });
         }
