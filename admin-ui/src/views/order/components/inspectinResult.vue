@@ -50,8 +50,8 @@
                     <el-col span="5" >
                         <el-select v-model="item.result" placeholder="结果判断">
                             <el-option label="偏低" value="1"></el-option>
-                            <el-option label="偏高" value="2"></el-option>
-                            <el-option label="偏高" value="2"></el-option>
+                            <el-option label="正常" value="2"></el-option>
+                            <el-option label="偏高" value="3"></el-option>
                         </el-select>
                     </el-col>
                     <el-col span="2">
