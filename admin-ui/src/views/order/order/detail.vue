@@ -9,7 +9,7 @@
             <el-form-item label="支付状态:">
               {{ orderDetail.payStatus | parsePayStatus }}
             </el-form-item>
-        </el-col>    
+        </el-col>
         <el-col :span="12">
         <el-form-item label="支付时间:">
               {{ orderDetail.payTime }}
@@ -34,7 +34,7 @@
             <el-form-item label="开单医生：">
               {{ orderDetail.doctorName }}
             </el-form-item>
-          </el-col>    
+          </el-col>
         </el-row>
         <el-form-item label="检验项目：">
           <el-table :data="orderDetail.itemList"  border style="line-height: 0">
@@ -43,7 +43,7 @@
                 {{ scope.row.inspectionNumber }}
               </template>
             </el-table-column>
-            <el-table-column label="项目名称" align="center" prop="inspectName" >
+            <el-table-column label="项目名称" width="220" align="center" prop="inspectName" >
               <template slot-scope="scope">
                 <el-tag size="small">{{ scope.row.inspectName }}</el-tag>
               </template>
@@ -77,12 +77,17 @@
             <el-table-column label="送检时间" align="center" prop="inspectionSendTime">
              <template slot-scope="scope">
                 {{ scope.row.inspectionSendTime }}
-              </template>  
+              </template>
             </el-table-column>
              <el-table-column label="检验结果时间" align="center" prop="inspectionResultTime">
              <template slot-scope="scope">
                 {{ scope.row.inspectionResultTime }}
-              </template>  
+              </template>
+            </el-table-column>
+            <el-table-column label="检验结果" align="center" prop="inspectionResultTime">
+              <template slot-scope="scope">
+                <el-button size="small" @click="handleResultPop(scope.row)">录入</el-button>
+              </template>
             </el-table-column>
           </el-table>
           <!-- <el-tag size="small" v-for="(item,index) in orderDetail.itemList" :key="index">{{item.inspectName}}<span>{{item.inspectionStatus | parseInspectionStatus}}</span></el-tag> -->
@@ -107,7 +112,7 @@
          <el-form-item label="患者身份证号：">
           {{ orderDetail.patientIdNumber }}
         </el-form-item>
-        </el-col> 
+        </el-col>
         <el-col :span="12">
             <el-form-item label="紧急联系人:">
               {{ orderDetail.urgentUserName }}
@@ -132,11 +137,13 @@
           {{orderDetail.inspectionStatus}}
         </el-form-item> -->
       </el-form>
+      <inspectin-result ref="refInspectinResult"></inspectin-result>
   </div>
 </template>
 
 <script>
 import { getOrder } from "@/api/order/order";
+import inspectinResult from "../components/inspectinResult"
 
 export default {
   name: "OrderItem",
@@ -160,7 +167,7 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
-      
+
       orderDetail: {},
       // 查询参数
       queryParams: {
@@ -234,7 +241,14 @@ export default {
    //检查结果详情
     openResultHandle(row){
         console.log(row);
+    },
+    //打开录入弹框
+    handleResultPop(data) {
+      this.$refs.refInspectinResult.show(data)
     }
-   },   
+  },
+  components: {
+    inspectinResult
+  }
 };
 </script>
