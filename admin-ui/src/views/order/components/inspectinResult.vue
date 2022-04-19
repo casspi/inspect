@@ -34,17 +34,14 @@
                         <el-input
                             v-model="item.value"
                             autocomplete="off"
-                            placeholder="检验结果值"
-                            type="number"
-                            step="0.01">
+                            placeholder="检验结果值">
                         </el-input>
                     </el-col>
                     <el-col span="5">
                         <el-input
                             v-model="item.acceptanceValue"
                             placeholder="检验参考值"
-                            autocomplete="off"
-                            type="number">
+                            autocomplete="off">
                         </el-input>
                     </el-col>
                     <el-col span="5" >
