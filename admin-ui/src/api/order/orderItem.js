@@ -51,3 +51,12 @@ export function exportOrderItem(query) {
     params: query
   })
 }
+
+// 保存检验结果
+export function saveResult(data) {
+  return request({
+    url: '/order/order/saveResult',
+    method: 'post',
+    data: data
+  })
+}

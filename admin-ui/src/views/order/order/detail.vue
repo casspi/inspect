@@ -143,7 +143,7 @@
 
 <script>
 import { getOrder } from "@/api/order/order";
-import inspectinResult from "../components/inspectinResult"
+ import inspectinResult from "../components/inspectinResult"
 
 export default {
   name: "OrderItem",
@@ -244,7 +244,8 @@ export default {
     },
     //打开录入弹框
     handleResultPop(data) {
-      this.$refs.refInspectinResult.show(data)
+      console.log(data.id);
+      this.$refs.refInspectinResult.show(data.id)
     }
   },
   components: {
