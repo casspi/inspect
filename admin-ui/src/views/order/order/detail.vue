@@ -86,9 +86,9 @@
             </el-table-column>
             <el-table-column label="检验结果" align="center" prop="inspectionResultTime">
               <template slot-scope="scope">
-                <el-button size="small" v-if="scope.row.inspectionStatus==1" @click="handleResultPop(scope.row,1)">录入</el-button>
-                <el-button size="small" v-if="scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,2)">补录</el-button>
-                <el-button size="small" v-if="scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,3)">查看</el-button>
+                <el-button size="mini" v-if="scope.row.inspectionStatus==1" @click="handleResultPop(scope.row,1)">录入</el-button>
+                <el-button size="mini" v-if="scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,2)">补录</el-button>
+                <el-button size="mini" v-if="scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,3)">查看</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -194,8 +194,7 @@ export default {
     };
   },
   created() {
-    const id = this.$route.params && this.$route.params.id;
-    this.getDetail(id);
+    this.getDetail();
   },
   filters: {
     parseInspectionStatus: function (val) {
@@ -235,7 +234,8 @@ export default {
   },
   methods: {
        /** 查看订单详情 */
-    getDetail(id) {
+    getDetail() {
+       const id = this.$route.params && this.$route.params.id;
       getOrder(id).then((response) => {
         this.orderDetail = response.data;
       });
@@ -245,13 +245,9 @@ export default {
         console.log(row);
     },
     //打开录入弹框
-    handleResultPop(data,type) {
-      console.log(data.id);
-      if(type==1){
-        this.$refs.refInspectinResult.show(data.id)
-      }else if(type==3){
-        this.$refs.refInspectinResult.look(data.id)
-      }
+    async handleResultPop(data,type) {
+        await this.$refs.refInspectinResult.show(data.id, type)
+        if( [1,2].includes(type) ) this.getDetail()
     }
   },
   components: {
