@@ -69,9 +69,8 @@
               </template>
                </el-table-column>
             <el-table-column label="状态" align="center" >
-                <template slot-scope="scope" v-if="scope.row.inspectionStatus==1||scope.row.inspectionStatus==6">
-                  <el-link title="查看检验情况" type="primary" @click="openResultHandle(scope.row)">
-                    {{ scope.row.inspectionStatusStr}}</el-link>
+                <template slot-scope="scope">
+                  {{ scope.row.inspectionStatusStr}}
                 </template>
             </el-table-column>
             <el-table-column label="送检时间" align="center" prop="inspectionSendTime">

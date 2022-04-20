@@ -180,7 +180,7 @@
           <span>{{ scope.row.payStatus | parsePayStatus }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="检验状态" align="center" prop="inspectionStatus" />
+      <el-table-column label="检验状态" align="center" prop="inspectionStatusStr" />
       <!-- <el-table-column label="紧急联系人" align="center" prop="urgentUserName" />
       <el-table-column label="紧急联系人电话" align="center" prop="urgentUserPhone" /> -->
       <!-- <el-table-column label="状态" align="center" prop="status" /> -->
