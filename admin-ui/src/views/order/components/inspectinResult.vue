@@ -31,51 +31,57 @@
                     placeholder="选择检验时间">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="检验项">
-                <div id="items">
-                    <el-row class="item" :class="[1,2].includes(type)?'sortable-item':''" v-for="(item,index) in form.items" :key="index" :gutter="10">
-                        <el-col :span="1">
-                            {{index+1}}
-                        </el-col>
-                        <el-col :span="5">
-                            <el-input
-                                v-model="item.name"
-                                autocomplete="off"
-                                placeholder="项目名"
-                                :readonly="type === 3"
-                                maxlength="50">
-                            </el-input>
-                        </el-col>
-                        <el-col :span="5">
-                            <el-input
-                                v-model="item.value"
-                                autocomplete="off"
-                                :readonly="type === 3"
-                                placeholder="检验结果值">
-                            </el-input>
-                        </el-col>
-                        <el-col :span="5">
-                            <el-input
-                                v-model="item.acceptanceValue"
-                                placeholder="检验参考值"
-                                :readonly="type === 3"
-                                autocomplete="off">
-                            </el-input>
-                        </el-col>
-                        <el-col :span="5" >
-                            <el-select v-model="item.result" placeholder="结果判断" :disabled="type === 3">
-                                <el-option label="偏低" value="1"></el-option>
-                                <el-option label="正常" value="2"></el-option>
-                                <el-option label="偏高" value="3"></el-option>
-                            </el-select>
-                        </el-col>
-                        <el-col :span="2" v-if="type !== 3">
-                            <el-button v-if="index === 0" icon="el-icon-plus" type="primary" @click="handleAdd" plain circle></el-button>
-                            <el-button v-else type="danger" icon="el-icon-delete" @click="handleDelete(index)" plain circle></el-button>
-                        </el-col>
-                    </el-row>
-                </div>
-            </el-form-item>
+            <div id="items">
+                <el-row class="row-header">
+                    <el-col :span="1">序号</el-col>
+                    <el-col :span="5">项目名</el-col>
+                    <el-col :span="5">检验结果值</el-col>
+                    <el-col :span="5">检验参考值</el-col>
+                    <el-col :span="5">结果判断</el-col>
+                    <el-col :span="2" v-if="type !== 3">操作</el-col>
+                </el-row>
+                <el-row class="item" :class="[1,2].includes(type)?'sortable-item':''" v-for="(item,index) in form.items" :key="index" :gutter="10">
+                    <el-col :span="1">
+                        {{index+1}}
+                    </el-col>
+                    <el-col :span="5">
+                        <el-input
+                            v-model="item.name"
+                            autocomplete="off"
+                            placeholder="项目名"
+                            :readonly="type === 3"
+                            maxlength="50">
+                        </el-input>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-input
+                            v-model="item.value"
+                            autocomplete="off"
+                            :readonly="type === 3"
+                            placeholder="检验结果值">
+                        </el-input>
+                    </el-col>
+                    <el-col :span="5">
+                        <el-input
+                            v-model="item.acceptanceValue"
+                            placeholder="检验参考值"
+                            :readonly="type === 3"
+                            autocomplete="off">
+                        </el-input>
+                    </el-col>
+                    <el-col :span="5" >
+                        <el-select v-model="item.result" placeholder="结果判断" :disabled="type === 3">
+                            <el-option label="偏低" value="1"></el-option>
+                            <el-option label="正常" value="2"></el-option>
+                            <el-option label="偏高" value="3"></el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="2" v-if="type !== 3">
+                        <el-button v-if="index === 0" icon="el-icon-plus" type="primary" @click="handleAdd" plain circle></el-button>
+                        <el-button v-else type="danger" icon="el-icon-delete" @click="handleDelete(index)" plain circle></el-button>
+                    </el-col>
+                </el-row>
+            </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="visible = false" v-if="type != 3">取 消</el-button>
@@ -201,11 +207,17 @@ export default {
         -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
         user-select: none; /* Non-prefixed version, currentlynot supported by any browser */
+        margin-left: 120px;
+        line-height: 50px;
     }
     .item{
         &.sortable-item{
             cursor: move;
         }
         margin-bottom: 8px;
+
+    }
+    .row-header{
+        font-weight: bolder;
     }
 </style>
