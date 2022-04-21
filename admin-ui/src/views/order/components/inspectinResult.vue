@@ -31,7 +31,8 @@
                     placeholder="选择检验时间">
                 </el-date-picker>
             </el-form-item>
-            <div id="items">
+            <el-form-item label="检验结果">
+                <div id="items">
                 <el-row class="row-header">
                     <el-col :span="1">序号</el-col>
                     <el-col :span="5">项目名</el-col>
@@ -82,6 +83,7 @@
                     </el-col>
                 </el-row>
             </div>
+            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="visible = false" v-if="type != 3">取 消</el-button>
@@ -207,8 +209,8 @@ export default {
         -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
         user-select: none; /* Non-prefixed version, currentlynot supported by any browser */
-        margin-left: 120px;
-        line-height: 50px;
+        //margin-left: 120px;
+        line-height: 36px;
     }
     .item{
         &.sortable-item{
