@@ -36,9 +36,10 @@
                 <el-row class="row-header">
                     <el-col :span="1">序号</el-col>
                     <el-col :span="5">项目名</el-col>
-                    <el-col :span="5">检验结果值</el-col>
-                    <el-col :span="5">检验参考值</el-col>
-                    <el-col :span="5">结果判断</el-col>
+                    <el-col :span="4">检验结果值</el-col>
+                    <el-col :span="4">检验参考值</el-col>
+                    <el-col :span="4">单位</el-col>
+                    <el-col :span="4">结果判断</el-col>
                     <el-col :span="2" v-if="type !== 3">操作</el-col>
                 </el-row>
                 <el-row class="item" :class="[1,2].includes(type)?'sortable-item':''" v-for="(item,index) in form.items" :key="index" :gutter="10">
@@ -54,7 +55,7 @@
                             maxlength="50">
                         </el-input>
                     </el-col>
-                    <el-col :span="5">
+                    <el-col :span="4">
                         <el-input
                             v-model="item.value"
                             autocomplete="off"
@@ -62,7 +63,7 @@
                             placeholder="检验结果值">
                         </el-input>
                     </el-col>
-                    <el-col :span="5">
+                    <el-col :span="4">
                         <el-input
                             v-model="item.acceptanceValue"
                             placeholder="检验参考值"
@@ -70,7 +71,15 @@
                             autocomplete="off">
                         </el-input>
                     </el-col>
-                    <el-col :span="5" >
+                    <el-col :span="4">
+                        <el-input
+                            v-model="item.unit"
+                            placeholder="单位"
+                            :readonly="type === 3"
+                            autocomplete="off">
+                        </el-input>
+                    </el-col>
+                    <el-col :span="4" >
                         <el-select v-model="item.result" placeholder="结果判断" :disabled="type === 3">
                             <el-option label="偏低" value="1"></el-option>
                             <el-option label="正常" value="2"></el-option>
@@ -110,7 +119,7 @@ export default {
                 inspectionNumber: '',
                 acceptanceValue:'',
                 items:[
-                    { name:'', value: '', acceptanceValue: '', result: ''},
+                    { name:'', value: '', acceptanceValue: '', unit:'', result: ''},
                 ]
             }
         }
@@ -167,7 +176,11 @@ export default {
         handleConfirm(){
             console.log(this.form.items);
             if([1,2].includes(this.type)){
-                saveResult({id:this.id,inspectionNumber:this.form.inspectionNumber,result:this.form.result,time:this.form.time,resultItems:JSON.stringify(this.form.items)}).then((response) => {
+                saveResult({id:this.id,
+                    inspectionNumber:this.form.inspectionNumber,
+                    result:this.form.result,
+                    time:this.form.time,
+                    resultItems:JSON.stringify(this.form.items)}).then((response) => {
                     console.log(response.data) ;
                     this.resolve()
                     this.hide()

@@ -33,3 +33,8 @@ export function cancelApply(params) {
   console.log(params)
   return axios.post('/order/cancelApply', params)
 }
+
+//检验结果
+export function getResult(params) {
+  return axios.get('/order/getResult', {params})
+}

@@ -1,73 +1,91 @@
 <template>
-  <div class="result">
-    <div class="result-title">
-      <h4>{{inspect.inspectName}}</h4>  
-      <div class="time">
-        <span>采集时间：2021-5-02 16:38:43</span>
-        <span>发布时间：2021-5-12 16:38:43</span>
-      </div>
+    <div>
+        <div class="result">
+            <div class="result-title">
+                <h4>{{inspect.inspectName}}</h4>
+                <div class="time">
+                    <span>采集时间：{{result.inspectionSendTime || '-'}}</span>
+                    <span>发布时间：{{ result.inspectionResultTime || '-'}}</span>
+                </div>
+            </div>
+            <div class="result-table-w">
+                <table class="result-table">
+                    <thead>
+                    <tr>
+                        <th align="left">项目</th>
+                        <th align="left">结果</th>
+                        <th align="left">单位</th>
+                        <th align="left">参考值</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in result.resultItems" :key="index">
+                            <td>{{item.name}}</td>
+                            <td class="item-value" :class="computedClass(item)">{{item.value}}</td>
+                            <td>{{item.unit || '-'}}</td>
+                            <td>{{item.acceptanceValue}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="result-footer">
+                <span>汇昌检验有限公司</span>
+                <span>检验员：李时珍</span>
+            </div>
+        </div>
     </div>
-    <div class="result-table-w">
-      <table class="result-table">
-        <thead>
-          <tr>
-            <th align="left">项目</th>
-            <th align="left">结果</th>
-            <th align="left">单位</th>
-            <th align="left">参考值</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>谷氨酸氨基转移酶</td>
-            <td class="item-value low">22</td>
-            <td>U/L</td>
-            <td>0-40</td>
-          </tr>
-          <tr>
-            <td>谷氨酸氨基转移酶</td>
-            <td class="item-value">22</td>
-            <td>U/L</td>
-            <td>0-40</td>
-          </tr>
-          <tr>
-            <td>尿酸</td>
-            <td class="item-value high">380</td>
-            <td>umol/L</td>
-            <td>90-420</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="result-footer">
-      <span>汇昌检验有限公司</span>
-      <span>检验员：李时珍</span>
-    </div>
-  </div>
 </template>
 
 <script>
+import { getResult } from "@/api/order";
 export default {
-  components: {
-  },
-  data() {
-    return {
-      inspect: {}
+    data() {
+        return {
+            inspect: {},
+            result: {}
+        }
+    },
+    computed:{
+      computedClass(){
+          return (item) => {
+              const classs = {
+                  '1': 'low',
+                  '2': '',
+                  '3': 'high'
+              }
+              return classs[item.result]
+          }
+      }
+    },
+    mounted(){
+        this.inspect = JSON.parse(this.$route.query.inspect)
+        this.getResult()
+    },
+    methods:{
+        async getResult(){
+            const { inspectId } = this.inspect
+            const res = await getResult({itemId: inspectId})
+            if(res.code == 200){
+                this.result = res.data
+            }
+            console.log(res);
+        }
     }
-  },
-  mounted(){
-    this.inspect = JSON.parse(this.$route.query.inspect)
-  },
 }
 </script>
 
 <style lang="less" scoped>
   .result {
-    box-sizing: border-box;
+      margin: 5px auto;
+      border: 1px solid #333;
+      box-sizing: border-box;
+      width: 365px;
     .result-title{
-      padding: 0 20px;
+      padding: 0 10px;
       background: #7bf31f59;
-      h4{
+        margin-bottom: 8px;
+
+        h4{
         margin: 0;
         height: 30px;
         line-height: 30px;
@@ -75,17 +93,20 @@ export default {
       .time{
         margin:0;
         font-size: 12px;
-        margin-bottom: 5px;
+          display: flex;
+          flex-direction: column;
+          padding-bottom: 5px;
         span{
+            flex: 1;
           line-height: 16px;
         }
       }
     }
     .result-table-w{
-      padding: 0 20px;
+      padding: 0 10px;
       .result-table{
         width: 100%;
-        border: 1px solid #ccc;
+
         table-layout: fixed;
         thead tr{
           color: #999
@@ -109,11 +130,11 @@ export default {
       }
     }
     .result-footer{
-      margin-top:10px;
+      margin:6px 0;
       display:flex;
       flex-direction: row;
       justify-content: space-around;
     }
-    
+
   }
 </style>
