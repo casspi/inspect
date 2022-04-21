@@ -64,7 +64,7 @@ export default {
     methods:{
         async getResult(){
             const { inspectId } = this.inspect
-            const res = await getResult({itemId: inspectId})
+            const res = await getResult({itemId: id})
             if(res.code == 200){
                 this.result = res.data
             }
