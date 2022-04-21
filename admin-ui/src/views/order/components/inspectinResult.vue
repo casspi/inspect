@@ -5,6 +5,15 @@
         @update:visible="hide"
         :visible.sync="visible">
         <el-form :model="form" label-width="120px">
+            <el-form-item label="检验员">
+                <el-input
+                    v-model="form.inspectionPersonal"
+                    autocomplete="off"
+                    maxlength="50"
+                    show-word-limit
+                    :readonly="type === 3">
+                </el-input>
+            </el-form-item>
             <el-form-item label="检验结果">
                 <el-input
                     v-model="form.result"
@@ -22,6 +31,14 @@
                     show-word-limit
                     :readonly="type === 3">
                 </el-input>
+            </el-form-item>
+            <el-form-item label="送检时间">
+                <el-date-picker
+                    v-model="form.inspectionSendTime"
+                    type="datetime"
+                    :readonly="type === 3"
+                    placeholder="选择送检时间">
+                </el-date-picker>
             </el-form-item>
             <el-form-item label="检验时间">
                 <el-date-picker
@@ -96,7 +113,8 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="visible = false" v-if="type != 3">取 消</el-button>
-            <el-button type="primary" @click="handleConfirm">确 定</el-button>
+            <el-button type="primary" @click="handleConfirm" v-if="type != 3">确 定</el-button>
+            <el-button type="primary" @click="handleConfirm" v-if="type == 3">关 闭</el-button>
         </div>
     </el-dialog>
 </template>
@@ -156,9 +174,9 @@ export default {
         detail(id) {
             getOrderItem(id).then((res) => {
                 const { data } = res
-                const { resultItems: items, result, inspectionResultTime, inspectionNumber} = data
+                const { resultItems: items, result, inspectionResultTime,inspectionSendTime,inspectionPersonal, inspectionNumber} = data
                 this.form = {
-                    inspectionNumber, result, time: new Date(inspectionResultTime).toUTCString(), items
+                    inspectionNumber, result, time: new Date(inspectionResultTime).toUTCString(), items,inspectionSendTime:new Date(inspectionSendTime).toUTCString(),inspectionPersonal
                 }
             });
         },
@@ -180,6 +198,8 @@ export default {
                     inspectionNumber:this.form.inspectionNumber,
                     result:this.form.result,
                     time:this.form.time,
+                    inspectionPersonal:this.form.inspectionPersonal,
+                    inspectionSendTime:this.form.inspectionSendTime,
                     resultItems:JSON.stringify(this.form.items)}).then((response) => {
                     console.log(response.data) ;
                     this.resolve()

@@ -35,6 +35,6 @@ export function cancelApply(params) {
 }
 
 //检验结果
-export function getResult(params) {
-  return axios.get('/order/getResult', {params})
+export function getResult(id) {
+  return axios.get('/order/getResult?itemId='+id)
 }

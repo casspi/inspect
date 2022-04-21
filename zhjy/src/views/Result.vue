@@ -29,8 +29,8 @@
                 </table>
             </div>
             <div class="result-footer">
-                <span>汇昌检验有限公司</span>
-                <span>检验员：李时珍</span>
+                <span>{{result.inspectionOffice}}</span>
+                <span>检验员：{{result.inspectionPersonal}}</span>
             </div>
         </div>
     </div>
@@ -59,12 +59,13 @@ export default {
     },
     mounted(){
         this.inspect = JSON.parse(this.$route.query.inspect)
+         console.log(this.inspect);
         this.getResult()
     },
     methods:{
         async getResult(){
-            const { inspectId } = this.inspect
-            const res = await getResult({itemId: id})
+            const { inspectId:itemId } = this.inspect.id
+            const res = await getResult(this.inspect.id)
             if(res.code == 200){
                 this.result = res.data
             }
