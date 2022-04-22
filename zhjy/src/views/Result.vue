@@ -1,10 +1,14 @@
 <template>
     <div>
+        <div class="result-title_0" >
+          <h2>检验结果</h2>
+        </div>
         <div class="result-w">
             <div class="result-title">
                 <h4 class="result">检验结果:{{'阳性'}}</h4>
                 <h4 class="name">{{inspect.inspectName}}</h4>
                 <div class="time">
+                    <span>检验编号：{{result.inspectionNumber || '-'}}</span>
                     <span>采集时间：{{result.inspectionSendTime || '-'}}</span>
                     <span>发布时间：{{ result.inspectionResultTime || '-'}}</span>
                 </div>
@@ -14,17 +18,15 @@
                     <thead>
                     <tr>
                         <th align="left">项目</th>
-                        <th align="left" width="60">结果</th>
-                        <th align="left" width="60">单位</th>
-                        <th align="left" width="80">参考值</th>
+                        <th align="left" width="80">结果</th>
+                        <th align="right" width="100">参考值</th>
                     </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(item, index) in result.resultItems" :key="index">
                             <td>{{item.name}}</td>
-                            <td class="item-value" :class="computedClass(item)">{{item.value}}</td>
-                            <td>{{item.unit || '-'}}</td>
-                            <td>{{item.acceptanceValue}}</td>
+                            <td align="left" class="item-value" :class="computedClass(item)">{{item.value}}</td>
+                            <td align="right">{{item.acceptanceValue}}{{item.unit || ''}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -32,6 +34,9 @@
             <div class="result-footer">
                 <span>{{result.inspectionOffice}}</span>
                 <span>检验员：{{result.inspectionPersonal}}</span>
+            </div>
+            <div class="result-footer" style="color:red;">
+                 <span>检验结果：{{ result.result || '-'}}</span>
             </div>
         </div>
     </div>
@@ -76,11 +81,21 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
+  .result-title_0{
+     h2{
+        text-align: center;
+        align-content: center;
+        height: 15px;
+        line-height: 30px;
+    }
+   }
   .result-w {
       margin: 5px auto;
       border: 1px solid #333;
       box-sizing: border-box;
       width: 365px;
+      font-size: 13px;
     .result-title{
         padding: 0 10px;
         background: #7bf31f59;

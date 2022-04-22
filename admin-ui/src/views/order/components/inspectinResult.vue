@@ -163,7 +163,7 @@ export default {
                 })
             }
             if([2,3].includes(type)){
-                this.detail(id)
+                this.detail(id,type)
             }
             return new Promise((resolve,reject) => {
                 this.resolve = resolve;
@@ -171,13 +171,22 @@ export default {
             })
         },
         //获取详情
-        detail(id) {
+        detail(id,type) {
             getOrderItem(id).then((res) => {
-                const { data } = res
-                const { resultItems: items, result, inspectionResultTime,inspectionSendTime,inspectionPersonal, inspectionNumber} = data
-                this.form = {
-                    inspectionNumber, result, time: new Date(inspectionResultTime).toUTCString(), items,inspectionSendTime:new Date(inspectionSendTime).toUTCString(),inspectionPersonal
+                console.log("type  ",type);
+                const { data } = res;
+                const { resultItems: items, result, inspectionResultTime,inspectionSendTime,inspectionPersonal, inspectionNumber} = data;
+                let items1 = items;
+                if(items==null&&type==2){ //补录时 若是items==null了  页面无新增表单了
+                items1=[
+                    { name:'', value: '', acceptanceValue: '', unit:'', result: ''},
+                ];
                 }
+                console.log("items1: ",items1);
+                this.form = {
+                    inspectionNumber, result, time: new Date(inspectionResultTime).toUTCString(), items:items1,inspectionSendTime:new Date(inspectionSendTime).toUTCString(),inspectionPersonal
+                }
+                console.log("dddd:  ",this.form);
             });
         },
         hide() {
