@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div class="result">
+      <div class="result-title_0" >
+          <h2>检验结果</h2>
+      </div>
+      <div class="result">
             <div class="result-title">
                 <h4>{{inspect.inspectName}}</h4>
                 <div class="time">
@@ -13,17 +16,17 @@
                     <thead>
                     <tr>
                         <th align="left">项目</th>
-                        <th align="left" width="60">结果</th>
-                        <th align="left" width="60">单位</th>
-                        <th align="left" width="80">参考值</th>
+                        <th align="left" width="80">结果</th>
+                        <th align="left" width="40">单位</th>
+                        <th align="right" width="80">参考值</th>
                     </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(item, index) in result.resultItems" :key="index">
                             <td>{{item.name}}</td>
-                            <td class="item-value" :class="computedClass(item)">{{item.value}}</td>
-                            <td>{{item.unit || '-'}}</td>
-                            <td>{{item.acceptanceValue}}</td>
+                            <td align="left" class="item-value" :class="computedClass(item)">{{item.value}}</td>
+                            <td align="left">{{item.unit || '-  '}}</td>
+                            <td align="right">{{item.acceptanceValue}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -75,11 +78,20 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .result-title_0{
+     h2{
+        text-align: center;
+        align-content: center;
+        height: 15px;
+        line-height: 30px;
+    }
+   }
   .result {
       margin: 5px auto;
       border: 1px solid #333;
       box-sizing: border-box;
       width: 365px;
+      font-size: 13px;
     .result-title{
       padding: 0 10px;
       background: #7bf31f59;
