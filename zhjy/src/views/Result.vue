@@ -5,7 +5,6 @@
         </div>
         <div class="result-w">
             <div class="result-title">
-                <h4 class="result">检验结果:{{'阳性'}}</h4>
                 <h4 class="name">{{inspect.inspectName}}</h4>
                 <div class="time">
                     <span>检验编号：{{result.inspectionNumber || '-'}}</span>
@@ -86,8 +85,9 @@ export default {
      h2{
         text-align: center;
         align-content: center;
-        height: 15px;
-        line-height: 30px;
+        height: 20px;
+        line-height: 20px;
+         margin: 10px 0;
     }
    }
   .result-w {
@@ -100,15 +100,15 @@ export default {
         padding: 0 10px;
         background: #7bf31f59;
         margin-bottom: 8px;
-        .result{
-            margin: 0;
-            line-height: 20px;
-            padding-top: 5px;
-        }
+        //.result{
+        //    margin: 0;
+        //    line-height: 20px;
+        //    padding-top: 5px;
+        //}
         .name{
             margin: 0;
-            height: 20px;
-            line-height: 20px;
+            height: 30px;
+            line-height: 30px;
         }
       .time{
         margin:0;
