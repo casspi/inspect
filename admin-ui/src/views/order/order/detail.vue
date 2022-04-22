@@ -86,8 +86,8 @@
             <el-table-column label="检验结果" align="center" prop="inspectionResultTime">
               <template slot-scope="scope">
                 <el-button size="mini" v-if=" orderDetail.payStatus==6 && scope.row.inspectionStatus==1" @click="handleResultPop(scope.row,1)">录入</el-button>
-                <el-button size="mini" v-if="orderDetail.payStatus==6 && scope.row.inspectionStatus==2" @click="handleResultPop(scope.row,2)">补录</el-button>
-                <el-button size="mini" v-if="orderDetail.payStatus==6 &&scope.row.inspectionStatus==2" @click="handleResultPop(scope.row,3)">查看</el-button>
+                <el-button size="mini" v-if="orderDetail.payStatus==6 && scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,2)">补录</el-button>
+                <el-button size="mini" v-if="orderDetail.payStatus==6 &&scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,3)">查看</el-button>
               </template>
             </el-table-column>
           </el-table>
