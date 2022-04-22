@@ -13,9 +13,9 @@
                     <thead>
                     <tr>
                         <th align="left">项目</th>
-                        <th align="left">结果</th>
-                        <th align="left">单位</th>
-                        <th align="left">参考值</th>
+                        <th align="left" width="60">结果</th>
+                        <th align="left" width="60">单位</th>
+                        <th align="left" width="80">参考值</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -64,7 +64,7 @@ export default {
     methods:{
         async getResult(){
             const { inspectId } = this.inspect
-            const res = await getResult({itemId: inspectId})
+            const res = await getResult({itemId: '1516079254452961280'|| inspectId})
             if(res.code == 200){
                 this.result = res.data
             }

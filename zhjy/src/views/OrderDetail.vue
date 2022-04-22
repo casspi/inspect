@@ -81,12 +81,18 @@
     >
     <template slot="title">
       <div class="my-card-title">
-        <span>检验项目：<van-tag type="primary" size="medium" plain>{{item.inspectName}}</van-tag></span>
-        <span v-if="detail.payStatus === 6">检验状态：<van-tag :type="item.inspectionStatus===2?'success':'danger'">{{item.inspectionStatus===2? '检验完成':'检验中'}}</van-tag></span>
+        <p>
+            <span>检验项目：</span>
+            <van-tag type="primary" size="medium" plain>{{item.inspectName}}</van-tag>
+        </p>
+        <p v-if="detail.payStatus === 6">
+            <span>检验状态：</span>
+            <van-tag :type="item.inspectionStatus===2?'success':'danger'">{{item.inspectionStatus===2? '检验完成':'检验中'}}</van-tag>
+        </p>
       </div>
     </template>
      <template v-if="detail.payStatus === 6 && item.inspectionStatus === 2" #footer>
-       <router-link :to="{path: 'result', query: {inspect: JSON.stringify(item)}}"><van-button type="primary" size="mini">查看检验结果</van-button></router-link>
+       <router-link :to="{path: 'result', query: {inspect: JSON.stringify(item)}}"><van-button size="mini">查看检验结果</van-button></router-link>
      </template>
     </van-card>
       <van-dialog v-model="showAuditDialog"
@@ -311,6 +317,9 @@ export default {
   }
   .van-card {
     margin-top: 0;
+      &:not(:last-child){
+          border-bottom: 1px solid #eee;
+      }
   }
   .van-card__content {
     display: flex;
@@ -319,9 +328,21 @@ export default {
     min-height: 62px;
   }
   .my-card-title{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      >p{
+          flex: 1;
+          display: flex;
+          flex-direction: row;
+          margin: 0 0 6px 0;
+          /deep/ .van-tag{
+              max-width: 270px;
+              overflow: hidden;
+              text-overflow:ellipsis;
+              white-space: nowrap;
+          }
+      }
   }
 }
 </style>
