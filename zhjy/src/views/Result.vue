@@ -1,8 +1,9 @@
 <template>
     <div>
-        <div class="result">
+        <div class="result-w">
             <div class="result-title">
-                <h4>{{inspect.inspectName}}</h4>
+                <h4 class="result">检验结果:{{'阳性'}}</h4>
+                <h4 class="name">{{inspect.inspectName}}</h4>
                 <div class="time">
                     <span>采集时间：{{result.inspectionSendTime || '-'}}</span>
                     <span>发布时间：{{ result.inspectionResultTime || '-'}}</span>
@@ -75,21 +76,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .result {
+  .result-w {
       margin: 5px auto;
       border: 1px solid #333;
       box-sizing: border-box;
       width: 365px;
     .result-title{
-      padding: 0 10px;
-      background: #7bf31f59;
+        padding: 0 10px;
+        background: #7bf31f59;
         margin-bottom: 8px;
-
-        h4{
-        margin: 0;
-        height: 30px;
-        line-height: 30px;
-      }
+        .result{
+            margin: 0;
+            line-height: 20px;
+            padding-top: 5px;
+        }
+        .name{
+            margin: 0;
+            height: 20px;
+            line-height: 20px;
+        }
       .time{
         margin:0;
         font-size: 12px;
