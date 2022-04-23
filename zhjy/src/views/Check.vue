@@ -20,7 +20,7 @@
 
 <script>
 // @ is an alias to /src
-import { wxCallback, getCheckList } from '@/api/index'
+import { wxCallback, getCheckList,getMyRecommendDoctor} from '@/api/index'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Home',
@@ -67,6 +67,7 @@ export default {
       }
     },
       handlePay() {
+          let _this = this;
           let selectItems = []
           this.checkItems.map(item=>{
               selectItems = selectItems.concat(item.children.filter(o => this.activeIds.includes(o.id)))
@@ -87,8 +88,7 @@ export default {
               message: `您选择了${selectItemsText},您可以继续添加项目或者去支付！`,
           })
           .then(() => {
-              console.log(selectItems)
-              this.$router.push({path: 'create-order', query: { selectItems:JSON.stringify(selectItems) }})
+               _this.getRecommendDoctor(selectItems);
           })
           .catch(() => {
               // this.activeIds = ''
@@ -118,6 +118,23 @@ export default {
               }
           }
           return theRequest;
+      },
+    async  getRecommendDoctor(selectItems){
+        await getMyRecommendDoctor().then(d=>{
+            console.log('doctor',d);
+             this.$router.push({path: 'create-order', query: { selectItems:JSON.stringify(selectItems) ,doctorUserId:d.data}})
+         }).catch(e=>{
+           if(e.code==500){
+               if(e.msg){
+                 if(e.msg.indexOf("open")>=0){
+                    this.$toast.fail('请重新登录'); 
+                     return
+                 }
+               }
+               this.$toast.fail(e.msg);
+               return
+           }
+         });
       },
       getQueryString(name) {
           // 截取url中的code方法
