@@ -175,6 +175,7 @@ export default {
         justify-content: space-between;
       }
       .van-card {
+          padding: 8px 10px;
         background-color: #fff;
         margin-top: 0;
       }
