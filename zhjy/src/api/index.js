@@ -16,6 +16,11 @@ export function getCheckList() {
 export function getRecommend(params) {
   return axios.get('/recommend/listPage', {params})
 }
+
+//获取我扫描二维码后的推荐医生
+export function getMyRecommendDoctor() {
+  return axios.get('/recommend/getMyRecommendDoctor')
+}
 // 预支付接口 id 为 订单主键，orderNumber 为订单编号
 export function prePay(params) {
   return axios.get('/pay/toPay/'+params.id+'/'+params.orderNumber)

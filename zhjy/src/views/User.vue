@@ -124,11 +124,15 @@ export default {
          removeLocal('userType')
           _this.setUserInfo('')
           _this.$router.push('login')
+          _this.logout()
           })
         .catch(() => {
           // on cancel
         });
-        await logout()
+    },
+   //退出登录
+    async logout(){
+      await logout();
     }
   },
 };

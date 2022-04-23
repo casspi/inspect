@@ -152,17 +152,17 @@ export default {
       patientName: "",
       urgentUserName: "",
       urgentUserPhone: "",
-      doctorUserId:'1512974846500405248',
       remark: "",
       patientList: [],
       hosptialList:[],
       doctorList:[],
+      doctorUserId:'',
       patientPicker: false,
     };
   },
   mounted() {
     this.init();
-    this.selectDoctorList('1384878507879882753');
+    //this.selectDoctorList('1384878507879882753');
   },
   created() {
 
@@ -212,9 +212,10 @@ export default {
       this.patientList = data.rows;
       //   const { id } = this.$route.query
       console.log(this.$route.query);
+      this.doctorUserId = this.$route.query.doctorUserId;
       this.tests = JSON.parse(this.$route.query.selectItems) || [];
-      const hospitalListData = await getHospitalList();
-      this.hosptialList = hospitalListData.data; // 医院列表
+     // const hospitalListData = await getHospitalList();
+     // this.hosptialList = hospitalListData.data; // 医院列表
       // {
       //   testsName: this.$route.query.testsName,
       //   cartItemId: 9037,
@@ -252,6 +253,7 @@ export default {
       });
     },  
     payHandler() {
+      let _this = this;
       this.$refs.orderForm
         .validate()
         .then(async () => {
@@ -262,21 +264,31 @@ export default {
               // inspectName: item.text
             });
           });
+          let doctorUserId = _this.doctorUserId;
           const { urgentUserName, urgentUserPhone, remark, patientId} = this;
           const {data} = await createOrder({
             itemList,
             patientId,
             urgentUserName,
             urgentUserPhone,
+            doctorUserId,
             remark,
+          }).then(e=>{
+           console.log('then: ',e);
+           this.$router.replace({path: 'order-detail', query: {orderId: e.data}})
+           this.$toast.success("提交成功！");
+          }).catch(e=>{
+             if(e.code==500){
+              this.$toast.fail(e.msg);
+              return;
+             }
           });
           // const data= await wxLogin()
-          console.log(data);
-          this.$router.replace({path: 'order-detail', query: {orderId: data}})
-          this.$toast.success("提交成功！");
+          //console.log(data);
+         
         })
         .catch(() => {
-          // console.log(data)
+         //console.log(data);
         });
       // if (!this.doctorId) {
       //   this.$toast("请选择您的送检医生!");
