@@ -11,7 +11,7 @@
         <van-button type="info" icon="cart-o" color="rgb(27, 174, 174)" @click="handlePay"></van-button>
       </van-badge>
     <van-tabbar route active-color="#1baeae" inactive-color="#000">
-      <!-- <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item> -->
+       <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item replace to="/" icon="notes-o">检查</van-tabbar-item>
       <van-tabbar-item replace to="/user" icon="user-o">我的</van-tabbar-item>
     </van-tabbar>
@@ -127,7 +127,7 @@ export default {
            if(e.code==500){
                if(e.msg){
                  if(e.msg.indexOf("open")>=0){
-                    this.$toast.fail('请重新登录'); 
+                    this.$toast.fail('请重新登录');
                      return
                  }
                }

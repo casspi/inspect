@@ -1,37 +1,40 @@
 <template>
   <div class="home" ref="home">
-    <header>
-      <h4>学术资讯</h4>
-    </header>
+<!--    <header>-->
+<!--      <h4>学术资讯</h4>-->
+<!--    </header>-->
 
     <van-swipe class="my-swipe" :autoplay="5000">
       <van-swipe-item v-for="(image, index) in images" :key="index">
         <img v-lazy="image" />
       </van-swipe-item>
     </van-swipe>
-    <van-pull-refresh
-      class="patient-list"
-      v-model="refreshing"
-      @refresh="onRefresh"
-    >
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-      >
-        <div class="article-item" v-for="article in list" :key="article"> 
-          <div class="left">
-            <p><i>{{article + '.'}}</i>211212121</p>
-            <span class="time">2021年4月23日 12:00:08</span>
-          </div>
-          <img src="../assets/xm/xm01.jpg" alt="" />
-        </div>
-      </van-list>
-    </van-pull-refresh>
+    <div class="hot hot-category">
+        <p class="hot-title">热门分类
+            <span class="more" @click="handleMore">
+                查看更多
+                <i class="van-icon van-icon-arrow"></i>
+            </span>
+        </p>
+        <ul class="hot-category-list">
+            <li class="hot-category-list-item" v-for="item in 6" :key="item" :name="'肿瘤'+item">
+                <img src="../assets/xm/xm01.jpg" width="100%" height="100%" alt="">
+            </li>
+        </ul>
+    </div>
+    <div class="hot hot-recommend">
+        <p class="hot-title">热门推荐</p>
+        <ul class="hot-recommend-list">
+            <li class="hot-recommend-list-item" v-for="item in 5" :key="item" >
+                <img src="../assets/xm/xm03.jpg" width="100%" height="100%" alt="">
+                <p class="name">男性肿瘤易感染32项</p>
+            </li>
+        </ul>
+    </div>
+
     <div class="block"></div>
     <van-tabbar route active-color="#1baeae" inactive-color="#000">
-      <!-- <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item> -->
+      <van-tabbar-item replace to="/home" icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item replace to="/" icon="notes-o">检查</van-tabbar-item>
       <van-tabbar-item replace to="/user" icon="user-o">我的</van-tabbar-item>
     </van-tabbar>
@@ -39,7 +42,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import {mapGetters} from 'vuex'
 
 export default {
@@ -49,10 +51,7 @@ export default {
     ...mapGetters(["userInfo"]),
   },
   mounted() {
-    // console.log(this.userInfo)
-    // if(!this.userInfo.openid){
-    //   this.WXgetCode()
-    // }
+
   },
   data() {
     return {
@@ -67,32 +66,9 @@ export default {
     };
   },
   methods: {
-    onLoad() {
-      setTimeout(() => {
-        if (this.refreshing) {
-          this.list = [];
-          this.refreshing = false;
-        }
-
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
-        }
-        this.loading = false;
-
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 1000);
-    },
-    onRefresh() {
-      // 清空列表数据
-      this.finished = false;
-
-      // 重新加载数据
-      // 将 loading 设置为 true，表示处于加载状态
-      this.loading = true;
-      this.onLoad();
-    },
+      handleMore() {
+          this.$router.replace('/')
+      }
   },
 };
 </script>
@@ -114,30 +90,85 @@ export default {
       height: 100%;
     }
   }
-  .article-item {
-    padding: 10px 20px 8px;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    .left{
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      .time{
-        color: #ccc;
-      }
-    }
-    img {
-      margin-left: 20px;
-      width: 100px;
-      height: 75px;
-    }
-  }
   .block {
     height: 50px;
   }
+}
+.hot{
+    padding: 10px 15px 0;
+    &-title{
+        font-weight: bold;
+        line-height: 40px;
+        font-size: 14px;
+        .more{
+            float: right;
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+}
+.hot-category-list{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    &-item{
+        width: 108px;
+        height: 108px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        &:not(:nth-child(3n+0)){
+            margin-right: 10px;
+        }
+        &::after{
+            content: attr(name);
+            position: absolute;
+            left: 0;
+            bottom: 20px;
+            height: 28px;
+            line-height: 22.5px;
+            color: #fff;
+            background-color: rgba(126, 108, 221, 0.8);
+            text-align: center;
+            padding: 0 5px;
+            font-size: 12px;
+        }
+    }
+}
+.hot-recommend{
+    padding-top: 0;
+    &-list{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        &-item{
+            width: 167.5px;
+            height: 167.5px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            position: relative;
+            &:nth-child(odd){
+                margin-right: 10px;
+            }
+            .name{
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 125px;
+                line-height: 16px;
+                color: #fff;
+                background-color: #2458f5;
+                text-align: right;
+                padding: 0 5px;
+                border-radius: 4px 0 0 0;
+
+            }
+        }
+    }
 }
 </style>
