@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <h3>{{ type !== "login" ? "注册" : "登录" }}</h3>
+    <h3>{{computedTitle}}</h3>
     <div v-if="type == 'login'" class="login-body login">
       <van-form @submit="onSubmit">
         <van-field
@@ -22,13 +22,14 @@
           :rules="[{ required: true, message: '请填写密码' }]"
         />
         <div style="margin: 16px">
-          <div class="link-register" @click="toggle('register')">立即注册</div>
           <van-button round block color="#1baeae" native-type="submit"
             >登录</van-button>
+            <div class="link-register" @click="toggle('register')">立即注册</div>
+            <div class="link-retrieval" @click="toggle('retrieval')">找回密码</div>
         </div>
       </van-form>
     </div>
-    <div v-else class="login-body register">
+    <div v-else-if="type === 'register'" class="login-body register">
       <van-form @submit="onSubmit">
         <van-field
           v-model="phoneNum2"
@@ -81,13 +82,29 @@
           readonly
         />
         <div style="margin: 16px">
-          <div class="link-login" @click="toggle('login')">已有登录账号</div>
           <van-button round block color="#1baeae" native-type="submit"
-            >注册</van-button
-          >
+            >注册</van-button>
+            <div class="link-login" @click="toggle('login')">已有登录账号</div>
         </div>
       </van-form>
     </div>
+      <div v-else class="login-body retrieval">
+          <van-form @submit="onSubmit">
+              <van-field
+                  v-model="retrievalPassword"
+                  type="password"
+                  name="retrievalPassword"
+                  label="密码"
+                  placeholder="密码"
+                  :rules="[{ required: true, message: '请填写密码' }]"
+              />
+              <div style="margin: 16px">
+                  <van-button round block color="#1baeae" native-type="submit"
+                  >重置密码</van-button>
+                  <div class="link-login" @click="toggle('login')">返回登陆</div>
+              </div>
+          </van-form>
+      </div>
   </div>
 </template>
 
@@ -111,10 +128,20 @@ export default {
       idNumber: "",
       sex: "",
       age: "",
+      //找回密码
+        retrievalPassword: ''
     };
   },
   computed: {
     ...mapState(["userInfo"]),
+      computedTitle(){
+        const title = {
+            'login': "登录",
+            'register': "注册",
+            'retrieval': "找回密码",
+        }
+        return title[this.type]
+      }
   },
   watch: {
     idNumber: function (val) {
@@ -155,7 +182,7 @@ export default {
       this.type = v;
     },
     async onSubmit(values) {
-      if (this.type == "login") {
+      if (this.type == "login") {//登录
         // try {
         const { data } = await login({
           password: values.password1,
@@ -170,7 +197,7 @@ export default {
         this.setUserInfo(data);
           this.getPromptHandler();
           this.WXgetCode();
-      } else {
+      } else if(this.type === 'register') {//注册
         let { age, idNumber, realName, sex } = this;
         try {
           await register({
@@ -187,6 +214,8 @@ export default {
           console.log(error);
           Toast.fail(error.msg);
         }
+      }else{//找回密码
+
       }
     },
     async getPromptHandler() {
@@ -229,15 +258,22 @@ h3 {
   .login {
     .link-register {
       font-size: 14px;
-      margin-bottom: 20px;
+      margin-top: 10px;
       color: #1989fa;
       display: inline-block;
     }
+    .link-retrieval{
+        font-size: 14px;
+        margin-top: 10px;
+        color: #1989fa;
+        display: inline-block;
+        float: right;
+    }
   }
-  .register {
+  .register,.retrieval {
     .link-login {
       font-size: 14px;
-      margin-bottom: 20px;
+      margin-top: 10px;
       color: #1989fa;
       display: inline-block;
     }
