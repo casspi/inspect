@@ -1,207 +1,209 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
-      <el-form-item label="检验项目名称" prop="itemName">
-        <el-input
-          v-model="queryParams.itemName"
-          placeholder="请输入检验项目名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="检验项目分类" prop="itemClassify">
-      <el-select
-              v-model="queryParams.itemClassify"
-              placeholder="检验项目分类"
-              clearable
-              size="small"
-              style="width: 240px"
-            >
-              <el-option
-                v-for="dict in itemClassifyOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
+    <div v-show="!open">
+        <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
+            <el-form-item label="检验项目名称" prop="itemName">
+                <el-input
+                    v-model="queryParams.itemName"
+                    placeholder="请输入检验项目名称"
+                    clearable
+                    size="small"
+                    @keyup.enter.native="handleQuery"
+                />
+            </el-form-item>
+            <el-form-item label="检验项目分类" prop="itemClassify">
+                <el-select
+                    v-model="queryParams.itemClassify"
+                    placeholder="检验项目分类"
+                    clearable
+                    size="small"
+                    style="width: 240px"
+                >
+                    <el-option
+                        v-for="dict in itemClassifyOptions"
+                        :key="dict.dictValue"
+                        :label="dict.dictLabel"
+                        :value="dict.dictValue"
+                    />
+                </el-select>
+            </el-form-item>
+            <el-form-item label="样本类型" prop="sampleType">
+                <el-select
+                    v-model="queryParams.sampleType"
+                    placeholder="样本类型"
+                    clearable
+                    size="small"
+                    style="width: 240px"
+                >
+                    <el-option
+                        v-for="dict in sampleTypeOptions"
+                        :key="dict.dictValue"
+                        :label="dict.dictLabel"
+                        :value="dict.dictValue"
+                    />
+                </el-select>
+            </el-form-item>
+            <!-- <el-form-item label="单位" prop="itemUnit">
+              <el-input
+                v-model="queryParams.itemUnit"
+                placeholder="请输入单位"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
               />
-            </el-select>
-      </el-form-item>
-      <el-form-item label="样本类型" prop="sampleType">
-        <el-select
-              v-model="queryParams.sampleType"
-              placeholder="样本类型"
-              clearable
-              size="small"
-              style="width: 240px"
-            >
-              <el-option
-                v-for="dict in sampleTypeOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
+            </el-form-item>
+            <el-form-item label="价格" prop="amount">
+              <el-input
+                v-model="queryParams.amount"
+                placeholder="请输入价格"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
               />
-            </el-select>
-      </el-form-item>
-      <!-- <el-form-item label="单位" prop="itemUnit">
-        <el-input
-          v-model="queryParams.itemUnit"
-          placeholder="请输入单位"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="价格" prop="amount">
-        <el-input
-          v-model="queryParams.amount"
-          placeholder="请输入价格"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="折扣百分比" prop="discountPercent">
-        <el-input
-          v-model="queryParams.discountPercent"
-          placeholder="请输入折扣百分比"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="折扣金额" prop="discountAmount">
-        <el-input
-          v-model="queryParams.discountAmount"
-          placeholder="请输入折扣金额"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="检验所主键" prop="inspectionOfficeId">
-        <el-input
-          v-model="queryParams.inspectionOfficeId"
-          placeholder="请输入检验所主键"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="检验所项目主键" prop="inspectionOfficeItemId">
-        <el-input
-          v-model="queryParams.inspectionOfficeItemId"
-          placeholder="请输入检验所项目主键"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="角色状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择角色状态" clearable size="small">
-          <el-option label="请选择字典生成" value="" />
-        </el-select>
-      </el-form-item> -->
-      <el-form-item>
-        <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+            </el-form-item> -->
+            <!-- <el-form-item label="折扣百分比" prop="discountPercent">
+              <el-input
+                v-model="queryParams.discountPercent"
+                placeholder="请输入折扣百分比"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+            <el-form-item label="折扣金额" prop="discountAmount">
+              <el-input
+                v-model="queryParams.discountAmount"
+                placeholder="请输入折扣金额"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item> -->
+            <!-- <el-form-item label="检验所主键" prop="inspectionOfficeId">
+              <el-input
+                v-model="queryParams.inspectionOfficeId"
+                placeholder="请输入检验所主键"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+            <el-form-item label="检验所项目主键" prop="inspectionOfficeItemId">
+              <el-input
+                v-model="queryParams.inspectionOfficeItemId"
+                placeholder="请输入检验所项目主键"
+                clearable
+                size="small"
+                @keyup.enter.native="handleQuery"
+              />
+            </el-form-item>
+            <el-form-item label="角色状态" prop="status">
+              <el-select v-model="queryParams.status" placeholder="请选择角色状态" clearable size="small">
+                <el-option label="请选择字典生成" value="" />
+              </el-select>
+            </el-form-item> -->
+            <el-form-item>
+                <el-button type="cyan" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+                <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+        </el-form>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['base:inspection:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['base:inspection:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['base:inspection:remove']"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['base:inspection:export']"
-        >导出</el-button>
-      </el-col>
-	  <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-    </el-row>
+        <el-row :gutter="10" class="mb8">
+            <el-col :span="1.5">
+                <el-button
+                    type="primary"
+                    icon="el-icon-plus"
+                    size="mini"
+                    @click="handleAdd"
+                    v-hasPermi="['base:inspection:add']"
+                >新增</el-button>
+            </el-col>
+            <el-col :span="1.5">
+                <el-button
+                    type="success"
+                    icon="el-icon-edit"
+                    size="mini"
+                    :disabled="single"
+                    @click="handleUpdate"
+                    v-hasPermi="['base:inspection:edit']"
+                >修改</el-button>
+            </el-col>
+            <el-col :span="1.5">
+                <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="mini"
+                    :disabled="multiple"
+                    @click="handleDelete"
+                    v-hasPermi="['base:inspection:remove']"
+                >删除</el-button>
+            </el-col>
+            <el-col :span="1.5">
+                <el-button
+                    type="warning"
+                    icon="el-icon-download"
+                    size="mini"
+                    @click="handleExport"
+                    v-hasPermi="['base:inspection:export']"
+                >导出</el-button>
+            </el-col>
+            <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+        </el-row>
 
-    <el-table v-loading="loading" :data="inspectionItemList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="检验项目名称" align="center" prop="itemName" />
-      <el-table-column label="检验项目分类" align="center" prop="itemClassifyStr" />
-      <el-table-column label="样本类型" align="center" prop="sampleTypeStr" />
-      <el-table-column label="单位" align="center" prop="itemUnit" />
-      <el-table-column label="价格" align="center" prop="amount" />
-      <!-- <el-table-column label="折扣百分比" align="center" prop="discountPercent" /> -->
-      <el-table-column label="折扣金额" align="center" prop="discountAmount" />
-      <el-table-column label="检验项目介绍" align="center" prop="summary" />
-      <el-table-column label="检验所" align="center" prop="officeName" />
-      <el-table-column label="检验所项目" align="center" prop="officeItemName" />
-      <el-table-column label="状态" align="center">
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.status"
-                active-value="0"
-                inactive-value="1"
-                @change="handleStatusChange(scope.row)"
-              ></el-switch>
-            </template>
-     </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['base:inspection:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['base:inspection:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
+        <el-table v-loading="loading" :data="inspectionItemList" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55" align="center" />
+            <el-table-column label="检验项目名称" align="center" prop="itemName" />
+            <el-table-column label="检验项目分类" align="center" prop="itemClassifyStr" />
+            <el-table-column label="样本类型" align="center" prop="sampleTypeStr" />
+            <el-table-column label="单位" align="center" prop="itemUnit" />
+            <el-table-column label="价格" align="center" prop="amount" />
+            <!-- <el-table-column label="折扣百分比" align="center" prop="discountPercent" /> -->
+            <el-table-column label="折扣金额" align="center" prop="discountAmount" />
+            <el-table-column label="检验项目介绍" align="center" prop="summary" />
+            <el-table-column label="检验所" align="center" prop="officeName" />
+            <el-table-column label="检验所项目" align="center" prop="officeItemName" />
+            <el-table-column label="状态" align="center">
+                <template slot-scope="scope">
+                    <el-switch
+                        v-model="scope.row.status"
+                        active-value="0"
+                        inactive-value="1"
+                        @change="handleStatusChange(scope.row)"
+                    ></el-switch>
+                </template>
+            </el-table-column>
+            <el-table-column label="备注" align="center" prop="remark" />
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+                <template slot-scope="scope">
+                    <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-edit"
+                        @click="handleUpdate(scope.row)"
+                        v-hasPermi="['base:inspection:edit']"
+                    >修改</el-button>
+                    <el-button
+                        size="mini"
+                        type="text"
+                        icon="el-icon-delete"
+                        @click="handleDelete(scope.row)"
+                        v-hasPermi="['base:inspection:remove']"
+                    >删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="queryParams.pageNum"
+            :limit.sync="queryParams.pageSize"
+            @pagination="getList"
+        />
+    </div>
 
     <!-- 添加或修改检验项目信息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+    <div v-show="open">
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item label="检验项目名称" prop="itemName">
           <el-input v-model="form.itemName" placeholder="请输入检验项目名称" />
@@ -261,7 +263,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-       <el-form-item label="状态">
+        <el-form-item label="状态">
           <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in statusOptions"
@@ -273,12 +275,24 @@
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
+          <p>{{form.content}}</p>
+        <el-form-item label="富文本">
+            <quill-editor
+                ref="myQuillEditor"
+                v-model="form.content"
+                :options="editorOption"
+            />
+<!--            -->
+<!--            @blur="onEditorBlur($event)"-->
+<!--            @focus="onEditorFocus($event)"-->
+<!--            @ready="onEditorReady($event)"-->
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div class="btn-bar">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
-    </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -287,9 +301,17 @@ import { listInspectionItem, getInspectionItem, delInspectionItem, addInspection
 import { getInspectionOfficeList } from "@/api/base/inspectionOffice";
 import { getListByInspectionOfficeId } from "@/api/base/inspectionOfficeItem";
 import { checkAmount }from "@/utils/index";
+// require styles 导入富文本编辑器对应的样式
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
 
 export default {
   name: "InspectionItem",
+  components: {
+    quillEditor
+  },
   data() {
     return {
       // 遮罩层
@@ -338,7 +360,12 @@ export default {
         status: null,
       },
       // 表单参数
-      form: {},
+      form: {
+          content: ''
+      },
+        editorOption: {
+          height: 300
+        },
       // 表单校验
       rules: {
         status: [
@@ -419,7 +446,8 @@ export default {
         createTime: null,
         updateBy: null,
         updateTime: null,
-        remark: null
+        remark: null,
+        content: ''
       };
       this.resetForm("form");
     },
@@ -544,3 +572,12 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.btn-bar{
+    text-align: center;
+}
+/deep/ .ql-container.ql-snow {
+    line-height: normal !important;
+    min-height: 200px !important;
+}
+</style>
