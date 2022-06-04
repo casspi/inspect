@@ -280,9 +280,7 @@
             <quill-editor
                 ref="myQuillEditor"
                 v-model="form.content"
-                :options="editorOption"
             />
-<!--            -->
 <!--            @blur="onEditorBlur($event)"-->
 <!--            @focus="onEditorFocus($event)"-->
 <!--            @ready="onEditorReady($event)"-->
@@ -363,9 +361,6 @@ export default {
       form: {
           content: ''
       },
-        editorOption: {
-          height: 300
-        },
       // 表单校验
       rules: {
         status: [
