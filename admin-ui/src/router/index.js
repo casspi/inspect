@@ -102,6 +102,12 @@ export const constantRoutes = [
         component: (resolve) => require(['@/views/base/doctor/recommend'], resolve),
         name: 'Recommend',
         meta: { title: '我的推荐', icon: '' }
+      },
+      {
+        path: 'inspectionItem/detail',
+        component: (resolve) => require(['@/views/base/inspectionItem/detail'], resolve),
+        name: 'detail',
+        meta: { title: '新增', icon: '' }
       }
     ]
   },
