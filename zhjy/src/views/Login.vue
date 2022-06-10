@@ -1,66 +1,67 @@
 <template>
   <div class="login">
-    <h3>{{ type !== "login" ? "注册" : "登录" }}</h3>
-    <div v-if="type == 'login'" class="login-body login">
+    <h3>{{computedTitle}}</h3>
+    <div v-show="type == 'login'" class="login-body login">
       <van-form @submit="onSubmit">
         <van-field
-          v-model="phoneNum1"
-          name="phoneNum1"
-          label="手机号"
-          placeholder="手机号"
-          :rules="[
+            v-model="phoneNum1"
+            name="phoneNum1"
+            label="手机号"
+            placeholder="手机号"
+            :rules="[
             { required: true, message: '请填写手机号' },
             { validator: phoneValidator, message: '请输入正确的手机号' },
           ]"
         />
         <van-field
-          v-model="password1"
-          type="password"
-          name="password1"
-          label="密码"
-          placeholder="密码"
-          :rules="[{ required: true, message: '请填写密码' }]"
+            v-model="password1"
+            type="password"
+            name="password1"
+            label="密码"
+            placeholder="密码"
+            :rules="[{ required: true, message: '请填写密码' }]"
         />
         <div style="margin: 16px">
-          <div class="link-register" @click="toggle('register')">立即注册</div>
           <van-button round block color="#1baeae" native-type="submit"
-            >登录</van-button>
+          >登录</van-button>
+          <div class="link-register" @click="toggle('register')">立即注册</div>
+          <div class="link-retrieval" @click="toggle('retrieval')">找回密码</div>
         </div>
       </van-form>
     </div>
-    <div v-else class="login-body register">
+    <div v-show="type === 'register'" class="login-body register">
       <van-form @submit="onSubmit">
         <van-field
-          v-model="phoneNum2"
-          name="phoneNum2"
-          label="手机号"
-          placeholder="手机号"
-          :rules="[
+            v-model="phoneNum2"
+            name="phoneNum2"
+            label="手机号"
+            placeholder="手机号"
+            :rules="[
             { required: true, message: '请填写手机号' },
             { validator: phoneValidator, message: '请输入正确的手机号' },
           ]"
         />
         <van-field
-          v-model="password2"
-          type="password"
-          name="password2"
-          label="密码"
-          placeholder="密码"
-          :rules="[{ required: true, message: '请填写密码' }]"
+            v-model="password2"
+            type="password"
+            name="password2"
+            label="密码"
+            placeholder="密码"
+            :rules="[{ required: true, message: '请填写密码' }]"
         />
         <van-field
-          v-model="realName"
-          name="realName"
-          label="姓名"
-          placeholder="姓名"
-          :rules="[{ required: true, message: '请填写姓名' }]"
+            v-model="realName"
+            name="realName"
+            label="姓名"
+            placeholder="姓名"
+            :rules="[{ required: true, message: '请填写姓名' }]"
         />
         <van-field
-          v-model="idNumber"
-          name="idNumber"
-          label="身份证号码"
-          placeholder="身份证号码"
-          :rules="[
+            v-model="idNumber"
+            name="idNumber"
+            label="身份证号码"
+            placeholder="身份证号码"
+            :rules="[
             { validator: iuNumValidator, message: '请填写正确的身份证号码' },
           ]"
         />
@@ -73,18 +74,74 @@
           </template>
         </van-field>
         <van-field
-          v-model="age"
-          type="number"
-          name="age"
-          label="年龄"
-          placeholder="年龄"
-          readonly
+            v-model="age"
+            type="number"
+            name="age"
+            label="年龄"
+            placeholder="年龄"
+            readonly
         />
         <div style="margin: 16px">
-          <div class="link-login" @click="toggle('login')">已有登录账号</div>
           <van-button round block color="#1baeae" native-type="submit"
-            >注册</van-button
-          >
+          >注册</van-button>
+          <div class="link-login" @click="toggle('login')">已有登录账号</div>
+        </div>
+      </van-form>
+    </div>
+    <div v-show="type === 'retrieval'" class="login-body retrieval">
+      <van-form @submit="onSubmit">
+        <van-field
+            v-model="retrievalForm.phonenumber"
+            type="number"
+            name="phonenumber"
+            label="手机号"
+            placeholder="手机号"
+            maxlength="11"
+            :rules="[
+              { required: true, message: '请填写手机号' },
+              { validator: phoneValidator, message: '请输入正确的手机号' },
+            ]"
+        >
+        </van-field>
+        <van-field
+            v-model="retrievalForm.captcha"
+            type="text"
+            name="captcha"
+            label="验证码"
+            placeholder="验证码"
+            maxlength="4"
+        >
+          <template slot="button" name="button">
+            <img v-show="captchaImg" :src="'data:image/jpeg;base64,' + captchaImg" width="70">
+            <span v-show="!captchaImg"></span>
+          </template>
+        </van-field>
+        <van-field
+            v-model="retrievalForm.smsCode"
+            type="text"
+            name="smsCode"
+            label="短信验证码"
+            placeholder="短信验证码"
+            :rules="[
+              { required: true, message: '请填写短信验证码' },
+            ]"
+        >
+          <template slot="button" name="button">
+            <van-button size="mini" type="primary" style="width: 70px" native-type="button" :disabled="!computedSmsCode || countdown > 0" @click="handleSmsCode">{{countdown?countdown:'发送验证码'}}</van-button>
+          </template>
+        </van-field>
+        <van-field
+            v-model="retrievalForm.password"
+            type="password"
+            name="password"
+            label="新密码"
+            placeholder="新密码"
+            :rules="[{ required: true, message: '请填写新密码' }]"
+        />
+        <div style="margin: 16px">
+          <van-button round block color="#1baeae" native-type="submit"
+          >重置密码</van-button>
+          <div class="link-login" @click="toggle('login')">返回登陆</div>
         </div>
       </van-form>
     </div>
@@ -92,11 +149,12 @@
 </template>
 
 <script>
-import { login, register } from "@/api/user";
+import { login, register, captchaImage, setPwd } from "@/api/user";
 import { wxLogin, getPrompt } from '@/api/index'
 import { setLocal, idnumberValidator } from "@/common/js/utils";
 import { mapState, mapMutations } from "vuex";
 import { Toast } from "vant";
+import {smsSend} from "../api/user";
 export default {
   name: "Login",
   data() {
@@ -111,10 +169,30 @@ export default {
       idNumber: "",
       sex: "",
       age: "",
+      captchaImg:'',
+      //找回密码
+      retrievalForm: {
+        phonenumber: '',
+        captcha: '',
+        smsCode: '',
+        password: ''
+      },
+      countdown: 0
     };
   },
   computed: {
     ...mapState(["userInfo"]),
+    computedTitle() {
+      const title = {
+        'login': "登录",
+        'register': "注册",
+        'retrieval': "找回密码",
+      }
+      return title[this.type]
+    },
+    computedSmsCode() {
+      return this.retrievalForm.captcha.length === 4 && this.phoneValidator(this.retrievalForm.phonenumber)
+    }
   },
   watch: {
     idNumber: function (val) {
@@ -125,12 +203,17 @@ export default {
         this.age = "";
       }
     },
+    'retrievalForm.phonenumber': function (v){
+      if(this.phoneValidator(v)) {
+        this.handleCaptchaImage()
+      }
+    }
   },
   methods: {
     ...mapMutations(["setUserInfo"]),
     phoneValidator(val) {
       return /^[1](([3|5|8][\d])|([4][4,5,6,7,8,9])|([6][2,5,6,7])|([7][^9])|([9][1,8,9]))[\d]{8}$/.test(
-        val
+          val
       );
     },
     iuNumValidator(val) {
@@ -142,8 +225,8 @@ export default {
       let day = myDate.getDate();
       let age = myDate.getFullYear() - value.substring(6, 10) - 1;
       if (
-        value.substring(10, 12) < month ||
-        (value.substring(10, 12) == month && value.substring(12, 14) <= day)
+          value.substring(10, 12) < month ||
+          (value.substring(10, 12) == month && value.substring(12, 14) <= day)
       ) {
         age++;
       }
@@ -155,7 +238,7 @@ export default {
       this.type = v;
     },
     async onSubmit(values) {
-      if (this.type == "login") {
+      if (this.type == "login") {//登录
         // try {
         const { data } = await login({
           password: values.password1,
@@ -168,9 +251,9 @@ export default {
         await setLocal("token", token);
         await setLocal("userType", data.userType);
         this.setUserInfo(data);
-          this.getPromptHandler();
-          this.WXgetCode();
-      } else {
+        this.getPromptHandler();
+        this.WXgetCode();
+      } else if(this.type === 'register') {//注册
         let { age, idNumber, realName, sex } = this;
         try {
           await register({
@@ -187,26 +270,66 @@ export default {
           console.log(error);
           Toast.fail(error.msg);
         }
+      }else{//找回密码
+        const { smsCode, password, phonenumber } = this.retrievalForm
+        setPwd({
+          smsCode, password, phonenumber
+        }).then(res => {
+          console.log(res);
+        })
       }
     },
     async getPromptHandler() {
       const promptMsg = await getPrompt()
       this.$dialog.alert({
-          title: promptMsg.data.noticeTitle,
-          message: promptMsg.data.noticeContent,
+        title: promptMsg.data.noticeTitle,
+        message: promptMsg.data.noticeContent,
       }).then(() => {
-          // on close
+        // on close
       });
     },
-      async WXgetCode() {
-          // 静默授权
-          // 如果没有code，则去请求
-          let {data} = await wxLogin()
-          if(data){
-              window.location.href = data
-          }
-      },
+    async WXgetCode() {
+      // 静默授权
+      // 如果没有code，则去请求
+      let {data} = await wxLogin()
+      if(data){
+        window.location.href = data
+      }
+    },
+    //获取图片验证码
+    handleCaptchaImage() {
+      const { phonenumber } = this.retrievalForm
+      captchaImage({phonenumber})
+      .then(res => {
+        console.log(res);
+        this.captchaImg = res.data.img
+      })
+    },
+    async handleSmsCode() {
+      const { phonenumber, captcha } = this.retrievalForm
+      if(this.phoneValidator(phonenumber) && captcha){
+        const { data } = smsSend({
+          phonenumber,
+          captcha
+        });
+        console.log(data);
+        this.countdownFoo()
+        this.handleCaptchaImage()
+        this.retrievalForm.captcha = ''
 
+      }
+    },
+    //倒计时
+    countdownFoo() {
+      this.countdown = 60
+      const timer = setInterval(() => {
+        if(this.countdown === 0){
+          clearInterval(timer)
+          return
+        }
+        this.countdown -= 1
+      }, 1000)
+    }
   },
 };
 </script>
@@ -229,15 +352,22 @@ h3 {
   .login {
     .link-register {
       font-size: 14px;
-      margin-bottom: 20px;
+      margin-top: 10px;
       color: #1989fa;
       display: inline-block;
     }
+    .link-retrieval{
+      font-size: 14px;
+      margin-top: 10px;
+      color: #1989fa;
+      display: inline-block;
+      float: right;
+    }
   }
-  .register {
+  .register,.retrieval {
     .link-login {
       font-size: 14px;
-      margin-bottom: 20px;
+      margin-top: 10px;
       color: #1989fa;
       display: inline-block;
     }

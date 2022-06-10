@@ -8,6 +8,11 @@ export function wxLogin() {
 export function wxCallback(params) {
   return axios.get('/wx/callBack', {params});
 }
+//微信签名
+export function getSignature(params) {
+  return axios.get( '/wx/getSignature', { params })
+}
+
 // 检验项目列表
 export function getCheckList() {
   return axios.get('/inspect/list');

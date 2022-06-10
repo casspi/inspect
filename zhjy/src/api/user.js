@@ -23,6 +23,18 @@ export function register(params) {
   return axios.post('/register/save', params);
 }
 
+//图片验证码
+export  function captchaImage(params) {
+  return axios.get('/captchaImage', { params })
+}
+//发送短信
+export  function smsSend(params) {
+  return axios.post('/sms/send', params)
+}
+//找回密码
+export function setPwd(params) {
+  return axios.post('/setPwd', params)
+}
 //获取openId
 export function getOpenId(data) {
   return axios.get(`https://api.weixin.qq.com/sns/oauth2/access_token`, {
