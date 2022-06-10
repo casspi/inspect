@@ -274,8 +274,18 @@ export default {
         const { smsCode, password, phonenumber } = this.retrievalForm
         setPwd({
           smsCode, password, phonenumber
-        }).then(res => {
-          console.log(res);
+        }).then(() => {
+          this.retrievalForm = {
+              phonenumber: '',
+              captcha: '',
+              smsCode: '',
+              password: ''
+          }
+          this.$toast.success({
+            message: '密码设置成功',
+            duration: 2000
+          });
+          this.type = 'login'
         })
       }
     },
