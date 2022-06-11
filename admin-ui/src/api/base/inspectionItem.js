@@ -64,3 +64,12 @@ export function changeStatus(id, status) {
     data: data
   })
 }
+
+// 上传图片
+export function uploadImage(data) {
+  return request({
+    url: '/common/uploadList',
+    method: 'post',
+    data: data
+  })
+}

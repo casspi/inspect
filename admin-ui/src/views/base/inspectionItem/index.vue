@@ -337,6 +337,7 @@
         <el-form-item label="富文本">
             <quill-editor
                 ref="myQuillEditor"
+                myEditor="Editorc0"
                 v-model="form.content"
             />
 <!--            @blur="onEditorBlur($event)"-->
@@ -358,10 +359,11 @@ import { getInspectionOfficeList } from "@/api/base/inspectionOffice";
 import { getListByInspectionOfficeId } from "@/api/base/inspectionOfficeItem";
 import { checkAmount }from "@/utils/index";
 // require styles 导入富文本编辑器对应的样式
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-import { quillEditor } from 'vue-quill-editor'
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
+//import { quillEditor } from 'vue-quill-editor'
+import quillEditor from './quillEditor'
 import { getToken } from '@/utils/auth'
 
 export default {
