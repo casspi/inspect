@@ -89,26 +89,27 @@ export default {
           })
           .then(() => {
               getSignature({
-                url: window.location.href
+                url: window.location.href.split('#')[0]
               }).then(res => {
                   const {appId, timestamp, nonceStr, signature} = res.data
                   window.wx.config({
-                      debug: true, // 开启调试模式,调用的所有 api 的返回值会在客户端 alert 出来，若要查看传入的参数，可以在 pc 端打开，参数信息会通过 log 打出，仅在 pc 端时才会打印。
-                      appId, // 必填，公众号的唯一标识
-                      timestamp, // 必填，生成签名的时间戳
-                      nonceStr, // 必填，生成签名的随机串
-                      signature,// 必填，签名
-                      jsApiList: ["scanQRCode"] // 必填，需要使用的 JS 接口列表
+                    debug: true, // 开启调试模式,调用的所有 api 的返回值会在客户端 alert 出来，若要查看传入的参数，可以在 pc 端打开，参数信息会通过 log 打出，仅在 pc 端时才会打印。
+                    appId, // 必填，公众号的唯一标识
+                    timestamp, // 必填，生成签名的时间戳
+                    nonceStr, // 必填，生成签名的随机串
+                    signature,// 必填，签名
+                    jsApiList: ["scanQRCode"] // 必填，需要使用的 JS 接口列表
                   });
-                  window.wx.ready(() => {
-                    window.wx.scanQRCode({
-                      needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                      scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-                      success: function (res) {
-                        // var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-                        console.log(res);
-                      }
-                    });
+                  window.wx.scanQRCode({
+                    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: res => {
+                      // var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                      console.log(res);
+                    },
+                    fail: err => {
+                      console.log(err)
+                    }
                   });
               })
 
