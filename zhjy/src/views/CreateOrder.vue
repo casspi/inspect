@@ -47,10 +47,11 @@
         ]"
       />
       <van-field
-        v-model="patientId"
+        v-model="doctorUserName"
         name="patientId"
         label="扫医生二维码"
-        placeholder="就诊人姓名"
+        readonly
+        placeholder="医生姓名"
         :rules="[{ required: true, message: '请扫医生二维码' }]"
       >
         <template slot="button" name="button">
@@ -168,7 +169,8 @@ export default {
       patientList: [],
       hosptialList:[],
       doctorList:[],
-      doctorUserId:'',
+      doctorUserId: '',
+      doctorUserName: '',
       patientPicker: false,
     };
   },
@@ -236,7 +238,6 @@ export default {
       this.patientList = data.rows;
       //   const { id } = this.$route.query
       console.log(this.$route.query);
-      this.doctorUserId = this.$route.query.doctorUserId;
       this.tests = JSON.parse(this.$route.query.selectItems) || [];
      // const hospitalListData = await getHospitalList();
      // this.hosptialList = hospitalListData.data; // 医院列表
@@ -276,13 +277,16 @@ export default {
           console.log("医生列表：",res);
       });
     },
+    //扫码
     handleScan() {
       window.wx.scanQRCode({
         needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
         scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
         success: res => {
-          // var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
           console.log(res);
+          const result = JSON.parse(res.resultStr); // 当needResult 为 1 时，扫码返回的结果
+          this.doctorUserId = result.id;
+          this.doctorUserName = result.name;
         },
         fail: err => {
           console.log(err)
