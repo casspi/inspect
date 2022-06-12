@@ -178,7 +178,7 @@ export default {
   },
   created() {
     getSignature({
-      url: 'https://gzh.huichangyx.com/?wx=1122' || window.location.href.split('#')[0]
+      url: window.location.href.split('#')[0]
     }).then(res => {
       const {appId, timestamp, nonceStr, signature} = res.data
       window.wx.config({
