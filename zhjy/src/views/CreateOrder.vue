@@ -1,6 +1,5 @@
 <template>
   <div class="create-order" id="screen">
-    {{doctorUserId}}
     <!-- <s-header :name="'生成订单'" @callback="deleteLocal"></s-header> -->
     <!-- <div class="order-status">
       <div class="status-item">
@@ -47,8 +46,9 @@
         ]"
       />
       <van-field
+          class="doctor-field"
         v-model="doctorUserName"
-        name="patientId"
+        name="doctorUserId"
         label="扫医生二维码"
         readonly
         placeholder="医生姓名"
@@ -484,5 +484,8 @@ export default {
       // margin: 0 auto;
     }
   }
+}
+.doctor-field /deep/ .van-field__body{
+  align-items: start;
 }
 </style>
