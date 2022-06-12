@@ -38,3 +38,7 @@ export function cancelApply(params) {
 export function getResult(id) {
   return axios.get('/order/getResult?itemId='+id)
 }
+
+export function saveBarcode(params) {
+  return axios.post('/order/saveBarcode', params)
+}

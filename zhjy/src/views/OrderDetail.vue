@@ -85,9 +85,10 @@
             <span>检验项目：</span>
             <van-tag type="primary" size="medium" plain>{{item.inspectName}}</van-tag>
         </p>
-        <p v-if="detail.payStatus === 6">
+        <p v-if="detail.payStatus === 6" class="item-status">
             <span>检验状态：</span>
             <van-tag :type="item.inspectionStatus===1?'success':'danger'">{{item.inspectionStatus===6? '检验完成':'检验中'}}</van-tag>
+            <van-icon name="scan" size="24" @click="handleScan" />
         </p>
       </div>
     </template>
@@ -127,9 +128,10 @@ import {
   cancelApply,
   // payOrder,
 } from "@/api/order";
-import { prePay } from '@/api/index'
+import { prePay, getSignature } from '@/api/index';
 import { Dialog, Toast } from "vant";
 import { mapGetters } from'vuex'
+import {saveBarcode} from "../api/order";
 export default {
   name: "OrderDetail",
   components: {},
@@ -143,6 +145,21 @@ export default {
             showAuditDialog: false,
             content: ''
         }
+  },
+  created() {
+    getSignature({
+      url: window.location.href.split('#')[0]
+    }).then(res => {
+      const {appId, timestamp, nonceStr, signature} = res.data
+      window.wx.config({
+        debug: process.env.NODE_ENV === 'development'? true: false, // 开启调试模式,调用的所有 api 的返回值会在客户端 alert 出来，若要查看传入的参数，可以在 pc 端打开，参数信息会通过 log 打出，仅在 pc 端时才会打印。
+        appId, // 必填，公众号的唯一标识
+        timestamp, // 必填，生成签名的时间戳
+        nonceStr, // 必填，生成签名的随机串
+        signature,// 必填，签名
+        jsApiList: ["scanQRCode"] // 必填，需要使用的 JS 接口列表
+      });
+    })
   },
   mounted() {
     this.init();
@@ -281,6 +298,26 @@ export default {
     close() {
       Dialog.close();
     },
+    //扫码
+    handleScan() {
+      window.wx.scanQRCode({
+        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+        scanType: ["barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+        success: res => {
+          console.log(res);
+          const result = JSON.parse(res.resultStr); // 当needResult 为 1 时，扫码返回的结果
+          const inspectionLabel = result
+          const { orderId:id } = this.$route.query
+          saveBarcode({id, inspectionLabel })
+          .then(() => {
+            this.$toast.success("扫码成功");
+          })
+        },
+        fail: err => {
+          console.log(err)
+        }
+      });
+    },
   },
 };
 </script>
@@ -343,6 +380,14 @@ export default {
               white-space: nowrap;
           }
       }
+  }
+}
+.item-status{
+  /deep/ .van-tag{
+    height: 17px;
+  }
+  i{
+    margin-left: auto;
   }
 }
 </style>
