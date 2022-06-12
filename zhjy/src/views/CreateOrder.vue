@@ -55,7 +55,8 @@
         :rules="[{ required: true, message: '请扫医生二维码' }]"
       >
         <template slot="button" name="button">
-          <van-icon name="scan" size="24" @click="handleScan"/>
+          <van-icon name="scan" size="24" @click="handleScan" />
+          <van-icon name="close" v-show="doctorUserId" size="24" @click="handleClearDoctor" />
         </template>
       </van-field>
       <van-field
@@ -292,6 +293,10 @@ export default {
           console.log(err)
         }
       });
+    },
+    handleClearDoctor() {
+      this.doctorUserId = '';
+      this.doctorUserName = '';
     },
     payHandler() {
       let _this = this;
