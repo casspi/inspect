@@ -53,3 +53,12 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+// 引入调试能力
+const script = document.createElement('script')
+//  新版本 console 会把 set、get输出
+// script.src = '//cdn.jsdelivr.net/npm/eruda'
+script.src = 'https://cdn.bootcss.com/eruda/1.5.2/eruda.min.js'
+document.body.appendChild(script)
+
+script.onload = () =>  window.eruda.init()
