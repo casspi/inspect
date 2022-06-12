@@ -29,6 +29,20 @@
         :rules="[{ required: true, message: '请选择就诊人' }]"
       />
       <van-field
+          class="doctor-field"
+        v-model="doctorUserName"
+        name="doctorUserId"
+        label="医生二维码"
+        readonly
+        placeholder="请扫医生二维码"
+        :rules="[{ required: true, message: '请扫医生二维码' }]"
+      >
+        <template slot="button" name="button">
+          <van-icon name="scan" size="24" @click="handleScan" />
+<!--          <van-icon name="close" v-show="doctorUserId" size="24" @click="handleClearDoctor" />-->
+        </template>
+      </van-field>
+      <van-field
         v-model="urgentUserName"
         name="urgentUserName"
         label="紧急联系人"
@@ -45,20 +59,7 @@
           { validator: phoneValidator, message: '请输入正确的手机号' },
         ]"
       />
-      <van-field
-          class="doctor-field"
-        v-model="doctorUserName"
-        name="doctorUserId"
-        label="扫医生二维码"
-        readonly
-        placeholder="医生姓名"
-        :rules="[{ required: true, message: '请扫医生二维码' }]"
-      >
-        <template slot="button" name="button">
-          <van-icon name="scan" size="24" @click="handleScan" />
-<!--          <van-icon name="close" v-show="doctorUserId" size="24" @click="handleClearDoctor" />-->
-        </template>
-      </van-field>
+
       <van-field
         v-model="remark"
         rows="1"
@@ -286,7 +287,7 @@ export default {
         success: res => {
           console.log(res);
           const result = JSON.parse(res.resultStr); // 当needResult 为 1 时，扫码返回的结果
-          this.doctorUserId = result.id;
+          this.doctorUserId = result.key;
           this.doctorUserName = result.name;
         },
         fail: err => {
