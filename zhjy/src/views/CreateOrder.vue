@@ -1,5 +1,6 @@
 <template>
   <div class="create-order" id="screen">
+    {{doctorUserId}}
     <!-- <s-header :name="'生成订单'" @callback="deleteLocal"></s-header> -->
     <!-- <div class="order-status">
       <div class="status-item">
@@ -45,6 +46,17 @@
           { validator: phoneValidator, message: '请输入正确的手机号' },
         ]"
       />
+      <van-field
+        v-model="patientId"
+        name="patientId"
+        label="扫医生二维码"
+        placeholder="就诊人姓名"
+        :rules="[{ required: true, message: '请扫医生二维码' }]"
+      >
+        <template slot="button" name="button">
+          <van-icon name="scan" size="24" @click="handleScan"/>
+        </template>
+      </van-field>
       <van-field
         v-model="remark"
         rows="1"
@@ -138,7 +150,7 @@
 <script>
 import { Toast } from "vant";
 import { mapGetters } from "vuex";
-// import { wxLogin } from "../api/index";
+import { getSignature } from "@/api/index";
 import { getPatient } from "../api/patient";
 import { getHospitalList,getDoctorList } from "../api/doctor";
 import { createOrder } from "../api/order";
@@ -165,7 +177,19 @@ export default {
     //this.selectDoctorList('1384878507879882753');
   },
   created() {
-
+    getSignature({
+      url: 'https://gzh.huichangyx.com/?wx=1122' || window.location.href.split('#')[0]
+    }).then(res => {
+      const {appId, timestamp, nonceStr, signature} = res.data
+      window.wx.config({
+        debug: true, // 开启调试模式,调用的所有 api 的返回值会在客户端 alert 出来，若要查看传入的参数，可以在 pc 端打开，参数信息会通过 log 打出，仅在 pc 端时才会打印。
+        appId, // 必填，公众号的唯一标识
+        timestamp, // 必填，生成签名的时间戳
+        nonceStr, // 必填，生成签名的随机串
+        signature,// 必填，签名
+        jsApiList: ["scanQRCode"] // 必填，需要使用的 JS 接口列表
+      });
+    })
   },
   computed: {
     ...mapGetters(["userInfo"]),
@@ -251,7 +275,20 @@ export default {
       getDoctorList({id:val}).then((res) => {
           console.log("医生列表：",res);
       });
-    },  
+    },
+    handleScan() {
+      window.wx.scanQRCode({
+        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+        success: res => {
+          // var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+          console.log(res);
+        },
+        fail: err => {
+          console.log(err)
+        }
+      });
+    },
     payHandler() {
       let _this = this;
       this.$refs.orderForm
