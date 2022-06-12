@@ -89,7 +89,7 @@ export default {
           })
           .then(() => {
 
-              this.$router.push({path: 'create-order', query: { selectItems:JSON.stringify(selectItems) ,doctorUserId:d.data}})
+              this.$router.push({path: 'create-order', query: { selectItems:JSON.stringify(selectItems) }})
 
                // _this.getRecommendDoctor(selectItems);
           })
