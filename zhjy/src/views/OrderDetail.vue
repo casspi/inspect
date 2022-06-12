@@ -305,7 +305,7 @@ export default {
         scanType: ["barCode"], // 可以指定扫二维码还是一维码，默认二者都有
         success: res => {
           console.log(res);
-          const inspectionLabel = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+          const inspectionLabel = res.resultStr.split(',')[1]; // 当needResult 为 1 时，扫码返回的结果
           const { orderId:id } = this.$route.query
           saveBarcode({id, inspectionLabel })
           .then(() => {
