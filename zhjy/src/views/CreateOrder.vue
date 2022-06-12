@@ -56,7 +56,7 @@
       >
         <template slot="button" name="button">
           <van-icon name="scan" size="24" @click="handleScan" />
-          <van-icon name="close" v-show="doctorUserId" size="24" @click="handleClearDoctor" />
+<!--          <van-icon name="close" v-show="doctorUserId" size="24" @click="handleClearDoctor" />-->
         </template>
       </van-field>
       <van-field
