@@ -289,7 +289,7 @@ export default {
           const result = JSON.parse(res.resultStr); // 当needResult 为 1 时，扫码返回的结果
           this.doctorUserId = result.key;
           this.doctorUserName = result.name;
-        },
+          this.$toast.success("扫码成功！");
         fail: err => {
           console.log(err)
         }
