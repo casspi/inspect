@@ -315,8 +315,9 @@ export default {
           .then(res => {
             if(res.code==200){//说明扫码成功
               item.inspectionLabel=inspectionLabel;;
-              console.log(item);
               this.$toast.success("扫码成功");
+            }else{
+               this.$toast.fail("扫码失败，请重新扫描");
             }
           })
         },
