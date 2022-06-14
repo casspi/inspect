@@ -88,7 +88,11 @@
         <p v-if="detail.payStatus === 6" class="item-status">
             <span>检验状态：</span>
             <van-tag :type="item.inspectionStatus===1?'success':'danger'">{{item.inspectionStatus===6? '检验完成':'检验中'}}</van-tag>
-            <van-icon name="scan" size="24" @click="handleScan(item.id)" />
+            <van-icon name="scan" v-if="userType==1" size="24"  @click="handleScan(item.id)" />
+        </p>
+        <p v-if="detail.payStatus === 6&&item.inspectionLabel!=null" class="item-status">
+            <span>条形码：</span>
+            <van-tag >{{item.inspectionLabel}}</van-tag>
         </p>
       </div>
     </template>
