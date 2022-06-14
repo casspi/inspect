@@ -35,12 +35,10 @@ axios.interceptors.response.use((res) => {
 
   return res.data
 },error => {
-  console.log("aaaaaa   ",error);
   let t={
     'code':500,
     'msg':'系统异常，请稍候！'
   }
-  console.log(t);
   return t;
 
 })
