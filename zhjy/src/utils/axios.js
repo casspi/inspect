@@ -30,16 +30,11 @@ axios.interceptors.response.use((res) => {
       return Promise.reject(res.data)
     }
     // if (res.data.msg) Toast.fail(res.data.msg)
-    return res.data;
+    return Promise.reject(res.data)
   }
-
   return res.data
 },error => {
-  let t={
-    'code':500,
-    'msg':'系统异常，请稍候！'
-  }
-  return t;
+  return Promise.reject(error)
 
 })
 

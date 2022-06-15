@@ -274,9 +274,13 @@ export default {
         }
       }else{//找回密码
         const { smsCode, password, phonenumber } = this.retrievalForm
-        setPwd({
+      await setPwd({
           smsCode, password, phonenumber
-        }).then(() => {
+        }).then(res => {
+          if(res.code!=200){
+            Toast.fail(res.msg);
+            return
+          }
           this.retrievalForm = {
               phonenumber: '',
               captcha: '',
