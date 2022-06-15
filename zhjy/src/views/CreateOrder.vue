@@ -155,7 +155,7 @@ import { Toast } from "vant";
 import { mapGetters } from "vuex";
 import { getSignature } from "@/api/index";
 import { getPatient } from "../api/patient";
-import { getHospitalList,getDoctorList } from "../api/doctor";
+import { getHospitalList,getDoctorList,doctorInfo } from "../api/doctor";
 import { createOrder } from "../api/order";
 export default {
   name: "CreateOrder",
@@ -280,18 +280,24 @@ export default {
       });
     },
     //扫码
-    handleScan() {
+   handleScan() {
       window.wx.scanQRCode({
         needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
         scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
         success: res => {
           console.log(res);
           const result = JSON.parse(res.resultStr); // 当needResult 为 1 时，扫码返回的结果
-          this.doctorUserId = result.key;
-          this.doctorUserName = result.name;
-          console.log('扫码后参数:',result);
-           console.log('扫码后参数doctorUserId:',this.doctorUserId);
-           this.$toast.success("扫码成功");
+          doctorInfo(result.key).then(res=>{
+              if(res.code==200){
+                this.doctorUserId = result.key;
+                this.doctorUserName = result.name;
+                this.$toast.success("扫码成功");
+              }else{
+                handleClearDoctor();
+                this.$toast.fail(res.msg);
+              }
+          });
+          
         },
         fail: err => {
           console.log(err)

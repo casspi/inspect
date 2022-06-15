@@ -103,7 +103,7 @@
             ]"
         >
         </van-field>
-        <van-field
+        <!-- <van-field
             v-model="retrievalForm.captcha"
             type="text"
             name="captcha"
@@ -112,22 +112,22 @@
             maxlength="4"
         >
           <template slot="button" name="button">
-            <img v-show="captchaImg" :src="'data:image/jpeg;base64,' + captchaImg" width="70">
+            <img v-show="captchaImg" :src="'data:image/jpeg;base64,' + captchaImg"  @click="handleCaptchaImage" width="70">
             <span v-show="!captchaImg"></span>
           </template>
-        </van-field>
+        </van-field> -->
         <van-field
             v-model="retrievalForm.smsCode"
             type="text"
             name="smsCode"
-            label="短信验证码"
+            label="验证码"
             placeholder="短信验证码"
             :rules="[
               { required: true, message: '请填写短信验证码' },
             ]"
         >
           <template slot="button" name="button">
-            <van-button size="mini" type="primary" style="width: 70px" native-type="button" :disabled="!computedSmsCode || countdown > 0" @click="handleSmsCode">{{countdown?countdown:'发送验证码'}}</van-button>
+            <van-button size="mini" type="primary" style="width: 70px" native-type="button" :disabled="smsCodeFlag"  @click="handleSmsCode">{{countdown?countdown:'发送验证码'}}</van-button>
           </template>
         </van-field>
         <van-field
@@ -141,7 +141,7 @@
         <div style="margin: 16px">
           <van-button round block color="#1baeae" native-type="submit"
           >重置密码</van-button>
-          <div class="link-login" @click="toggle('login')">返回登陆</div>
+          <div class="link-login" @click="toggle('login')">返回登录</div>
         </div>
       </van-form>
     </div>
@@ -177,7 +177,8 @@ export default {
         smsCode: '',
         password: ''
       },
-      countdown: 0
+      countdown: 0,
+      smsCodeFlag: true,//发送验证码按钮
     };
   },
   computed: {
@@ -205,7 +206,8 @@ export default {
     },
     'retrievalForm.phonenumber': function (v){
       if(this.phoneValidator(v)) {
-        this.handleCaptchaImage()
+       // this.handleCaptchaImage()
+        this.smsCodeFlag = false;
       }
     }
   },
@@ -272,9 +274,13 @@ export default {
         }
       }else{//找回密码
         const { smsCode, password, phonenumber } = this.retrievalForm
-        setPwd({
+      await setPwd({
           smsCode, password, phonenumber
-        }).then(() => {
+        }).then(res => {
+          if(res.code!=200){
+            Toast.fail(res.msg);
+            return
+          }
           this.retrievalForm = {
               phonenumber: '',
               captcha: '',
@@ -315,17 +321,20 @@ export default {
         this.captchaImg = res.data.img
       })
     },
-    async handleSmsCode() {
+    handleSmsCode() {
       const { phonenumber, captcha } = this.retrievalForm
-      if(this.phoneValidator(phonenumber) && captcha){
-        const { data } = smsSend({
+      if(this.phoneValidator(phonenumber)){
+        smsSend({
           phonenumber,
-          captcha
-        });
-        console.log(data);
-        this.countdownFoo()
-        this.handleCaptchaImage()
-        this.retrievalForm.captcha = ''
+        }).then(res => {
+           if(res.code!=200){
+            Toast.fail(res.msg);
+           }else{
+             this.countdownFoo()
+             this.retrievalForm.captcha = ''
+           }
+      })
+      //  this.handleCaptchaImage()
 
       }
     },

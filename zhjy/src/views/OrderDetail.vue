@@ -88,7 +88,11 @@
         <p v-if="detail.payStatus === 6" class="item-status">
             <span>检验状态：</span>
             <van-tag :type="item.inspectionStatus===1?'success':'danger'">{{item.inspectionStatus===6? '检验完成':'检验中'}}</van-tag>
-            <van-icon name="scan" size="24" @click="handleScan" />
+            <van-icon name="scan" v-if="userType==1" size="24"  @click="handleScan(item)" />
+        </p>
+        <p v-if="detail.payStatus === 6&&item.inspectionLabel!=null" class="item-status">
+            <span>条形码：</span>
+            <van-tag >{{item.inspectionLabel}}</van-tag>
         </p>
       </div>
     </template>
@@ -299,17 +303,22 @@ export default {
       Dialog.close();
     },
     //扫码
-    handleScan() {
+    handleScan(item) {
+       let id = item.id;
       window.wx.scanQRCode({
         needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
         scanType: ["barCode"], // 可以指定扫二维码还是一维码，默认二者都有
         success: res => {
           console.log(res);
           const inspectionLabel = res.resultStr.split(',')[1]; // 当needResult 为 1 时，扫码返回的结果
-          const { orderId:id } = this.$route.query
           saveBarcode({id, inspectionLabel })
-          .then(() => {
-            this.$toast.success("扫码成功");
+          .then(res => {
+            if(res.code==200){//说明扫码成功
+              item.inspectionLabel=inspectionLabel;;
+              this.$toast.success("扫码成功");
+            }else{
+               this.$toast.fail("扫码失败，请重新扫描");
+            }
           })
         },
         fail: err => {

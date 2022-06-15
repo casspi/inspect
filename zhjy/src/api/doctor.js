@@ -19,3 +19,9 @@ export function salesmanDoctorList(params) {
   return axios.get('/hospital/salesmanDoctorList', { params })
 }
 
+//医生详情
+export function doctorInfo(id) {
+  return axios.get('/hospital/doctor/getInfo/'+id);
+}
+
+
