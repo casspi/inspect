@@ -287,7 +287,7 @@ export default {
         success: res => {
           console.log(res);
           const result = JSON.parse(res.resultStr); // 当needResult 为 1 时，扫码返回的结果
-          doctorInfo(id).then(res=>{
+          doctorInfo(result.key).then(res=>{
               if(res.code==200){
                 this.doctorUserId = result.key;
                 this.doctorUserName = result.name;
