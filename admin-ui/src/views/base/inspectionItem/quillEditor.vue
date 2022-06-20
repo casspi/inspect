@@ -29,15 +29,15 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import Quill from 'quill'
-import resizeImage from 'quill-image-resize-module' // 图片缩放组件引用
+import {
+  quillEditor}  from 'vue-quill-editor'
 import { ImageDrop } from 'quill-image-drop-module'; // 图片拖动组件引用
+import ImageResize from 'quill-image-resize-module' // 图片缩放组件引用
 import {uploadImage } from "@/api/base/inspectionItem";
 
-import {
-  quillEditor
-} from 'vue-quill-editor'
+Quill.register('modules/imageResize ', ImageResize) // 注册
 Quill.register('modules/imageDrop', ImageDrop); // 注册
-Quill.register('modules/resizeImage ', resizeImage ) // 注册
+
 /**
  * 富文本
  * content 内容
@@ -68,17 +68,6 @@ export default {
       type: Number,
       default: 0
     },
-    modules: {
-          imageDrop: true,      //图片拖拽
-          imageResize: {          //放大缩小
-            displayStyles: {
-              backgroundColor: "black",
-              border: "none",
-              color: "white"
-            },
-            modules: ["Resize", "DisplaySize", "Toolbar"]
-          },
-    },
     /* 编辑器的唯一标识符 */
     myEditor: {
       type: String,
@@ -103,6 +92,15 @@ export default {
         theme: "snow", // or 'bubble'
         placeholder: "请输入内容",
         modules: {
+          imageDrop: true,      //图片拖拽
+          imageResize: {          //放大缩小
+            displayStyles: {
+              backgroundColor: "black",
+              border: "none",
+              color: "white"
+            },
+            modules: ["Resize", "DisplaySize", "Toolbar"]
+          },
           toolbar: {
             container: toolbarOptions,
             handlers: {
@@ -114,7 +112,7 @@ export default {
                 }
               }
             }
-          }
+          },
         }
       },
       myHeaders: { token: localStorage.getItem('token') },
@@ -164,6 +162,7 @@ export default {
                     })
                 }
             }).catch(err => {
+              console.log("err=>", err)
                 this.$message.error('上传图片失败！请重新上传')
             })
         },

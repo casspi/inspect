@@ -340,9 +340,6 @@
                 myEditor="Editorc0"
                 v-model="form.content"
             />
-<!--            @blur="onEditorBlur($event)"-->
-<!--            @focus="onEditorFocus($event)"-->
-<!--            @ready="onEditorReady($event)"-->
         </el-form-item>
       </el-form>
       <div class="btn-bar">
