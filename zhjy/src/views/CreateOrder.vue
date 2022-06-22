@@ -281,6 +281,7 @@ export default {
     },
     //扫码
    handleScan() {
+      let _this = this;
       window.wx.scanQRCode({
         needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
         scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
@@ -288,14 +289,14 @@ export default {
           console.log(res);
           const result = JSON.parse(res.resultStr); // 当needResult 为 1 时，扫码返回的结果
           doctorInfo(result.key).then(res=>{
-              if(res.code==200){
+                console.log(res);
                 this.doctorUserId = result.key;
                 this.doctorUserName = result.name;
                 this.$toast.success("扫码成功");
-              }else{
-                handleClearDoctor();
-                this.$toast.fail(res.msg);
-              }
+          }).catch(err=>{
+               console.log(err);
+              _this.handleClearDoctor();
+              _this.$toast.fail(err.msg);
           });
           
         },

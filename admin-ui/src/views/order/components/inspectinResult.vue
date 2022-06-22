@@ -3,6 +3,7 @@
         :title="computedTitle"
         width="1000px"
         @update:visible="hide"
+        :close-on-click-modal="false"
         :visible.sync="visible">
         <el-form :model="form" label-width="120px">
             <el-form-item label="检验员">
@@ -48,7 +49,29 @@
                     placeholder="选择检验时间">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="检验结果">
+           <el-form-item label="检验结果图" prop="resultImg" >
+              <el-upload
+                :action="imgUpload.url"
+                :headers="imgUpload.headers"
+                list-type="picture-card"
+                :limit="limit"
+                :disabled="true"
+                :on-exceed="handleExceed"
+                :on-change="handleEditChange"
+                :on-remove="handleRemove"
+                :on-success="handlePictureSuccess"
+                :before-upload="beforeAvatarUpload"
+                :on-preview="handlePictureCardPreview"
+                :file-list="fileList"
+                :class="{ hide: hideUploadBtn }"
+              >
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" v-if="imageUrl" :src="imageUrl"  alt="">
+              </el-dialog>
+            </el-form-item>
+            <el-form-item label="检验结果" >
                 <div id="items">
                 <el-row class="row-header">
                     <el-col :span="1">序号</el-col>
@@ -121,6 +144,7 @@
 <script>
 import { saveResult,getOrderItem } from "@/api/order/orderItem";
 import Sortable from 'sortablejs'
+import { getToken } from '@/utils/auth'
 
 export default {
     data() {
@@ -139,7 +163,26 @@ export default {
                 items:[
                     { name:'', value: '', acceptanceValue: '', unit:'', result: ''},
                 ]
-            }
+            },
+              // 图片数量限制
+        　　 limit: 1,
+             dialogVisible: false,
+        　　　　//页面上存的暂时图片地址List
+            fileList: [],
+            imageUrl: "",
+            imgUpload: {
+                // 设置上传的请求头部
+                headers: {
+                    Authorization: "Bearer " + getToken()
+                },
+                // 图片上传的方法地址:
+                url: process.env.VUE_APP_BASE_API + "/common/upload"
+            },
+            hideUploadBtn: true,
+            showUploadBtn: {
+                type: Boolean,
+                default: false,
+            },
         }
     },
     computed: {
@@ -172,11 +215,17 @@ export default {
         },
         //获取详情
         detail(id,type) {
+            let _this = this;
+            this.fileList =[];
             getOrderItem(id).then((res) => {
                 console.log("type  ",type);
                 const { data } = res;
                 const { resultItems: items, result, inspectionResultTime,inspectionSendTime,inspectionPersonal, inspectionNumber} = data;
+                console.log("resultImgUrl  ",data.resultImgUrl);
                 let items1 = items;
+                this.imageUrl=data.resultImgUrl;
+                _this.fileList.push({name: 'food.jpg', url: _this.getImgUrl(data.resultImgUrl)});
+                _this.hideUploadBtn =true;
                 if(items==null&&type==2){ //补录时 若是items==null了  页面无新增表单了
                 items1=[
                     { name:'', value: '', acceptanceValue: '', unit:'', result: ''},
@@ -209,6 +258,7 @@ export default {
                     time:this.form.time,
                     inspectionPersonal:this.form.inspectionPersonal,
                     inspectionSendTime:this.form.inspectionSendTime,
+                    resultImgUrl:this.imageUrl,
                     resultItems:JSON.stringify(this.form.items)}).then((response) => {
                     console.log(response.data) ;
                     this.resolve()
@@ -239,11 +289,55 @@ export default {
                 forceFallback: true,
                 draggable: ".sortable-item"
             })
+        },
+        //图片上传前的相关判断
+        beforeAvatarUpload(file) {
+            const isJPG = file.type === 'image/jpeg' || file.type == 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 5;
+            if (!isJPG) {
+                this.$message.error('上传图片只能是 JPG/PNG 格式!');
+            }
+            if (!isLt2M) {
+                this.$message.error('上传图片大小不能超过 5MB!');
+            }
+            return isJPG && isLt2M;
+        },
+        //图片预览
+        handlePictureCardPreview(file) {
+            this.imageUrl = file.url;
+            this.dialogVisible = true;
+        },
+        //图片上传成功后的回调
+        handlePictureSuccess(res, file) {
+            //设置图片访问路径 （articleImg 后台传过来的的上传地址）
+            this.imageUrl = file.response.data.fileName;
+            // this.fileList.push({'url':this.imageUrl});
+            //console.log(this.fileList);
+        },
+        // 文件个数超出
+        handleExceed() {
+            this.$message.error(`上传图片数量不能超过 ${this.limit} 个!`);
+        },
+        // 移除图片操作
+        handleRemove(file, fileList) {
+            // fileList为移除后剩余的图片数组 赋值给this.fileList 则展示正确
+            // 上传图片 > 6 则隐藏上传组件
+            this.hideUploadBtn = false;
+            this.imageUrl = "";
+        },
+
+        // 最多上传6张图，超过时隐藏上传按钮
+        handleEditChange(file, fileList) {
+            this.hideUploadBtn = fileList.length >= 1;
+            console.log(this.hideUploadBtn);
+        },
+        getImgUrl(img) {
+            return process.env.VUE_APP_BASE_API + '/common/download/resource?name=' + img
         }
     }
 }
 </script>
-<style lang="scss">
+<style lang="scss" >
     #items{
         -webkit-touch-callout: none; /* iOS Safari */
         -webkit-user-select: none; /* Chrome/Safari/Opera */
@@ -264,4 +358,22 @@ export default {
     .row-header{
         font-weight: bolder;
     }
+.inspectinItem {
+  & .el-form-item__label {
+    margin-left: 0px !important;
+    width: 0px;
+  }
+
+  & .el-form-item__content {
+    margin-left: 0px !important;
+  }
+}
+</style>
+<style lang="scss" scoped>
+// 隐藏上传组件
+/deep/ .hide {
+  .el-upload--picture-card {
+    display: none !important;
+  }
+}
 </style>

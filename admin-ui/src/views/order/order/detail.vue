@@ -36,7 +36,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="检验项目：">
+        <el-form-item label="检验项目：" class="inspectinItem">
           <el-table :data="orderDetail.itemList"  border style="line-height: 0">
             <el-table-column label="检验编号" align="center" prop="inspectionNumber" >
               <template slot-scope="scope">
@@ -45,7 +45,8 @@
             </el-table-column>
             <el-table-column label="项目名称" width="220" align="center" prop="inspectName" >
               <template slot-scope="scope">
-                <el-tag size="small">{{ scope.row.inspectName }}</el-tag>
+                <!-- <el-tag size="small">{{ scope.row.inspectName }}</el-tag> -->
+                {{ scope.row.inspectName }}
               </template>
             </el-table-column>
             <el-table-column label="检验所" align="center" prop="officeName" >
@@ -58,17 +59,22 @@
                {{ scope.row.officeItemName }}
               </template>
             </el-table-column>
-            <el-table-column label="应收" align="center" prop="amount" >
+            <el-table-column label="应收" align="center" prop="amount" width="80%">
               <template slot-scope="scope">
                {{ scope.row.amount }}元
               </template>
                </el-table-column>
-              <el-table-column label="实收" align="center" prop="actualAmount" >
+              <el-table-column label="实收" align="center" prop="actualAmount"  width="80%">
               <template slot-scope="scope">
                {{ scope.row.actualAmount }}元
               </template>
                </el-table-column>
-            <el-table-column label="状态" align="center" >
+            <el-table-column label="医院条形码" align="center" prop="inspectionLabel" >
+              <template slot-scope="scope">
+               {{ scope.row.inspectionLabel }}
+              </template>
+              </el-table-column>
+            <el-table-column label="状态" align="center"  width="80%">
                 <template slot-scope="scope">
                   {{ scope.row.inspectionStatusStr}}
                 </template>
@@ -83,7 +89,7 @@
                 {{ scope.row.inspectionResultTime }}
               </template>
             </el-table-column>
-            <el-table-column label="检验结果" align="center" prop="inspectionResultTime">
+            <el-table-column label="检验结果" align="center" prop="inspectionResultTime" width="80%">
               <template slot-scope="scope">
                 <el-button size="mini" v-if=" orderDetail.payStatus==6 && scope.row.inspectionStatus==1" @click="handleResultPop(scope.row,1)">录入</el-button>
                 <el-button size="mini" v-if="orderDetail.payStatus==6 && scope.row.inspectionStatus==6" @click="handleResultPop(scope.row,2)">补录</el-button>
@@ -254,3 +260,16 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+
+.inspectinItem {
+  & .el-form-item__label {
+    margin-left: 0px !important;
+    width: 0px;
+  }
+
+  & .el-form-item__content {
+    margin-left: 0px !important;
+  }
+}
+</style>
