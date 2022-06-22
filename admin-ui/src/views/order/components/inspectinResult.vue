@@ -239,6 +239,7 @@ export default {
             });
         },
         hide() {
+            this.fileList = []
             this.visible = false
             this.reject()
         },
