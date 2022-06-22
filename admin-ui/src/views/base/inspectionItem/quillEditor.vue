@@ -9,7 +9,7 @@
       @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)"
       style="width: 100%; height: 100%"
     />
-    <el-upload 
+    <el-upload
       :key="randomId(3)"
       class="upload-col"
       :auto-upload="false"
@@ -32,17 +32,18 @@ import Quill from 'quill'
 import {
   quillEditor}  from 'vue-quill-editor'
 import { ImageDrop } from 'quill-image-drop-module'; // 图片拖动组件引用
-import ImageResize from 'quill-image-resize-module' // 图片缩放组件引用
-import {uploadImage } from "@/api/base/inspectionItem";
+import imageResize from 'quill-image-resize-module'; // 图片缩放组件引用
 
-Quill.register('modules/imageResize ', ImageResize) // 注册
+console.log(imageResize);
+Quill.register('modules/imageResize ', imageResize) // 注册
 Quill.register('modules/imageDrop', ImageDrop); // 注册
+import { uploadImage } from "@/api/base/inspectionItem";
 
 /**
  * 富文本
  * content 内容
  * options 参数配置
- * 
+ *
 */
 // 工具栏配置
 const toolbarOptions = [
@@ -55,7 +56,7 @@ const toolbarOptions = [
   [{ color: [] }, { background: [] }],             // 字体颜色、字体背景颜色
   [{ align: [] }],                                 // 对齐方式
   ["clean"],                                       // 清除文本格式
-  ["link", "image", "video"]                       // 链接、图片、视频
+  ["link", "image"]                       // 链接、图片
 ];
 export default {
   props: {
