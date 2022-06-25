@@ -9,7 +9,7 @@
       @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @ready="onEditorReady($event)"
       style="width: 100%; height: 100%"
     />
-    <el-upload
+    <el-upload 
       :key="randomId(3)"
       class="upload-col"
       :auto-upload="false"
@@ -29,21 +29,20 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import Quill from 'quill'
-import {
-  quillEditor}  from 'vue-quill-editor'
+import resizeImage from 'quill-image-resize-module' // 图片缩放组件引用
 import { ImageDrop } from 'quill-image-drop-module'; // 图片拖动组件引用
-import imageResize from 'quill-image-resize-module'; // 图片缩放组件引用
+import {uploadImage } from "@/api/base/inspectionItem";
 
-console.log(imageResize);
-Quill.register('modules/imageResize ', imageResize) // 注册
+import {
+  quillEditor
+} from 'vue-quill-editor'
 Quill.register('modules/imageDrop', ImageDrop); // 注册
-import { uploadImage } from "@/api/base/inspectionItem";
-
+Quill.register('modules/resizeImage ', resizeImage ) // 注册
 /**
  * 富文本
  * content 内容
  * options 参数配置
- *
+ * 
 */
 // 工具栏配置
 const toolbarOptions = [
@@ -56,7 +55,7 @@ const toolbarOptions = [
   [{ color: [] }, { background: [] }],             // 字体颜色、字体背景颜色
   [{ align: [] }],                                 // 对齐方式
   ["clean"],                                       // 清除文本格式
-  ["link", "image"]                       // 链接、图片
+  ["link", "image", "video"]                       // 链接、图片、视频
 ];
 export default {
   props: {
@@ -68,6 +67,17 @@ export default {
     quillIndex: {
       type: Number,
       default: 0
+    },
+    modules: {
+          imageDrop: true,      //图片拖拽
+          imageResize: {          //放大缩小
+            displayStyles: {
+              backgroundColor: "black",
+              border: "none",
+              color: "white"
+            },
+            modules: ["Resize", "DisplaySize", "Toolbar"]
+          },
     },
     /* 编辑器的唯一标识符 */
     myEditor: {
@@ -93,15 +103,6 @@ export default {
         theme: "snow", // or 'bubble'
         placeholder: "请输入内容",
         modules: {
-          imageDrop: true,      //图片拖拽
-          imageResize: {          //放大缩小
-            displayStyles: {
-              backgroundColor: "black",
-              border: "none",
-              color: "white"
-            },
-            modules: ["Resize", "DisplaySize", "Toolbar"]
-          },
           toolbar: {
             container: toolbarOptions,
             handlers: {
@@ -113,7 +114,7 @@ export default {
                 }
               }
             }
-          },
+          }
         }
       },
       myHeaders: { token: localStorage.getItem('token') },
@@ -163,7 +164,6 @@ export default {
                     })
                 }
             }).catch(err => {
-              console.log("err=>", err)
                 this.$message.error('上传图片失败！请重新上传')
             })
         },

@@ -36,9 +36,9 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-       target: 'http://96166.xiaomy.net',//http://121.37.185.29:12020
-        // target:'http://localhost:12020',
-       // target:'https://gl.huichangyx.com/prod-api/',
+       // target: 'http://96166.xiaomy.net',//http://121.37.185.29:12020
+        target:'http://96166.xiaomy.net',
+       //target:'https://gl.huichangyx.com/prod-api/',
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
@@ -59,7 +59,7 @@ module.exports = {
         'window.Quill': 'quill/dist/quill.js',
         Quill: 'quill/dist/quill.js'
       })
-    ],
+    ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test

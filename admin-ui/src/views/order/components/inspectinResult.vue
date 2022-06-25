@@ -55,7 +55,7 @@
                 :headers="imgUpload.headers"
                 list-type="picture-card"
                 :limit="limit"
-                :disabled="true"
+                :disabled="showUploadBtn"
                 :on-exceed="handleExceed"
                 :on-change="handleEditChange"
                 :on-remove="handleRemove"
@@ -179,10 +179,7 @@ export default {
                 url: process.env.VUE_APP_BASE_API + "/common/upload"
             },
             hideUploadBtn: true,
-            showUploadBtn: {
-                type: Boolean,
-                default: false,
-            },
+            showUploadBtn: false,
         }
     },
     computed: {
@@ -199,7 +196,12 @@ export default {
         show(id, type) {
             this.visible = true
             this.id=id;
-            this.type = type
+            this.type = type;
+            if(type==1||type==2){
+                this.showUploadBtn= false;
+            }else{
+                this.showUploadBtn= true;
+            }
             if([1,2].includes(type)){
                 this.$nextTick(()=>{
                     this.sortableInit()
@@ -239,7 +241,6 @@ export default {
             });
         },
         hide() {
-            this.fileList = []
             this.visible = false
             this.reject()
         },

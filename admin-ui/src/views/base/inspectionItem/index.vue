@@ -340,6 +340,9 @@
                 myEditor="Editorc0"
                 v-model="form.content"
             />
+<!--            @blur="onEditorBlur($event)"-->
+<!--            @focus="onEditorFocus($event)"-->
+<!--            @ready="onEditorReady($event)"-->
         </el-form-item>
       </el-form>
       <div class="btn-bar">
@@ -652,43 +655,43 @@ export default {
         })
     },
 
-  //图片上传前的相关判断
-beforeAvatarUpload(file) {
-  const isJPG = file.type === 'image/jpeg' || file.type == 'image/png';
-  const isLt2M = file.size / 1024 / 1024 < 5;
-  if (!isJPG) {
-    this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
-  }
-  if (!isLt2M) {
-    this.$message.error('上传头像图片大小不能超过 5MB!');
-  }
-  return isJPG && isLt2M;
-},
-//图片预览
-handlePictureCardPreview(file) {
-  this.imageUrl = file.url;
-  this.dialogVisible = true;
-},
-//图片上传成功后的回调
-handlePictureSuccess(res, file) {
-  //设置图片访问路径 （articleImg 后台传过来的的上传地址）
-  this.imageUrl = file.response.data.fileName;
- // this.fileList.push({'url':this.imageUrl});
-  //console.log(this.fileList);
-},
-// 文件个数超出
-handleExceed() {
-  this.$message.error(`上传链接LOGO图片数量不能超过 ${this.limit} 个!`);
-},
-// 移除图片操作
+    //图片上传前的相关判断
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type == 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 5;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    //图片预览
+    handlePictureCardPreview(file) {
+      this.imageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    //图片上传成功后的回调
+    handlePictureSuccess(res, file) {
+      //设置图片访问路径 （articleImg 后台传过来的的上传地址）
+      this.imageUrl = file.response.data.fileName;
+      // this.fileList.push({'url':this.imageUrl});
+      //console.log(this.fileList);
+    },
+    // 文件个数超出
+    handleExceed() {
+      this.$message.error(`上传链接LOGO图片数量不能超过 ${this.limit} 个!`);
+    },
+    // 移除图片操作
     handleRemove(file, fileList) {
-    // fileList为移除后剩余的图片数组 赋值给this.fileList 则展示正确
+      // fileList为移除后剩余的图片数组 赋值给this.fileList 则展示正确
       // 上传图片 > 6 则隐藏上传组件
-      this.hideUploadBtn =false;
-      this.imageUrl="";
+      this.hideUploadBtn = false;
+      this.imageUrl = "";
     },
 
-// 最多上传6张图，超过时隐藏上传按钮
+    // 最多上传6张图，超过时隐藏上传按钮
     handleEditChange(file, fileList) {
       this.hideUploadBtn = fileList.length >= 1;
       console.log(this.hideUploadBtn);
