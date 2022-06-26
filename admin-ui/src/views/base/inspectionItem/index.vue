@@ -2,28 +2,28 @@
   <div class="app-container">
     <div v-show="!open">
         <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
-            <el-form-item label="检验项目名称" prop="itemName">
+            <el-form-item label="名称" prop="itemName">
                 <el-input
                     v-model="queryParams.itemName"
-                    placeholder="请输入检验项目名称"
+                    placeholder="请输入项目名称"
                     clearable
                     size="small"
                     @keyup.enter.native="handleQuery"
                 />
             </el-form-item>
-            <el-form-item label="检验项目分类" prop="itemClassify">
+            <el-form-item label="项目分类" prop="classifyId">
                 <el-select
-                    v-model="queryParams.itemClassify"
-                    placeholder="检验项目分类"
+                    v-model="queryParams.classifyId"
+                    placeholder="项目分类"
                     clearable
                     size="small"
                     style="width: 240px"
                 >
                     <el-option
                         v-for="dict in itemClassifyOptions"
-                        :key="dict.dictValue"
-                        :label="dict.dictLabel"
-                        :value="dict.dictValue"
+                        :key="dict.id"
+                        :label="dict.classifyName"
+                        :value="dict.id"
                     />
                 </el-select>
             </el-form-item>
@@ -33,7 +33,7 @@
                     placeholder="样本类型"
                     clearable
                     size="small"
-                    style="width: 240px"
+                    style="width: 140px"
                 >
                     <el-option
                         v-for="dict in sampleTypeOptions"
@@ -42,6 +42,22 @@
                         :value="dict.dictValue"
                     />
                 </el-select>
+            </el-form-item>
+            <el-form-item label="是否推荐" prop="recommend">
+            <el-select
+                v-model="queryParams.recommend"
+                  placeholder="是否推荐"
+                  clearable
+                  size="small"
+                  style="width: 100px"
+              >
+              <el-option
+                v-for="dict in recommendOptions"
+                :key="dict.id"
+                :label="dict.name"
+                :value="dict.id"
+                  />
+              </el-select>
             </el-form-item>
             <!-- <el-form-item label="单位" prop="itemUnit">
               <el-input
@@ -160,20 +176,20 @@
             >
           <template slot-scope="scope">
             <el-popover placement="right" title="" trigger="hover">
-              <img :src="getImgUrl(scope.row.titleImg)" />
+              <img :src="getImgUrl(scope.row.titleImg)" style="max-height: 500px;max-width: 500px" />
               <img slot="reference" :src="getImgUrl(scope.row.titleImg)" :alt="scope.row.titleImg" style="max-height: 50px;max-width: 130px">
             </el-popover>
           </template>
         </el-table-column>
 
-            <el-table-column label="检验项目名称" align="center" prop="itemName" />
-            <el-table-column label="检验项目分类" align="center" prop="itemClassifyStr" />
+            <el-table-column label="名称" align="center" prop="itemName" />
+            <el-table-column label="分类" align="center" prop="classifyName" />
             <el-table-column label="样本类型" align="center" prop="sampleTypeStr" />
             <el-table-column label="单位" align="center" prop="itemUnit" />
             <el-table-column label="价格" align="center" prop="amount" />
             <!-- <el-table-column label="折扣百分比" align="center" prop="discountPercent" /> -->
             <el-table-column label="折扣金额" align="center" prop="discountAmount" />
-            <el-table-column label="检验项目介绍" align="center" prop="summary" />
+            <el-table-column label="介绍" align="center" prop="summary" />
             <el-table-column label="检验所" align="center" prop="officeName" />
             <el-table-column label="检验所项目" align="center" prop="officeItemName" />
             <el-table-column label="状态" align="center">
@@ -186,6 +202,17 @@
                     ></el-switch>
                 </template>
             </el-table-column>
+             <el-table-column label="是否推荐" align="center" prop="recommend" >
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.recommend"
+                  :active-value=2
+                  :inactive-value=1
+                  @change="handleRecommendChange(scope.row)"
+                ></el-switch>
+              </template>
+            </el-table-column>
+             <el-table-column label="排序" align="center" prop="orderNum" />
             <el-table-column label="备注" align="center" prop="remark" />
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
                 <template slot-scope="scope">
@@ -221,18 +248,18 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
          <el-row>
         <el-col :span="6">
-        <el-form-item label="检验项目名称" prop="itemName">
+        <el-form-item label="项目名称" prop="itemName">
           <el-input v-model="form.itemName" placeholder="请输入检验项目名称" />
         </el-form-item>
         </el-col>
        <el-col :span="6">
-        <el-form-item label="检验项目分类" prop="itemClassify">
-          <el-select v-model="form.itemClassify" placeholder="请输入检验项目分类" >
+        <el-form-item label="项目分类" prop="classifyId">
+          <el-select v-model="form.classifyId" placeholder="请输入检验项目分类" >
             <el-option
               v-for="dict in itemClassifyOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+              :key="dict.id"
+              :label="dict.classifyName"
+              :value="dict.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -305,6 +332,11 @@
                 >{{dict.dictLabel}}</el-radio>
           </el-radio-group>
         </el-form-item>
+         </el-col>
+        <el-col :span="6">
+         <el-form-item label="显示排序" prop="orderNum">
+              <el-input-number v-model="form.orderNum" controls-position="right" :min="0"  style="width: 100px" />
+          </el-form-item>
         </el-col>
         </el-row>
         <el-form-item label="预览缩略图" prop="titleImg" label-width="40">
@@ -354,9 +386,10 @@
 </template>
 
 <script>
-import { listInspectionItem, getInspectionItem, delInspectionItem, addInspectionItem, updateInspectionItem, exportInspectionItem,changeStatus } from "@/api/base/inspectionItem";
+import { listInspectionItem, getInspectionItem, delInspectionItem, addInspectionItem, updateInspectionItem, exportInspectionItem,changeStatus,changeRecommend } from "@/api/base/inspectionItem";
 import { getInspectionOfficeList } from "@/api/base/inspectionOffice";
 import { getListByInspectionOfficeId } from "@/api/base/inspectionOfficeItem";
+import { listInspectionItemClassify} from "@/api/base/inspectionItemClassify";
 import { checkAmount }from "@/utils/index";
 // require styles 导入富文本编辑器对应的样式
 // import 'quill/dist/quill.core.css'
@@ -385,6 +418,14 @@ export default {
       showSearch: true,
       // 状态数据字典
       statusOptions: [],
+           //推荐列表
+      recommendOptions: [{
+        'id':1,
+         name:"正常"
+      },{
+        'id':2,
+         name:"推荐"
+      }],
       // 总条数
       total: 0,
       // 检验项目信息表格数据
@@ -423,7 +464,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         itemName: null,
-        itemClassify: null,
+        classifyId: null,
         sampleType: null,
         itemUnit: null,
         amount: null,
@@ -446,7 +487,7 @@ export default {
         itemName: [
           { required: true, message: "检验项目不能为空", trigger: "blur" }
         ],
-        itemClassify: [
+        classifyId: [
           { required: true, message: "项目分类不能为空", trigger: "blur" }
         ],
         sampleType: [
@@ -470,13 +511,12 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.inspectionOfficeData();
+    this.listInspectionItemClassifyData();
+    this.getList();
+
     this.getDicts("sys_normal_disable").then(response => {
       this.statusOptions = response.data;
-    });
-    this.getDicts("inspect_item_classify").then(response => {
-      this.itemClassifyOptions = response.data;
     });
     this.getDicts("inspect_sample_type").then(response => {
       this.sampleTypeOptions = response.data;
@@ -502,7 +542,7 @@ export default {
       this.form = {
         id: null,
         itemName: null,
-        itemClassify: null,
+        classifyId: null,
         sampleType: null,
         itemUnit: null,
         amount: null,
@@ -573,11 +613,9 @@ export default {
         this.open = true;
         _this.imageUrl = this.form.titleImg;
         if(this.imageUrl==null){
-          console.log("aaaaaaaaaaaaa");
           _this.hideUploadBtn =false;
           _this.imageUrl = "";
         }else{
-          console.log("dddddddddddddd");
           _this.fileList.push({name: 'food.jpg', url: _this.getImgUrl(_this.form.titleImg)});
           _this.hideUploadBtn =true;
         }
@@ -591,6 +629,15 @@ export default {
       this.inspectionOfficeItemList = [];
       getInspectionOfficeList().then(response => {
         this.inspectionOfficeList = response.data;
+      });
+    },
+
+    /** 项目分类 */
+     listInspectionItemClassifyData() {
+      this.itemClassifyOptions = [];
+      listInspectionItemClassify().then(response => {
+      this.itemClassifyOptions = response.rows;
+      console.log("项目分类  ",response.rows);
       });
     },
         /** 修改按钮操作 */
@@ -607,7 +654,7 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm() {
+    submitForm2() {
       this.$refs["form"].validate(valid => {
         if (valid) {
            this.form.titleImg = this.imageUrl;
@@ -623,6 +670,40 @@ export default {
               this.open = false;
               this.getList();
             });
+          }
+        }
+      });
+    },
+        /** 提交按钮 */
+    submitForm() {
+      let _this = this;
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          _this.form.titleImg = this.imageUrl;
+          if (_this.form.id != null) {
+            _this.$confirm('是否确认修改?', "警告", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }).then(function () {
+              return updateInspectionItem(_this.form);
+            }).then(() => {
+              _this.msgSuccess("修改成功");
+              _this.open = false;
+              _this.getList();
+            })
+          } else {
+            _this.$confirm('是否确认新增?', "警告", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }).then(function () {
+              return addInspectionItem(_this.form);
+            }).then(() => {
+              _this.msgSuccess("新增成功");
+              _this.open = false;
+              _this.getList();
+            })
           }
         }
       });
@@ -698,7 +779,22 @@ export default {
     },
   getImgUrl(titleImg){
    return process.env.VUE_APP_BASE_API + '/common/download/resource?name='+titleImg
-  }
+  },
+      // 是否推荐
+  handleRecommendChange(row) {
+      let text = row.recommend === 1 ? "关闭推荐" : "推荐";
+      this.$confirm('确认要' + text + '<' + row.itemName + '>吗?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return changeRecommend(row.id, row.recommend);
+        }).then(() => {
+          this.msgSuccess(text + "成功");
+        }).catch(function() {
+          row.status = row.recommend === 1 ? 1 : 2;
+        });
+    },
   }
 };
 </script>
