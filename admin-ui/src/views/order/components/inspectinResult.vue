@@ -135,7 +135,7 @@
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="visible = false" v-if="type != 3">取 消</el-button>
+            <el-button @click="hide" v-if="type != 3">取 消</el-button>
             <el-button type="primary" @click="handleConfirm" v-if="type != 3">确 定</el-button>
             <el-button type="primary" @click="handleConfirm" v-if="type == 3">关 闭</el-button>
         </div>
@@ -215,19 +215,27 @@ export default {
                 this.reject = reject;
             })
         },
+        reset() {
+            this.fileList =[];
+            this.imageUrl = '';
+            this.hideUploadBtn = false;
+        },
         //获取详情
         detail(id,type) {
             let _this = this;
-            this.fileList =[];
             getOrderItem(id).then((res) => {
                 console.log("type  ",type);
                 const { data } = res;
                 const { resultItems: items, result, inspectionResultTime,inspectionSendTime,inspectionPersonal, inspectionNumber} = data;
                 console.log("resultImgUrl  ",data.resultImgUrl);
                 let items1 = items;
-                this.imageUrl=data.resultImgUrl;
-                _this.fileList.push({name: 'food.jpg', url: _this.getImgUrl(data.resultImgUrl)});
-                _this.hideUploadBtn =true;
+                if(data.resultImgUrl){
+                    this.imageUrl=data.resultImgUrl;
+                    _this.fileList.push({name: 'food.jpg', url: _this.getImgUrl(data.resultImgUrl)});
+                    _this.hideUploadBtn =true;
+                }else {
+                   this.reset()
+                }
                 if(items==null&&type==2){ //补录时 若是items==null了  页面无新增表单了
                 items1=[
                     { name:'', value: '', acceptanceValue: '', unit:'', result: ''},
@@ -242,6 +250,7 @@ export default {
         },
         hide() {
             this.visible = false
+            this.reset()
             this.reject()
         },
         handleAdd() {
