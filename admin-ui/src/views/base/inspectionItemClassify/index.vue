@@ -54,10 +54,11 @@
               align="center"
             >
           <template slot-scope="scope">
-            <el-popover placement="right" title="" trigger="hover">
-              <img :src="getImgUrl(scope.row.titleImg)"  style="max-height: 500px;max-width: 500px"/>
-              <img slot="reference" :src="getImgUrl(scope.row.titleImg)" :alt="scope.row.titleImg" style="max-height: 50px;max-width: 130px">
-            </el-popover>
+              <el-image
+                  style="width: 100px; height: 100px"
+                  :src="getImgUrl(scope.row.titleImg)"
+                  :preview-src-list="[getImgUrl(scope.row.titleImg)]">
+              </el-image>
           </template>
         </el-table-column>
       <el-table-column label="分类名称" align="center" prop="classifyName" />
@@ -102,7 +103,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
