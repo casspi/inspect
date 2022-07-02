@@ -361,9 +361,6 @@
                 myEditor="Editorc0"
                 v-model="form.content"
             />
-<!--            @blur="onEditorBlur($event)"-->
-<!--            @focus="onEditorFocus($event)"-->
-<!--            @ready="onEditorReady($event)"-->
         </el-form-item>
       </el-form>
       <div class="btn-bar">
@@ -579,6 +576,7 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+        this.fileList = []
       this.reset();
       let _this = this;
       const id = row.id || this.ids
@@ -587,7 +585,7 @@ export default {
         this.form = response.data;
         this.open = true;
         _this.imageUrl = this.form.titleImg;
-        if(this.imageUrl==null){
+        if(this.imageUrl==null || this.imageUrl == ''){
           console.log("aaaaaaaaaaaaa");
           _this.hideUploadBtn =false;
           _this.imageUrl = "";
@@ -741,8 +739,8 @@ export default {
     handleRemove(file, fileList) {
       // fileList为移除后剩余的图片数组 赋值给this.fileList 则展示正确
       // 上传图片 > 6 则隐藏上传组件
-      this.hideUploadBtn = false;
       this.imageUrl = "";
+      this.hideUploadBtn = false;
     },
 
     // 最多上传6张图，超过时隐藏上传按钮
