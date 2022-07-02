@@ -5,13 +5,13 @@
         <el-form-item label="检验项目名称" prop="itemName">
           <el-input v-model="form.itemName" placeholder="请输入检验项目名称" />
         </el-form-item>
-        <el-form-item label="检验项目分类" prop="itemClassify">
-          <el-select v-model="form.itemClassify" placeholder="请输入检验项目分类" >
+        <el-form-item label="检验项目分类" prop="classifyId">
+          <el-select v-model="form.classifyId" placeholder="请输入检验项目分类" >
             <el-option
-              v-for="dict in itemClassifyOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+              v-for="dict in classifyIdOptions"
+              :key="dict.id"
+              :label="dict.classifyName"
+              :value="dict.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -110,7 +110,7 @@ export default {
       sampleTypeOptions: [],
 
     //样本分类
-      itemClassifyOptions: [],
+      classifyIdOptions: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -120,7 +120,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         itemName: null,
-        itemClassify: null,
+        classifyId: null,
         sampleType: null,
         itemUnit: null,
         amount: null,
@@ -141,7 +141,7 @@ export default {
         itemName: [
           { required: true, message: "检验项目不能为空", trigger: "blur" }
         ],
-        itemClassify: [
+        classifyId: [
           { required: true, message: "项目分类不能为空", trigger: "blur" }
         ],
         sampleType: [
@@ -171,7 +171,7 @@ export default {
       this.statusOptions = response.data;
     });
     this.getDicts("inspect_item_classify").then(response => {
-      this.itemClassifyOptions = response.data;
+      this.classifyIdOptions = response.data;
     });
     this.getDicts("inspect_sample_type").then(response => {
       this.sampleTypeOptions = response.data;
@@ -198,7 +198,7 @@ export default {
       this.form = {
         id: null,
         itemName: null,
-        itemClassify: null,
+        classifyId: null,
         sampleType: null,
         itemUnit: null,
         amount: null,

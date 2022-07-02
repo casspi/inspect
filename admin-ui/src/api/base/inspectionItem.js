@@ -65,6 +65,32 @@ export function changeStatus(id, status) {
   })
 }
 
+// 修改是否推荐
+export function changeRecommend(id,recommend) {
+  const data = {
+    id,
+    recommend
+  }
+  return request({
+    url: '/base/inspection/changeRecommend',
+    method: 'put',
+    data: data
+  })
+}
+
+// 修改是否发布
+export function changePublish(id,publish) {
+  const data = {
+    id,
+    publish
+  }
+  return request({
+    url: '/base/inspection/changePublish',
+    method: 'put',
+    data: data
+  })
+}
+
 // 上传图片
 export function uploadImage(data) {
   return request({

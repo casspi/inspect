@@ -11,19 +11,19 @@
                     @keyup.enter.native="handleQuery"
                 />
             </el-form-item>
-            <el-form-item label="检验项目分类" prop="itemClassify">
+            <el-form-item label="检验项目分类" prop="classifyId">
                 <el-select
-                    v-model="queryParams.itemClassify"
+                    v-model="queryParams.classifyId"
                     placeholder="检验项目分类"
                     clearable
                     size="small"
                     style="width: 240px"
                 >
                     <el-option
-                        v-for="dict in itemClassifyOptions"
-                        :key="dict.dictValue"
-                        :label="dict.dictLabel"
-                        :value="dict.dictValue"
+                        v-for="dict in classifyIdOptions"
+                        :key="dict.id"
+                        :label="dict.classifyName"
+                        :value="dict.id"
                     />
                 </el-select>
             </el-form-item>
@@ -150,7 +150,7 @@
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
 
-        <el-table v-loading="loading" :data="inspectionItemList" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="inspectionItemList" @selection-change="handleSelectionChange" style="width:110%">
             <el-table-column type="selection" width="55" align="center" />
             <el-table-column
               prop="titleImg"
@@ -171,7 +171,7 @@
         </el-table-column>
 
             <el-table-column label="检验项目名称" align="center" prop="itemName" />
-            <el-table-column label="检验项目分类" align="center" prop="itemClassifyStr" />
+            <el-table-column label="检验项目分类" align="center" prop="classifyName" />
             <el-table-column label="样本类型" align="center" prop="sampleTypeStr" />
             <el-table-column label="单位" align="center" prop="itemUnit" />
             <el-table-column label="价格" align="center" prop="amount" />
@@ -189,6 +189,26 @@
                         @change="handleStatusChange(scope.row)"
                     ></el-switch>
                 </template>
+            </el-table-column>
+            <el-table-column label="是否推荐" align="center" prop="recommend" >
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.recommend"
+                  :active-value=2
+                  :inactive-value=1
+                  @change="handleRecommendChange(scope.row)"
+                ></el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column label="是否发布" align="center" prop="publish" >
+              <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.publish"
+                  :active-value=2
+                  :inactive-value=1
+                  @change="handlePublishChange(scope.row)"
+                ></el-switch>
+              </template>
             </el-table-column>
             <el-table-column label="备注" align="center" prop="remark" />
             <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -230,13 +250,13 @@
         </el-form-item>
         </el-col>
        <el-col :span="6">
-        <el-form-item label="检验项目分类" prop="itemClassify">
-          <el-select v-model="form.itemClassify" placeholder="请输入检验项目分类" >
+        <el-form-item label="检验项目分类" prop="classifyId">
+          <el-select v-model="form.classifyId" placeholder="请输入检验项目分类" >
             <el-option
-              v-for="dict in itemClassifyOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+              v-for="dict in classifyIdOptions"
+              :key="dict.id"
+              :label="dict.classifyName"
+              :value="dict.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -358,15 +378,11 @@
 </template>
 
 <script>
-import { listInspectionItem, getInspectionItem, delInspectionItem, addInspectionItem, updateInspectionItem, exportInspectionItem,changeStatus } from "@/api/base/inspectionItem";
+import { listInspectionItem, getInspectionItem, delInspectionItem, addInspectionItem, updateInspectionItem, exportInspectionItem,changeStatus,changeRecommend,changePublish } from "@/api/base/inspectionItem";
 import { getInspectionOfficeList } from "@/api/base/inspectionOffice";
 import { getListByInspectionOfficeId } from "@/api/base/inspectionOfficeItem";
 import { checkAmount }from "@/utils/index";
-// require styles 导入富文本编辑器对应的样式
-// import 'quill/dist/quill.core.css'
-// import 'quill/dist/quill.snow.css'
-// import 'quill/dist/quill.bubble.css'
-//import { quillEditor } from 'vue-quill-editor'
+import { listInspectionItemClassify} from "@/api/base/inspectionItemClassify";
 import quillEditor from './quillEditor'
 import { getToken } from '@/utils/auth'
 
@@ -401,7 +417,7 @@ export default {
       sampleTypeOptions: [],
 
     //样本分类
-      itemClassifyOptions: [],
+      classifyIdOptions: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -427,7 +443,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         itemName: null,
-        itemClassify: null,
+        classifyId: null,
         sampleType: null,
         itemUnit: null,
         amount: null,
@@ -450,7 +466,7 @@ export default {
         itemName: [
           { required: true, message: "检验项目不能为空", trigger: "blur" }
         ],
-        itemClassify: [
+        classifyId: [
           { required: true, message: "项目分类不能为空", trigger: "blur" }
         ],
         sampleType: [
@@ -474,13 +490,11 @@ export default {
     };
   },
   created() {
+    this.listInspectionItemClassifyData();
     this.getList();
     this.inspectionOfficeData();
     this.getDicts("sys_normal_disable").then(response => {
       this.statusOptions = response.data;
-    });
-    this.getDicts("inspect_item_classify").then(response => {
-      this.itemClassifyOptions = response.data;
     });
     this.getDicts("inspect_sample_type").then(response => {
       this.sampleTypeOptions = response.data;
@@ -506,7 +520,7 @@ export default {
       this.form = {
         id: null,
         itemName: null,
-        itemClassify: null,
+        classifyId: null,
         sampleType: null,
         itemUnit: null,
         amount: null,
@@ -644,6 +658,45 @@ export default {
           this.getList();
           this.msgSuccess("删除成功");
         })
+    },
+        /** 项目分类 */
+     listInspectionItemClassifyData() {
+      this.classifyIdOptions = [];
+      listInspectionItemClassify().then(response => {
+      this.classifyIdOptions = response.rows;
+      console.log("项目分类  ",response.rows);
+      });
+    },
+          // 是否推荐
+  handleRecommendChange(row) {
+      let text = row.recommend === 1 ? "关闭推荐" : "推荐";
+      this.$confirm('确认要' + text + '<' + row.itemName + '>吗?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return changeRecommend(row.id, row.recommend);
+        }).then(() => {
+          this.msgSuccess(text + "成功");
+        }).catch(function() {
+          row.recommend = row.recommend === 1 ? 1 : 2;
+        });
+    },
+
+  // 是否发布
+  handlePublishChange(row) {
+      let text = row.publish === 1 ? "下架" : "发布";
+      this.$confirm('确认要' + text + '<' + row.itemName + '>吗?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return changePublish(row.id, row.publish);
+        }).then(() => {
+          this.msgSuccess(text + "成功");
+        }).catch(function() {
+          row.publish = row.publish === 1 ? 1 : 2;
+        });
     },
     /** 导出按钮操作 */
     handleExport() {
