@@ -156,30 +156,27 @@
               prop="titleImg"
               label="图片"
               align="center"
+              fixed
+              width="100"
             >
-          <template slot-scope="scope">
-              <el-image
-                  style="width: 100px; height: 100px"
-                  :src="getImgUrl(scope.row.titleImg)"
-                  :preview-src-list="[getImgUrl(scope.row.titleImg)]">
-              </el-image>
-<!--            <el-popover placement="right" title="" trigger="hover">-->
-<!--              <img :src="getImgUrl(scope.row.titleImg)" />-->
-<!--              <img slot="reference" :src="getImgUrl(scope.row.titleImg)" :alt="scope.row.titleImg" style="max-height: 50px;max-width: 130px">-->
-<!--            </el-popover>-->
-          </template>
-        </el-table-column>
-
-            <el-table-column label="检验项目名称" align="center" prop="itemName" />
-            <el-table-column label="检验项目分类" align="center" prop="classifyName" />
+              <template slot-scope="scope">
+                  <el-image
+                      style="width: 100px; height: 100px"
+                      :src="getImgUrl(scope.row.titleImg)"
+                      :preview-src-list="[getImgUrl(scope.row.titleImg)]">
+                  </el-image>
+              </template>
+            </el-table-column>
+            <el-table-column label="检验项目名称" align="center" prop="itemName" fixed width="120"/>
+            <el-table-column label="检验项目分类" align="center" prop="classifyName" width="120"/>
             <el-table-column label="样本类型" align="center" prop="sampleTypeStr" />
             <el-table-column label="单位" align="center" prop="itemUnit" />
             <el-table-column label="价格" align="center" prop="amount" />
             <!-- <el-table-column label="折扣百分比" align="center" prop="discountPercent" /> -->
             <el-table-column label="折扣金额" align="center" prop="discountAmount" />
-            <el-table-column label="检验项目介绍" align="center" prop="summary" />
+            <el-table-column label="检验项目介绍" align="center" prop="summary" width="120"/>
             <el-table-column label="检验所" align="center" prop="officeName" />
-            <el-table-column label="检验所项目" align="center" prop="officeItemName" />
+            <el-table-column label="检验所项目" align="center" prop="officeItemName" width="120" />
             <el-table-column label="状态" align="center">
                 <template slot-scope="scope">
                     <el-switch
@@ -211,7 +208,7 @@
               </template>
             </el-table-column>
             <el-table-column label="备注" align="center" prop="remark" />
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button
                         size="mini"
