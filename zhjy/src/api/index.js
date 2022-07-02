@@ -34,3 +34,8 @@ export function prePay(params) {
 export function getPrompt() {
   return axios.get('/notice/getPrompt')
 }
+
+//
+export function getRecommendItemList( params ) {
+  return axios.get('/inspect/getRecommendItemList', { params })
+}

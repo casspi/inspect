@@ -155,14 +155,18 @@
             <el-table-column
               prop="titleImg"
               label="图片"
-              width="100"
               align="center"
             >
           <template slot-scope="scope">
-            <el-popover placement="right" title="" trigger="hover">
-              <img :src="getImgUrl(scope.row.titleImg)" />
-              <img slot="reference" :src="getImgUrl(scope.row.titleImg)" :alt="scope.row.titleImg" style="max-height: 50px;max-width: 130px">
-            </el-popover>
+              <el-image
+                  style="width: 100px; height: 100px"
+                  :src="getImgUrl(scope.row.titleImg)"
+                  :preview-src-list="[getImgUrl(scope.row.titleImg)]">
+              </el-image>
+<!--            <el-popover placement="right" title="" trigger="hover">-->
+<!--              <img :src="getImgUrl(scope.row.titleImg)" />-->
+<!--              <img slot="reference" :src="getImgUrl(scope.row.titleImg)" :alt="scope.row.titleImg" style="max-height: 50px;max-width: 130px">-->
+<!--            </el-popover>-->
           </template>
         </el-table-column>
 
@@ -307,7 +311,7 @@
         </el-form-item>
         </el-col>
         </el-row>
-        <el-form-item label="预览缩略图" prop="titleImg" label-width="40">
+        <el-form-item label="预览缩略图" prop="titleImg">
               <el-upload
                 :action="imgUpload.url"
                 :headers="imgUpload.headers"

@@ -1,9 +1,5 @@
 <template>
   <div class="home" ref="home">
-<!--    <header>-->
-<!--      <h4>学术资讯</h4>-->
-<!--    </header>-->
-
     <van-swipe class="my-swipe" :autoplay="5000">
       <van-swipe-item v-for="(image, index) in images" :key="index">
         <img v-lazy="image" />
@@ -43,6 +39,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
+import { getRecommendItemList } from "@/api/index";
 
 export default {
   name: "Home",
@@ -65,9 +62,16 @@ export default {
       refreshing: false,
     };
   },
+  created() {
+    this.getRecommendItemList()
+  },
   methods: {
       handleMore() {
           this.$router.replace('/')
+      },
+      async getRecommendItemList() {
+        const res =  await getRecommendItemList({num:5})
+        console.log(res);
       }
   },
 };
