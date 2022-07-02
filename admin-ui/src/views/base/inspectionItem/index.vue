@@ -770,5 +770,8 @@ export default {
     display: none !important;
   }
 }
+/deep/ .el-table__fixed-body-wrapper {
+    z-index: auto !important;
+}
 </style>
 
