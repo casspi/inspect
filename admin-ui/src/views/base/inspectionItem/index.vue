@@ -238,7 +238,7 @@
     </div>
 
     <!-- 添加或修改检验项目信息对话框 -->
-    <div v-show="open">
+    <div v-if="open">
       <el-form ref="form" :model="form" :rules="rules" label-width="120px">
          <el-row>
         <el-col :span="6">
