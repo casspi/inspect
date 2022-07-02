@@ -118,7 +118,7 @@
                     v-hasPermi="['base:inspection:add']"
                 >新增</el-button>
             </el-col>
-            <el-col :span="1.5">
+            <!-- <el-col :span="1.5">
                 <el-button
                     type="success"
                     icon="el-icon-edit"
@@ -137,8 +137,8 @@
                     @click="handleDelete"
                     v-hasPermi="['base:inspection:remove']"
                 >删除</el-button>
-            </el-col>
-            <el-col :span="1.5">
+            </el-col> -->
+            <!-- <el-col :span="1.5">
                 <el-button
                     type="warning"
                     icon="el-icon-download"
@@ -146,7 +146,7 @@
                     @click="handleExport"
                     v-hasPermi="['base:inspection:export']"
                 >导出</el-button>
-            </el-col>
+            </el-col> -->
             <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
 
@@ -157,29 +157,27 @@
               label="图片"
               align="center"
               fixed
-              width="100"
+              width="80"
             >
               <template slot-scope="scope">
                   <el-image
-                      style="width: 100px; height: 100px"
+                      style="max-width: 80px; height: 50px;font-size: 12px;"
                       :src="getImgUrl(scope.row.titleImg)"
                       :preview-src-list="[getImgUrl(scope.row.titleImg)]">
                   </el-image>
               </template>
             </el-table-column>
-            <el-table-column label="检验项目名称" align="center" prop="itemName" fixed width="120"/>
-            <el-table-column label="检验项目分类" align="center" prop="classifyName" width="120"/>
-            <el-table-column label="样本类型" align="center" prop="sampleTypeStr" />
-            <el-table-column label="单位" align="center" prop="itemUnit" />
+            <el-table-column label="检验项目名称" align="left" header-align="center" prop="itemName" fixed width="200" min-width="120"/>
+            <el-table-column label="检验项目分类" align="left" header-align="center" prop="classifyName" width="120"/>
+            <el-table-column label="样本类型" align="left" header-align="center" prop="sampleTypeStr" />
+            <el-table-column label="单位" align="center" header-align="center" prop="itemUnit" />
             <el-table-column label="价格" align="center" prop="amount" />
             <!-- <el-table-column label="折扣百分比" align="center" prop="discountPercent" /> -->
-            <el-table-column label="折扣金额" align="center" prop="discountAmount" />
-            <el-table-column label="检验项目介绍" align="center" prop="summary" width="120"/>
-            <el-table-column label="检验所" align="center" prop="officeName" />
-            <el-table-column label="检验所项目" align="center" prop="officeItemName" width="120" />
+            <el-table-column label="折扣金额" align="center" header-align="center" prop="discountAmount" />
+            <el-table-column label="排序" align="center" prop="orderNum" />
             <el-table-column label="状态" align="center">
-                <template slot-scope="scope">
-                    <el-switch
+              <template slot-scope="scope">
+                <el-switch
                         v-model="scope.row.status"
                         active-value="0"
                         inactive-value="1"
@@ -207,8 +205,11 @@
                 ></el-switch>
               </template>
             </el-table-column>
-            <el-table-column label="备注" align="center" prop="remark" />
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right">
+            <el-table-column label="检验所" align="left" header-align="center" prop="officeName" width="200" />
+            <el-table-column label="检验所项目" align="left" header-align="center" prop="officeItemName" width="200" />
+            <el-table-column label="检验项目介绍" align="left" header-align="center" prop="summary" width="300"/>
+            <el-table-column label="备注" align="left" header-align="center" prop="remark" />
+            <el-table-column label="操作" align="left" header-align="center" class-name="small-padding fixed-width" fixed="right">
                 <template slot-scope="scope">
                     <el-button
                         size="mini"
@@ -326,6 +327,11 @@
                 >{{dict.dictLabel}}</el-radio>
           </el-radio-group>
         </el-form-item>
+        </el-col>
+        <el-col :span="6">
+         <el-form-item label="显示排序" prop="orderNum">
+              <el-input-number v-model="form.orderNum" controls-position="right" :min="0"  style="width: 100px" />
+          </el-form-item>
         </el-col>
         </el-row>
         <el-form-item label="预览缩略图" prop="titleImg">
