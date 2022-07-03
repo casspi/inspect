@@ -47,15 +47,15 @@
 
     <el-table v-loading="loading" :data="inspectionItemClassifyList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-       <el-table-column
+      <el-table-column
               prop="titleImg"
               label="简图"
-              width="100"
+              width="80"
               align="center"
             >
           <template slot-scope="scope">
               <el-image
-                  style="width: 100px; height: 100px"
+                  style="width: 80px; height: 80px"
                   :src="getImgUrl(scope.row.titleImg)"
                   :preview-src-list="[getImgUrl(scope.row.titleImg)]">
               </el-image>
@@ -114,7 +114,7 @@
 
     <!-- 添加或修改检验项目信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="82px">
         <el-form-item label="分类名称" prop="classifyName">
           <el-input v-model="form.classifyName" placeholder="请输入分类名称" />
         </el-form-item>
@@ -133,9 +133,27 @@
         <el-form-item label="显示排序" prop="orderNum">
               <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
             </el-form-item>
-        <el-form-item label="LOGO图" prop="titleImg" >
-        <el-input v-model="form.titleImg" placeholder="请输入分类名称" />
-        </el-form-item>
+       <el-form-item label="预览缩略图" prop="titleImg">
+          <el-upload
+            :action="imgUpload.url"
+            :headers="imgUpload.headers"
+            list-type="picture-card"
+            :limit="limit"
+            :on-exceed="handleExceed"
+            :on-change="handleEditChange"
+            :on-remove="handleRemove"
+            :on-success="handlePictureSuccess"
+            :before-upload="beforeAvatarUpload"
+            :on-preview="handlePictureCardPreview"
+            :file-list="fileList"
+            :class="{ hide: hideUploadBtn }"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" v-if="imageUrl" :src="imageUrl"  alt="">
+          </el-dialog>
+      </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -151,6 +169,7 @@
 <script>
 import { listInspectionItemClassify, getInspectionItemClassify, delInspectionItemClassify, addInspectionItemClassify, updateInspectionItemClassify, exportInspectionItemClassify,changeStatus,changeRecommend } from "@/api/base/inspectionItemClassify";
 import Editor from '@/components/Editor';
+import { getToken } from '@/utils/auth'
 export default {
   name: "InspectionItemClassify",
   components: { Editor },
@@ -185,6 +204,21 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      limit: 1,
+      dialogVisible: false,
+      //页面上存的暂时图片地址List
+      fileList: [],
+      //图片地址
+      imageUrl: "",
+      imgUpload: {
+          // 设置上传的请求头部
+          headers: {
+            Authorization: "Bearer " + getToken()
+          },
+          // 图片上传的方法地址:
+          url: process.env.VUE_APP_BASE_API + "/common/upload"
+      },
+      hideUploadBtn: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -245,6 +279,7 @@ export default {
         content: null
       };
       this.resetForm("form");
+      this.fileList=[];
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -267,21 +302,36 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加检验项目信息";
+      this.hideUploadBtn =false;
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      this.fileList = [];
+      this.imageUrl = "";
+      let _this = this;
       this.reset();
       const id = row.id || this.ids
       getInspectionItemClassify(id).then(response => {
         this.form = response.data;
-        this.open = true;
+        _this.imageUrl = this.form.titleImg;
+        if (this.imageUrl == null || this.imageUrl == '') {
+          _this.hideUploadBtn = false;
+          _this.imageUrl = "";
+        } else {
+           _this.fileList = [];
+          _this.fileList.push({ name: 'food.jpg', url: _this.getImgUrl(_this.form.titleImg) });
+          _this.hideUploadBtn = true;
+        }
         this.title = "修改检验项目信息";
+        this.open = true;
       });
+      console.log(this.fileList);
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.titleImg = this.imageUrl;
           if (this.form.id != null) {
             updateInspectionItemClassify(this.form).then(response => {
               this.msgSuccess("修改成功");
@@ -356,6 +406,47 @@ export default {
           row.status = row.recommend === 1 ? 1 : 2;
         });
     },
+     //图片上传前的相关判断
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg' || file.type == 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 5;
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 5MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    //图片预览
+    handlePictureCardPreview(file) {
+      this.imageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    //图片上传成功后的回调
+    handlePictureSuccess(res, file) {
+      //设置图片访问路径 （articleImg 后台传过来的的上传地址）
+      this.imageUrl = file.response.data.fileName;
+      // this.fileList.push({'url':this.imageUrl});
+      //console.log(this.fileList);
+    },
+    // 文件个数超出
+    handleExceed() {
+      this.$message.error(`上传链接LOGO图片数量不能超过 ${this.limit} 个!`);
+    },
+    // 移除图片操作
+    handleRemove(file, fileList) {
+      // fileList为移除后剩余的图片数组 赋值给this.fileList 则展示正确
+      // 上传图片 > 6 则隐藏上传组件
+      this.imageUrl = "";
+      this.hideUploadBtn = false;
+    },
+
+    // 最多上传6张图，超过时隐藏上传按钮
+    handleEditChange(file, fileList) {
+      this.hideUploadBtn = fileList.length >= 1;
+      console.log(this.hideUploadBtn);
+    },
    // 图片全路径
   getImgUrl(titleImg){
    return process.env.VUE_APP_BASE_API + '/common/download/resource?name='+titleImg
@@ -363,3 +454,21 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.btn-bar{
+    text-align: center;
+}
+/deep/ .ql-container.ql-snow {
+    line-height: normal !important;
+    min-height: 200px !important;
+}
+// 隐藏上传组件
+/deep/ .hide {
+  .el-upload--picture-card {
+    display: none !important;
+  }
+}
+/deep/ .el-table__fixed-body-wrapper {
+    z-index: auto !important;
+}
+</style>
