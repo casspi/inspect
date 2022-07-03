@@ -423,9 +423,9 @@ export default {
       // 是否显示弹出层
       open: false,
       // 图片数量限制
-　　　　limit: 1,
+       limit: 1,
       dialogVisible: false,
-　　　　//页面上存的暂时图片地址List
+      //页面上存的暂时图片地址List
       fileList: [],
       //图片地址
       imageUrl: "",
@@ -582,27 +582,25 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-        this.fileList = []
+      this.fileList = []
       this.reset();
       let _this = this;
       const id = row.id || this.ids
-      let officeId = '';
       getInspectionItem(id).then(response => {
         this.form = response.data;
         this.open = true;
         _this.imageUrl = this.form.titleImg;
         if(this.imageUrl==null || this.imageUrl == ''){
-          console.log("aaaaaaaaaaaaa");
           _this.hideUploadBtn =false;
           _this.imageUrl = "";
         }else{
-          console.log("dddddddddddddd");
           _this.fileList.push({name: 'food.jpg', url: _this.getImgUrl(_this.form.titleImg)});
           _this.hideUploadBtn =true;
         }
         this.title = "修改检验项目信息";
         _this.inspectionOfficeItemChange(response.data.inspectionOfficeId,this.form.inspectionOfficeItemId);
       });
+        console.log(this.fileList);
     },
 
     /** 检验所列表 */
