@@ -114,7 +114,7 @@
 
     <!-- 添加或修改检验项目信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
-      <el-form ref="form" :model="form" :rules="rules" label-width="82px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="82px" v-if = "open">
         <el-form-item label="分类名称" prop="classifyName">
           <el-input v-model="form.classifyName" placeholder="请输入分类名称" />
         </el-form-item>
@@ -150,7 +150,7 @@
           >
             <i class="el-icon-plus"></i>
           </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
+          <el-dialog :visible.sync="dialogVisible" :modal="false">
             <img width="100%" v-if="imageUrl" :src="imageUrl"  alt="">
           </el-dialog>
       </el-form-item>
