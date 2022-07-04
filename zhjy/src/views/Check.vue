@@ -46,7 +46,7 @@ export default {
       // console.log(window.screen.height,window.screen.availHeight)
       // console.log(this.$refs.home.querySelector('.van-tabbar').offsetHeight)
       this.scHeight = (window.screen.availHeight - this.$refs.home.querySelector('.van-tabbar').offsetHeight) + 'px';
-      this.setActive()
+      this.$route.query.classifyId && this.setActive()
     })
   },
   methods: {
