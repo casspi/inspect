@@ -13,17 +13,17 @@
             </span>
         </p>
         <ul class="hot-category-list">
-            <li class="hot-category-list-item" v-for="item in 6" :key="item" :name="'肿瘤'+item">
-                <img src="../assets/xm/xm01.jpg" width="100%" height="100%" alt="">
+            <li @click="handleItem(item)" class="hot-category-list-item" v-for="item in recommendItemList" :key="item.id" :name="item.itemName">
+                <img :src="computedImgSrc(item.titleImg)" width="100%" height="100%" alt="">
             </li>
         </ul>
     </div>
     <div class="hot hot-recommend">
         <p class="hot-title">热门推荐</p>
         <ul class="hot-recommend-list">
-            <li class="hot-recommend-list-item" v-for="item in 5" :key="item" >
-                <img src="../assets/xm/xm03.jpg" width="100%" height="100%" alt="">
-                <p class="name">男性肿瘤易感染32项</p>
+            <li class="hot-recommend-list-item" v-for="item in recommendClassifyList" :key="item.id" @click="handleClassify(item)">
+                <img :src="computedImgSrc(item.titleImg)" width="100%" height="100%" alt="">
+                <p class="name">{{ item.classifyName }}</p>
             </li>
         </ul>
     </div>
@@ -39,16 +39,18 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import { getRecommendItemList } from "@/api/index";
+import { getRecommendItemList, getRecommendClassifyList } from "@/api/index";
 
 export default {
   name: "Home",
   components: {},
   computed:{
     ...mapGetters(["userInfo"]),
-  },
-  mounted() {
-
+    computedImgSrc() {
+      return (src) => {
+        return this.$constant.BASE_URL + 'common/download/resource?name=' + src
+      }
+    }
   },
   data() {
     return {
@@ -60,18 +62,34 @@ export default {
       loading: false,
       finished: false,
       refreshing: false,
+      recommendItemList: [],
+      recommendClassifyList: []
     };
   },
   created() {
     this.getRecommendItemList()
+    this.getRecommendClassifyList()
   },
   methods: {
       handleMore() {
           this.$router.replace('/')
       },
       async getRecommendItemList() {
-        const res =  await getRecommendItemList({num:5})
-        console.log(res);
+        const { data } =  await getRecommendItemList({num: 6})
+        this.recommendItemList = data
+      },
+      async getRecommendClassifyList() {
+          const { data } = await getRecommendClassifyList({num: 6})
+          this.recommendClassifyList = data
+      },
+      handleItem(item) {
+          console.log(item);
+          const { classifyId, id } = item
+          this.$router.push({path: '/', query:{itemId: id, classifyId}})
+      },
+      handleClassify(item) {
+          this.$router.push({path: '/', query:{classifyId: item.id}})
+
       }
   },
 };

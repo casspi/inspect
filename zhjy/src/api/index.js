@@ -35,7 +35,12 @@ export function getPrompt() {
   return axios.get('/notice/getPrompt')
 }
 
-//
+// 热门推荐
 export function getRecommendItemList( params ) {
   return axios.get('/inspect/getRecommendItemList', { params })
+}
+
+// 推荐分类
+export function getRecommendClassifyList( params ) {
+  return axios.get('/inspect/classify/getRecommendClassifyList', { params })
 }

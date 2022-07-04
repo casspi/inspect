@@ -41,15 +41,24 @@ export default {
   },
   async mounted() {
       await  this.WXgetOpenId();
-      this.getCheckList()
+      await this.getCheckList()
     this.$nextTick(()=>{
       // console.log(window.screen.height,window.screen.availHeight)
       // console.log(this.$refs.home.querySelector('.van-tabbar').offsetHeight)
       this.scHeight = (window.screen.availHeight - this.$refs.home.querySelector('.van-tabbar').offsetHeight) + 'px';
+      this.setActive()
     })
   },
   methods: {
       ...mapActions(['updateUserInfo']),
+    setActive() {
+        const { itemId, classifyId } = this.$route.query
+        this.activeIndex = this.checkItems.findIndex(o => o.id === classifyId) || 0
+        if(itemId) {
+          const activeItem = this.checkItems[this.activeIndex].children.find(o => o.id ==  itemId)
+          this.activeIds = [activeItem.id]
+        }
+    },
     //获取检查项目
     async getCheckList(){
       const {data} = await getCheckList()
